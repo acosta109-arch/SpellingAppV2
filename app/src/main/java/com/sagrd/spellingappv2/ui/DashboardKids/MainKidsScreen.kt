@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.sagrd.spellingappv2.R
+import com.example.spellingappv2.R
 import com.sagrd.spellingappv2.ui.Usuario.UsuarioViewModel
 import com.sagrd.spellingappv2.ui.practica.PracticaViewModel
 import com.sagrd.spellingappv2.ui.theme.Blue1

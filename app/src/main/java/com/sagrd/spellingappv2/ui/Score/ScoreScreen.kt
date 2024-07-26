@@ -21,9 +21,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sagrd.spellingappv2.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.spellingappv2.R
 import com.sagrd.spellingappv2.ui.Usuario.UsuarioViewModel
 import com.sagrd.spellingappv2.ui.componentes.RowUsuarios
 import com.sagrd.spellingappv2.ui.theme.Blue1

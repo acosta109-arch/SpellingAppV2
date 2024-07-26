@@ -28,31 +28,31 @@ import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val textToSpeechEngine : TextToSpeech by lazy{
-        TextToSpeech(this){ status ->
-            if(status == TextToSpeech.SUCCESS){
+    private val textToSpeechEngine: TextToSpeech by lazy {
+        TextToSpeech(this) { status ->
+            if (status == TextToSpeech.SUCCESS) {
                 textToSpeechEngine.language = Locale.US
                 textToSpeechEngine.setSpeechRate(0.50f)
             }
         }
     }
 
-    lateinit var service : CounterNotificationService
+    lateinit var service: CounterNotificationService
 
 
-    private fun speak(text : String){
+    private fun speak(text: String) {
         val textoEspaceado = text.subSequence(0, text.length)
             .chunked(1) // every 1 chars
             .joinToString(" ") // merge them applying space
 
-        textToSpeechEngine.speak(textoEspaceado, TextToSpeech.QUEUE_ADD,null,null)
+        textToSpeechEngine.speak(textoEspaceado, TextToSpeech.QUEUE_ADD, null, null)
 
-        textToSpeechEngine.speak(text, TextToSpeech.QUEUE_ADD,null,null)
+        textToSpeechEngine.speak(text, TextToSpeech.QUEUE_ADD, null, null)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        service =CounterNotificationService(applicationContext)
+        service = CounterNotificationService(applicationContext)
         setContent {
             SpellingAppV2Theme {
                 // A surface container using the 'background' color from the theme service.showNotification(Counter.value)
@@ -80,23 +80,20 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.WordRegister.route) {
                             WordRegister(navHostController)
                         }
-                        composable(Screen.ScoreScreen.route){
+                        composable(Screen.ScoreScreen.route) {
                             ScoreScreen(navHostController)
                         }
                         composable(Screen.MainKidsScreen.route + "/{userId}") { navBackStack ->
                             val user = navBackStack.arguments?.getString("userId")
-                            MainKidsScreen(navHostController,usuarioId = user?.toInt())
+                            MainKidsScreen(navHostController, usuarioId = user?.toInt())
                         }
                         composable(Screen.PracticaScreen.route + "/{palabraId}") { navBackStack ->
                             val palabra = navBackStack.arguments?.getString("palabraId")
                             PracticaScreen(
-                                onSpeech = {speak(it)},
+                                onSpeech = { speak(it) },
                                 navHostController = navHostController, palabraId = palabra?.toInt()
                             )
                         }
-                        /*composable(Screen.PracticaScreen.route){
-                            PracticaScreen(navHostController)
-                        }*/
                         composable(Screen.ResumenScreen.route) {
                             ResumenScreen(navHostController)
                         }
@@ -105,53 +102,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-@Composable
-fun MyApp() {
-    /*Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
-    ) {
-        val navHostController = rememberNavController()
-        NavHost(
-            navController = navHostController,
-            startDestination = Screen.SplashScreen.route
-        ) {
-            composable(Screen.SplashScreen.route) {
-                SplashScreen(navHostController)
-            }
-            composable(Screen.MainScreen.route) {
-                MainScreen(navHostController)
-            }
-            composable(Screen.RegistroUsuarioScreen.route) {
-                RegistroUsuarioScreen(navHostController)
-            }
-            composable(Screen.WordQuery.route) {
-                WordQuery(navHostController)
-            }
-            composable(Screen.WordRegister.route) {
-                WordRegister(navHostController)
-            }
-            composable(Screen.ScoreScreen.route){
-                ScoreScreen(navHostController)
-            }
-            composable(Screen.MainKidsScreen.route + "/{userId}") { navBackStack ->
-                val user = navBackStack.arguments?.getString("userId")
-                MainKidsScreen(navHostController,usuarioId = user?.toInt())
-            }
-            composable(Screen.PracticaScreen.route + "/{palabraId}") { navBackStack ->
-                val palabra = navBackStack.arguments?.getString("palabraId")
-                PracticaScreen(
-                    onSpeech = {speak(it)},
-                    onClick ={
-                        navHostController,palabraId = palabra?.toInt()
-                    }
-                )
-            }
-            *//*composable(Screen.PracticaScreen.route){
-                PracticaScreen(navHostController)
-            }*//*
-        }
-    }*/
 }

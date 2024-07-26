@@ -14,10 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import com.sagrd.spellingappv2.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.spellingappv2.R
 import com.sagrd.spellingappv2.ui.theme.Blue1
 import com.sagrd.spellingappv2.ui.theme.Yellow1
 import com.sagrd.spellingappv2.ui.theme.Yellow2

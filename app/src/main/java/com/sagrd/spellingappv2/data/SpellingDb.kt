@@ -14,10 +14,10 @@ import java.util.*
 @Database(
     entities = [Usuario::class, Palabra::class, Practica::class, PracticaDetalle::class],
     exportSchema = true,
-    version = 2,
-    autoMigrations = [
+    version = 3,
+    /*autoMigrations = [
         AutoMigration (from = 1, to = 2)
-    ]
+    ]*/
 )
 @TypeConverters(Converters::class)
 abstract class SpellingDb: RoomDatabase() {
