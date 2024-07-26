@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.spellingappv2"
+        applicationId "com.sagrd.spellingappv2"
         minSdk 21
-        targetSdk 32
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -50,6 +50,7 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    namespace 'com.example.spellingappv2'
 }
 
 dependencies {
