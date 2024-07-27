@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class UsuarioRepository @Inject constructor(
-    val usuarioDao: UsuarioDao
+    private val usuarioDao: UsuarioDao
 ) {
     suspend fun upsert(usuario: Usuario) {
         usuarioDao.upsert(usuario = usuario)

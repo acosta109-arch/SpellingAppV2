@@ -24,52 +24,39 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun ProvideSpellingDb(@ApplicationContext context: Context) : SpellingDb{
+    fun provideSpellingDb(@ApplicationContext context: Context): SpellingDb {
         val DATABASE_NAME = "SpellingDb"
         return Room.databaseBuilder(
             context,
             SpellingDb::class.java,
-            DATABASE_NAME)
+            DATABASE_NAME
+        )
             .createFromAsset("databases/SpellingDb.db")
             .fallbackToDestructiveMigration()
             .build()
     }
 
-
+    @Singleton
     @Provides
-    fun ProvidesPalabraDao(spellingDb: SpellingDb): PalabraDao {
+    fun providePalabraDao(spellingDb: SpellingDb): PalabraDao {
         return spellingDb.palabraDao
     }
 
+    @Singleton
     @Provides
-    fun ProvidesPalabraRepository(palabraDao: PalabraDao): PalabraRepository {
-        return PalabraRepository(palabraDao)
-    }
-
-    @Provides
-    fun ProvideUsuarioDao(spellingDb: SpellingDb): UsuarioDao {
+    fun provideUsuarioDao(spellingDb: SpellingDb): UsuarioDao {
         return spellingDb.usuarioDao
     }
 
+    @Singleton
     @Provides
-    fun ProvideUsuarioRepository(usuarioDao: UsuarioDao): UsuarioRepository {
-        return UsuarioRepository(usuarioDao)
-    }
-
-    @Provides
-    fun ProvidePracticaDao(spellingDb: SpellingDb) : PracticaDao {
+    fun providePracticaDao(spellingDb: SpellingDb): PracticaDao {
         return spellingDb.practicaDao
     }
+
+    @Singleton
     @Provides
-    fun ProvidePracticaRepository(practicaDao: PracticaDao) : PracticaRepository{
-        return PracticaRepository(practicaDao = practicaDao)
-    }
-    @Provides
-    fun ProvidePracticaDetalleDao(spellingDb: SpellingDb) : PracticaDetalleDao {
+    fun providePracticaDetalleDao(spellingDb: SpellingDb): PracticaDetalleDao {
         return spellingDb.detalleDao
-    }
-    @Provides
-    fun ProvidePracticaDetalleRepository(detalleDao: PracticaDetalleDao) : PracticaDetalleRepository {
-        return PracticaDetalleRepository(detalleDao = detalleDao)
     }
 }

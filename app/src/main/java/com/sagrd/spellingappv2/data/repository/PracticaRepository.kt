@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PracticaRepository @Inject constructor(
-    val practicaDao: PracticaDao
+    private val practicaDao: PracticaDao
 ) {
     suspend fun upsert(practica: Practica){
         practicaDao.upsert(practica = practica)
