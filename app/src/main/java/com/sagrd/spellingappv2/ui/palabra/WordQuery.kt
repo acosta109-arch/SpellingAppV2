@@ -1,4 +1,4 @@
-package com.sagrd.spellingappv2.ui.Palabra
+package com.sagrd.spellingappv2.ui.palabra
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

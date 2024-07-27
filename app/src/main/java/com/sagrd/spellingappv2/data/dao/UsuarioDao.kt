@@ -6,17 +6,16 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UsuarioDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertar(usuario: Usuario)
+    @Upsert()
+    suspend fun upsert(usuario: Usuario)
 
     @Delete
-    suspend fun eliminar(usuario: Usuario)
+    suspend fun delete(usuario: Usuario)
 
     @Query("SELECT * FROM Usuarios WHERE usuarioId =:usuarioId")
-
-    fun buscar(usuarioId: Int): Flow<Usuario>
+    fun find(usuarioId: Int): Flow<Usuario>
 
     @Query("SELECT * FROM Usuarios ORDER BY usuarioId")
-    fun getList(): Flow<List<Usuario>>
+    fun getListStream(): Flow<List<Usuario>>
 
 }

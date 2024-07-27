@@ -1,9 +1,7 @@
-package com.sagrd.spellingappv2.ui.DashboardKids
+package com.sagrd.spellingappv2.ui.dashboard
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,11 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.sagrd.spellingappv2.ui.Usuario.UsuarioViewModel
+import com.sagrd.spellingappv2.ui.usuario.UsuarioViewModel
 import com.sagrd.spellingappv2.ui.practica.PracticaViewModel
 import com.sagrd.spellingappv2.util.Screen
 import com.sagrd.spellingappv2.R
-import com.sagrd.spellingappv2.ui.Resumen.ElevatedElevatedCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +34,7 @@ fun MainKidsScreen(
     viewModelPractica : PracticaViewModel = hiltViewModel()
 ) {
     //intentando recuperar el usuario
-    val usuario = viewModel.Buscar(usuarioId ?: 0)
+    val usuario = viewModel.find(usuarioId ?: 0)
     Scaffold(
         topBar = {
             TopAppBar(

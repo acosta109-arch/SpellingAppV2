@@ -1,9 +1,9 @@
-package com.sagrd.spellingappv2.ui.Palabra
+package com.sagrd.spellingappv2.ui.palabra
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sagrd.spellingappv2.data.repositorios.PalabraRepository
+import com.sagrd.spellingappv2.data.repository.PalabraRepository
 import com.sagrd.spellingappv2.model.Palabra
 import com.sagrd.spellingappv2.model.SpellListState
 import com.sagrd.spellingappv2.util.Resource
@@ -15,26 +15,26 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WordViewModel @Inject constructor(
-    val palabraRepository: PalabraRepository
+    private val palabraRepository: PalabraRepository
 ): ViewModel() {
     var palabra by mutableStateOf(Palabra(0,"","",""))
     var word by mutableStateOf("")
     var description by mutableStateOf("")
     var imageUrl by mutableStateOf("")
 
-    var listado = palabraRepository.getList()
+    var listado = palabraRepository.getListStream()
         private set
 
 
 
-    /*var palabrasListado = palabraRepository.getList()
+    /*var palabrasListado = palabraRepository.getListStream()
         private set*/
 
     private var _state = mutableStateOf(SpellListState())
     val state: State<SpellListState> = _state
 
     init {
-        palabraRepository.getList().onEach {
+        palabraRepository.getListStream().onEach {
             result ->
             when(result){
                 is Resource.Loading<*> -> {
@@ -49,7 +49,7 @@ class WordViewModel @Inject constructor(
 
     fun Guardar(){
         viewModelScope.launch {
-            palabraRepository.insertar(
+            palabraRepository.upsert(
                 Palabra(
                     palabra = word,
                     descripcion = description,
@@ -61,7 +61,7 @@ class WordViewModel @Inject constructor(
 
     fun GetPalabra (Id : Int = 0) : Palabra{
         viewModelScope.launch {
-            palabraRepository.buscar(Id).collect { response ->
+            palabraRepository.find(Id).collect { response ->
                 palabra = response
             }
         }

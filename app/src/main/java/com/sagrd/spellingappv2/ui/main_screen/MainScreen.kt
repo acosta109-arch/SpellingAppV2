@@ -1,4 +1,4 @@
-package com.sagrd.spellingappv2.ui.MainScreen
+package com.sagrd.spellingappv2.ui.main_screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image

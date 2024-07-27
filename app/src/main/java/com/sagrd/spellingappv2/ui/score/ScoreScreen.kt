@@ -1,4 +1,4 @@
-package com.sagrd.spellingappv2.ui.Score
+package com.sagrd.spellingappv2.ui.score
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.sagrd.spellingappv2.ui.Usuario.UsuarioViewModel
+import com.sagrd.spellingappv2.ui.usuario.UsuarioViewModel
 import com.sagrd.spellingappv2.ui.componentes.RowUsuarios
 import com.sagrd.spellingappv2.util.Screen
 import com.sagrd.spellingappv2.R

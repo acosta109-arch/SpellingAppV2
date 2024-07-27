@@ -7,10 +7,10 @@ import com.sagrd.spellingappv2.data.dao.PalabraDao
 import com.sagrd.spellingappv2.data.dao.PracticaDao
 import com.sagrd.spellingappv2.data.dao.PracticaDetalleDao
 import com.sagrd.spellingappv2.data.dao.UsuarioDao
-import com.sagrd.spellingappv2.data.repositorios.PalabraRepository
-import com.sagrd.spellingappv2.data.repositorios.PracticaDetalleRepository
-import com.sagrd.spellingappv2.data.repositorios.PracticaRepository
-import com.sagrd.spellingappv2.data.repositorios.UsuarioRepository
+import com.sagrd.spellingappv2.data.repository.PalabraRepository
+import com.sagrd.spellingappv2.data.repository.PracticaDetalleRepository
+import com.sagrd.spellingappv2.data.repository.PracticaRepository
+import com.sagrd.spellingappv2.data.repository.UsuarioRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

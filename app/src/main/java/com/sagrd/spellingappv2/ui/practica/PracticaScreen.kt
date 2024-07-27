@@ -30,7 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.sagrd.spellingappv2.ui.Palabra.WordViewModel
+import com.sagrd.spellingappv2.ui.palabra.WordViewModel
 
 import com.sagrd.spellingappv2.util.Screen
 

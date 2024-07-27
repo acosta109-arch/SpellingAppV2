@@ -1,4 +1,4 @@
-package com.sagrd.spellingappv2.ui.Usuario
+package com.sagrd.spellingappv2.ui.usuario
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sagrd.spellingappv2.data.repositorios.UsuarioRepository
+import com.sagrd.spellingappv2.data.repository.UsuarioRepository
 import com.sagrd.spellingappv2.model.SpellListState
 import com.sagrd.spellingappv2.model.Usuario
 import com.sagrd.spellingappv2.util.Resource
@@ -29,7 +29,7 @@ class UsuarioViewModel @Inject constructor(
     val state: State<SpellListState> = _state
 
     init{
-        usuarioRepository.getList().onEach {
+        usuarioRepository.getListStream().onEach {
                 result ->
             when (result){
                 is Resource.Loading<*> -> {
@@ -48,19 +48,19 @@ class UsuarioViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    var usuario = usuarioRepository.getList()
+    var usuario = usuarioRepository.getListStream()
         private set
 
     fun GetCantidad() : Int{
         var cantidad : Int = 0
         viewModelScope.launch {
-            cantidad += usuarioRepository.getList().count()
+            cantidad += usuarioRepository.getListStream().count()
         }
         return cantidad
     }
     fun Guardar(){
         viewModelScope.launch {
-            usuarioRepository.insertar(
+            usuarioRepository.upsert(
                 Usuario(
                     usuarioId = 0,
                     nombres = nombres,
@@ -70,10 +70,10 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
-    fun Buscar(id : Int): Usuario{
+    fun find(id : Int): Usuario{
 
         viewModelScope.launch {
-            usuarioRepository.buscar(id).collect { response ->
+            usuarioRepository.find(id).collect { response ->
                 user = response
             }
         }

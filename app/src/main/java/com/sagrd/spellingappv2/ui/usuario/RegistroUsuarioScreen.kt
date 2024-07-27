@@ -1,4 +1,4 @@
-package com.sagrd.spellingappv2.ui.Usuario
+package com.sagrd.spellingappv2.ui.usuario
 
 import android.annotation.SuppressLint
 import android.widget.Toast

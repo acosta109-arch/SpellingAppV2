@@ -1,4 +1,4 @@
-package com.sagrd.spellingappv2.ui.Resumen
+package com.sagrd.spellingappv2.ui.resumen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column

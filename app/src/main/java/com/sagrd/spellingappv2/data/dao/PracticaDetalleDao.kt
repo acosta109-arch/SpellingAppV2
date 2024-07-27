@@ -6,15 +6,15 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PracticaDetalleDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertar(detalle: PracticaDetalle)
+    @Upsert()
+    suspend fun upsert(detalle: PracticaDetalle)
 
     @Delete
-    suspend fun eliminar(detalle: PracticaDetalle)
+    suspend fun delete(detalle: PracticaDetalle)
 
     @Query("SELECT * FROM PracticasDetalle WHERE detalleId=:detalleId")
-    fun buscar(detalleId: Int): Flow<PracticaDetalle>
+    fun find(detalleId: Int): Flow<PracticaDetalle>
 
     @Query("SELECT * FROM PracticasDetalle ORDER BY detalleId")
-    fun getList(): Flow<List<PracticaDetalle>>
+    fun getListStream(): Flow<List<PracticaDetalle>>
 }

@@ -1,4 +1,4 @@
-package com.sagrd.spellingappv2.ui.SplashScreen
+package com.sagrd.spellingappv2.ui.splash_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sagrd.spellingappv2.R
-import com.sagrd.spellingappv2.ui.Usuario.UsuarioViewModel
+import com.sagrd.spellingappv2.ui.usuario.UsuarioViewModel
 import com.sagrd.spellingappv2.util.Screen
 import kotlinx.coroutines.delay
 

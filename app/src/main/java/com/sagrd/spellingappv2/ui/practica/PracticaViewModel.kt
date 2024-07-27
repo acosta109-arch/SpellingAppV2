@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sagrd.spellingappv2.data.repositorios.PracticaRepository
+import com.sagrd.spellingappv2.data.repository.PracticaRepository
 import com.sagrd.spellingappv2.model.Palabra
 import com.sagrd.spellingappv2.model.Practica
 import com.sagrd.spellingappv2.model.SpellListState
@@ -30,11 +30,11 @@ class PracticaViewModel @Inject constructor(
     private var _state = mutableStateOf(SpellListState())
     val state: State<SpellListState> = _state
 
-    var listado = practicaRepository.getList()
+    var listado = practicaRepository.getListStream()
         private set
 
     init {
-        practicaRepository.getList().onEach {
+        practicaRepository.getListStream().onEach {
                 result ->
             when(result){
                 is Resource.Loading<*> -> {
@@ -49,7 +49,7 @@ class PracticaViewModel @Inject constructor(
 
     fun Guardar(usuarioid : Int){
         viewModelScope.launch {
-            practicaRepository.insertar(
+            practicaRepository.upsert(
                Practica(
                    usuarioId = usuarioId,
                    fecha = Date().toString()
