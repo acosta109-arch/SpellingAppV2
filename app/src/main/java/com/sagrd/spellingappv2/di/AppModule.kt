@@ -30,8 +30,8 @@ object AppModule {
             context,
             SpellingDb::class.java,
             DATABASE_NAME)
-            .fallbackToDestructiveMigration()
             .createFromAsset("databases/SpellingDb.db")
+            .fallbackToDestructiveMigration()
             .build()
     }
 

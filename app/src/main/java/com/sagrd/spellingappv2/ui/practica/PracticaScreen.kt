@@ -2,9 +2,17 @@ package com.sagrd.spellingappv2.ui.practica
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +31,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.sagrd.spellingappv2.ui.Palabra.WordViewModel
-import com.sagrd.spellingappv2.ui.theme.Blue1
+
 import com.sagrd.spellingappv2.util.Screen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -43,19 +51,19 @@ fun PracticaScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { show = true },
-                contentColor = contentColorFor(backgroundColor = Blue1)
+                onClick = { show = true }, 
             ) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.onPrimary
                 )
             }
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+            .padding(it)
+            .fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier
@@ -84,15 +92,8 @@ fun PracticaScreen(
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(horizontal = 20.dp, vertical = 0.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Blue1,
-                    contentColor = MaterialTheme.colors.onPrimary
-                ),
-                //navHostController.navigate(Screen.PracticaScreen.route)
-                //palabra = viewModel.GetPalabra(p)
-                /*index += 1*/
             ) {
-                Icon(imageVector = Icons.Default.ArrowRight, contentDescription = "", tint = MaterialTheme.colors.onPrimary)
+                Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "", tint = MaterialTheme.colorScheme.onPrimary)
             }
 
 
@@ -102,7 +103,7 @@ fun PracticaScreen(
             ) {
                 Text(text = palabra.palabra,
                 modifier = Modifier.height(30.dp),
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.headlineSmall
                 )
                 Spacer(modifier = Modifier.height(0.dp))
                 IconButton(
@@ -110,7 +111,10 @@ fun PracticaScreen(
                     }
                 ) {
                     //ICON DE SONIDO (PREFERIBLEMENTE, UNA VOCINA)
-                    Icon(imageVector = Icons.Default.MusicNote, contentDescription = "")
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "Audio Icon"
+                    )
                 }
 
 
@@ -146,10 +150,6 @@ fun DialogModel(
                 Button(
                     onClick = { onAccept() },
                     modifier = Modifier.safeContentPadding(),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Green,
-                        contentColor = Color.Black,
-                    )
                 ) {
                     Text(text = "Yes")
                 }
@@ -158,10 +158,6 @@ fun DialogModel(
                 Button(
                     onClick = { onDismiss() },
                     modifier = Modifier.safeContentPadding(),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Red,
-                        contentColor = Color.Black,
-                    )
                 ) {
                     Text(text = "No")
                 }
@@ -173,7 +169,7 @@ fun DialogModel(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        imageVector = Icons.Default.QuestionMark,
+                        imageVector = Icons.Default.Info,
                         contentDescription = "",
                         tint = Color.Red,
                         modifier = Modifier.size(50.dp)

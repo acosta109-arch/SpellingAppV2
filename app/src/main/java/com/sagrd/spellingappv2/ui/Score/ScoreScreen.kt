@@ -2,19 +2,24 @@ package com.sagrd.spellingappv2.ui.Score
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -23,14 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.spellingappv2.R
 import com.sagrd.spellingappv2.ui.Usuario.UsuarioViewModel
 import com.sagrd.spellingappv2.ui.componentes.RowUsuarios
-import com.sagrd.spellingappv2.ui.theme.Blue1
-import com.sagrd.spellingappv2.ui.theme.Yellow1
-import com.sagrd.spellingappv2.ui.theme.Yellow2
 import com.sagrd.spellingappv2.util.Screen
+import com.sagrd.spellingappv2.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScoreScreen(
@@ -50,20 +53,17 @@ fun ScoreScreen(
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.White,
                     )
-
                 },
-                backgroundColor = Blue1,
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navHostController.navigate(Screen.RegistroUsuarioScreen.route) },
-                contentColor = contentColorFor(backgroundColor = Yellow1)
-            ){
+            ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
@@ -71,16 +71,11 @@ fun ScoreScreen(
     ) {
         Column(
             modifier = Modifier
+                .padding(it)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
-//            Text(
-//                text = "Welcome to...",
-//                fontSize = 35.sp,
-//                fontWeight = FontWeight.ExtraBold,
-//                fontFamily = FontFamily.Cursive
-//            )
             Spacer(modifier = Modifier.padding(top = 20.dp))
             Image(
                 //AQui va el logo de la app que como no lo tengo puse la abeja
@@ -89,31 +84,21 @@ fun ScoreScreen(
                 modifier = Modifier.size(width = 200.dp, height = 200.dp)
             )
             Spacer(modifier = Modifier.padding(top = 15.dp))
-            Card(
+            ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .absolutePadding(right = 6.dp, left = 6.dp, bottom = 8.dp),
-                backgroundColor = Color.Transparent,
-                shape = CutCornerShape(6.dp)
             )
             {
                 Column(
-                    modifier = Modifier
-                        .background(
-                            Brush.linearGradient(
-                                listOf(
-                                    Yellow2,
-                                    Yellow1,
-                                )
-                            )
-                        ),
+                    modifier = Modifier,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
 
                     Text(
                         text = "Top Kids",
                         fontSize = 20.sp,
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         fontFamily = FontFamily.Cursive
                     )

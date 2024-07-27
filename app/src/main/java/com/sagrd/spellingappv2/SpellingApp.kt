@@ -9,11 +9,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.example.spellingappv2.R
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class SpellingAppV2 : Application() {
+class SpellingApp : Application() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()

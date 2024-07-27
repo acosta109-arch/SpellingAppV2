@@ -14,10 +14,7 @@ import java.util.*
 @Database(
     entities = [Usuario::class, Palabra::class, Practica::class, PracticaDetalle::class],
     exportSchema = true,
-    version = 3,
-    /*autoMigrations = [
-        AutoMigration (from = 1, to = 2)
-    ]*/
+    version = 1,
 )
 @TypeConverters(Converters::class)
 abstract class SpellingDb: RoomDatabase() {
@@ -25,9 +22,6 @@ abstract class SpellingDb: RoomDatabase() {
     abstract val palabraDao : PalabraDao
     abstract val practicaDao : PracticaDao
     abstract val detalleDao : PracticaDetalleDao
-
-    /*@DeleteColumn(tableName = "Practicas",columnName = "fraseId")
-    class MigrateQuizQuesToQuizQuestion : AutoMigrationSpec { }*/
 }
 
 class Converters {

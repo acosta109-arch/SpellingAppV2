@@ -3,9 +3,9 @@ package com.sagrd.spellingappv2.ui.componentes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,15 +21,12 @@ fun RowUsuarios(
     usuario: Usuario,
     onClick: (Usuario) -> Unit
 ) {
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .clickable { onClick(usuario) }
             .size(width = 30.dp, height = 30.dp),
-        elevation = 4.dp,
-        shape = RoundedCornerShape(2.dp),
-
         )
     {
         Row(
@@ -38,30 +35,17 @@ fun RowUsuarios(
         ) {
             Text(
                 text = usuario.nombres,
-                style = MaterialTheme.typography.h6,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Cursive
             )
             Text(
                 text = usuario.edad.toString() + " " + "años",
                 fontStyle = FontStyle.Italic,
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End,
                 color = Color.Black
             )
         }
-
-//        Spacer(
-//            modifier = Modifier
-//                .height(3.dp)
-//        )
-//
-//        Divider(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .width(2.dp),
-//            color = Color.DarkGray
-//        )
-
     }
 }

@@ -2,27 +2,27 @@ package com.sagrd.spellingappv2.ui.MainScreen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.spellingappv2.R
-import com.sagrd.spellingappv2.ui.theme.Blue1
-import com.sagrd.spellingappv2.ui.theme.Yellow1
-import com.sagrd.spellingappv2.ui.theme.Yellow2
+import com.sagrd.spellingappv2.R
 import com.sagrd.spellingappv2.util.Screen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen(navHostController: NavHostController) {
@@ -38,23 +38,17 @@ fun MainScreen(navHostController: NavHostController) {
                         fontFamily = FontFamily.Cursive
                     )
 
-                },
-                backgroundColor = Blue1,
+                }
             )
         },
 
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.padding(it).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
-//            Text(
-//                text = "Welcome to...",
-//                fontSize = 35.sp,
-//                fontWeight = FontWeight.ExtraBold,
-//                fontFamily = FontFamily.Cursive
-//            )
+
             Spacer(modifier = Modifier.padding(top = 20.dp))
             Image(
                 painter = painterResource(id = R.drawable.pngegg),
@@ -70,24 +64,13 @@ fun MainScreen(navHostController: NavHostController) {
                 fontFamily = FontFamily.Cursive
             )
             Spacer(modifier = Modifier.padding(top = 15.dp))
-            Card(
+            ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .absolutePadding(right = 6.dp, left = 6.dp, bottom = 8.dp),
-                backgroundColor = Color.Transparent,
-                shape = CutCornerShape(6.dp)
             )
             {
                 Column(
-                    modifier = Modifier
-                        .background(
-                            Brush.linearGradient(
-                                listOf(
-                                    Yellow2,
-                                    Yellow1,
-                                )
-                            )
-                        ),
+                    modifier = Modifier,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
 
@@ -118,10 +101,6 @@ fun MainScreen(navHostController: NavHostController) {
                 modifier = Modifier
                     .padding(16.dp)
                     .align(Alignment.CenterHorizontally),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Blue1,
-                    contentColor = Color.Black,
-                ),
                 contentPadding = PaddingValues(8.dp),
                 shape = CutCornerShape(4.dp),
             ) {

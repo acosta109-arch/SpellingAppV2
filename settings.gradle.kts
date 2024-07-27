@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "SpellingAppV2"
-include ':app'
+include(":app")

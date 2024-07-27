@@ -3,9 +3,17 @@ package com.sagrd.spellingappv2.ui.Palabra
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.*
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,16 +29,16 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sagrd.spellingappv2.ui.componentes.ValidationText
-import com.sagrd.spellingappv2.ui.theme.Blue1
+
 import com.sagrd.spellingappv2.util.Screen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WordRegister(
     navHostController: NavHostController,
     viewModel: WordViewModel = hiltViewModel()
 ) {
 
-    val scaffoldState = rememberScaffoldState()
     var wordError by remember {
         mutableStateOf(false)
     }
@@ -60,7 +68,6 @@ fun WordRegister(
                     )
 
                 },
-                backgroundColor = Blue1,
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -76,7 +83,6 @@ fun WordRegister(
                 }
             )
         },
-        scaffoldState = scaffoldState,
 
         ) {
         Column(
@@ -103,7 +109,7 @@ fun WordRegister(
                     .focusRequester(focusRequesterWord),
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Book,
+                        imageVector = Icons.Default.Info,
                         contentDescription = null
                     )
                 }
@@ -128,7 +134,7 @@ fun WordRegister(
                     .focusRequester(focusRequesterDescription),
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Description,
+                        imageVector = Icons.Default.Info,
                         contentDescription = null
                     )
                 }
@@ -152,7 +158,7 @@ fun WordRegister(
                     .fillMaxWidth(),
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Image,
+                        imageVector = Icons.Default.Info,
                         contentDescription = null
                     )
                 },
@@ -196,17 +202,11 @@ fun WordRegister(
                     .padding(16.dp)
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth(),
-                shape = CutCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Blue1,
-                    contentColor = MaterialTheme.colors.onPrimary,
-                ),
 
                 ) {
                 Icon(
-                    imageVector = Icons.Default.Save,
+                    imageVector = Icons.Default.Info,
                     contentDescription = null,
-                    modifier = Modifier.size(ButtonDefaults.IconSize)
                 )
                 Text(
                     text = " Save",
