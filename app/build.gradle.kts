@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "edu.ucne.registrotecnicos"
+    namespace = "edu.ucne.spellingapp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "edu.ucne.registrotecnicos"
+        applicationId = "edu.ucne.spellingapp"
         minSdk = 24
         //noinspection OldTargetApi
         targetSdk = 34
