@@ -2,7 +2,9 @@ package com.sagrd.spellingappv2.presentation.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -60,58 +63,95 @@ fun LoginBodyScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Bienvenido/a",
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.SansSerif,
-                color = Color.White
-            ),
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color(0xFF006465))
-                .padding(12.dp)
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Image(
-            painter = painterResource(id = R.drawable.abeja),
-            contentDescription = "Logo",
+                .padding(vertical = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Spacer(modifier = Modifier.height(5.dp))
+            Text(
+                text = "Bienvenido/a",
+                modifier = Modifier.padding(top = 10.dp),
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.SansSerif,
+                    color = Color.White
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Box(
             modifier = Modifier
+                .padding(vertical = 16.dp)
                 .size(100.dp)
-                .clip(RoundedCornerShape(50)),
-            contentScale = ContentScale.Crop
+                .clip(CircleShape)
+                .background(Color(0xFF666666)),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.abeja),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .size(70.dp),
+                contentScale = ContentScale.Fit
+            )
+        }
+
+        Text(
+            text = "Spelling App",
+            style = TextStyle(
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.SansSerif,
+                color = Color.Black
+            ),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
-        Spacer(modifier = Modifier.height(20.dp))
-        Card(
-            modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFBEEE3B))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF666666))
+                .padding(vertical = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Login",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(Color(0xFFBEEE3B)),
+            contentAlignment = Alignment.TopCenter
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Login",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    ),
+                OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Black)
-                        .padding(8.dp),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "Correo Electrónico", color = Color.Black) },
+                        .padding(bottom = 12.dp),
+                    label = { Text(text = "Correo Electrónico") },
                     value = email,
                     onValueChange = {
                         email = it
@@ -119,14 +159,16 @@ fun LoginBodyScreen(
                     },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White,
-                        focusedBorderColor = Color.Black,
-                        unfocusedBorderColor = Color.Black
+                        focusedBorderColor = Color.Gray,
+                        unfocusedBorderColor = Color.Gray
                     ),
-                    textStyle = TextStyle(color = Color.Black)
+                    shape = RoundedCornerShape(4.dp)
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
                     label = { Text(text = "Contraseña") },
                     value = contrasena,
                     onValueChange = {
@@ -136,32 +178,59 @@ fun LoginBodyScreen(
                     visualTransformation = PasswordVisualTransformation(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White,
-                        focusedBorderColor = Color.Black,
-                        unfocusedBorderColor = Color.Black
+                        focusedBorderColor = Color.Gray,
+                        unfocusedBorderColor = Color.Gray
                     ),
-                    textStyle = TextStyle(color = Color.Black)
+                    shape = RoundedCornerShape(4.dp)
                 )
-                Spacer(modifier = Modifier.height(12.dp))
-                Button(
-                    modifier = Modifier.width(180.dp),
-                    onClick = { login(email, contrasena) },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006465))
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally // Centra los botones
                 ) {
-                    Text(text = "Ingresar", color = Color.White)
+                    Button(
+                        onClick = { login(email, contrasena) },
+                        modifier = Modifier
+                            .width(200.dp) // Define un ancho fijo, ajusta según necesidad
+                            .padding(bottom = 12.dp)
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006465)),
+                        shape = RoundedCornerShape(24.dp)
+                    ) {
+                        Text(text = "Ingresar", color = Color.White)
+                    }
+
+                    Button(
+                        onClick = { },
+                        modifier = Modifier
+                            .width(200.dp) // Define un ancho fijo
+                            .padding(bottom = 16.dp)
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006465)),
+                        shape = RoundedCornerShape(24.dp)
+                    ) {
+                        Text(text = "Soy hijo", color = Color.White)
+                    }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    modifier = Modifier.width(180.dp),
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006465))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(text = "Soy hijo", color = Color.White)
+                    Text(
+                        text = "¿No tienes cuenta? ",
+                        color = Color.White,
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        text = "Regístrate",
+                        color = Color(0xFF006465),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        modifier = Modifier.clickable { goToRegistrar() }
+                    )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                TextButton(onClick = goToRegistrar) {
-                    Text(text = "¿No tienes cuenta? ", color = Color(0xFF006465))
-                    Text(text = "Regístrate", fontWeight = FontWeight.Bold, color = Color(0xFF006465))
-                }
+
             }
         }
     }

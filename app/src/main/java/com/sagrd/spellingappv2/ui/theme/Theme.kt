@@ -56,7 +56,7 @@ fun SpellingAppV2Theme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography =  Typography,
+        typography = AppTypography,
         content = content
     )
 }
