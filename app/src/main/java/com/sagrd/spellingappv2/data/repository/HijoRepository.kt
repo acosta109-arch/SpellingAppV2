@@ -8,11 +8,11 @@ import javax.inject.Inject
 class HijoRepository @Inject constructor(
     private val hijoDao: HijoDao
 ){
-    suspend fun insertHijo(hijo: HijoEntity): Int {
+    suspend fun insertHijo(hijo: HijoEntity): Long {
         return hijoDao.insertHijo(hijo)
     }
 
-    suspend fun insertHijos(hijos: List<HijoEntity>): List<Int> {
+    suspend fun insertHijos(hijos: List<HijoEntity>): List<Long> {
         return hijoDao.insertHijos(hijos)
     }
 

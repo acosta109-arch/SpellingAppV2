@@ -8,7 +8,7 @@ import javax.inject.Inject
 class UsuarioRepository @Inject constructor(
     private val usuarioDao: UsuarioDao
 ){
-    suspend fun insertUsuario(usuario: UsuarioEntity): Int {
+    suspend fun insertUsuario(usuario: UsuarioEntity): Long {
         return usuarioDao.insertUsuario(usuario)
     }
 

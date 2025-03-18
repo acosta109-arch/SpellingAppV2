@@ -12,7 +12,7 @@ import com.sagrd.spellingappv2.data.local.entities.UsuarioEntity
 @Dao
 interface UsuarioDao {
     @Insert
-    suspend fun insertUsuario(usuario: UsuarioEntity): Int
+    suspend fun insertUsuario(usuario: UsuarioEntity): Long  // Cambiar a Long en vez de Int
 
     @Update
     suspend fun updateUsuario(usuario: UsuarioEntity)

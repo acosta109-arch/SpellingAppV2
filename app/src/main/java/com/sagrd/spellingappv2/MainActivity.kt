@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.sagrd.spellingappv2.data.local.database.SpellingAppDb
+import com.sagrd.spellingappv2.presentation.navigation.nav_spelling_app
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,7 +25,10 @@ class MainActivity : ComponentActivity() {
                     "SpellingAppDb"
                 ).build()
 
-
+                nav_spelling_app(
+                    navHostController = navHost,
+                    spellingAppDb = spellingAppDb
+                )
             }
         }
     }

@@ -10,10 +10,10 @@ import com.sagrd.spellingappv2.data.local.entities.HijoEntity
 @Dao
 interface HijoDao {
     @Insert
-    suspend fun insertHijo(hijo: HijoEntity): Int
+    suspend fun insertHijo(hijo: HijoEntity): Long  // Room devolverá un Long aunque la clave primaria sea Int
 
     @Insert
-    suspend fun insertHijos(hijos: List<HijoEntity>): List<Int>
+    suspend fun insertHijos(hijos: List<HijoEntity>): List<Long>  // Para inserciones masivas
 
     @Update
     suspend fun updateHijo(hijo: HijoEntity)
