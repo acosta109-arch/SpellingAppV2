@@ -59,6 +59,8 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
 
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
     //navegacion
     implementation("androidx.navigation:navigation-compose:2.8.0-rc01")
     implementation(libs.kotlin.serialization.json)
@@ -66,6 +68,7 @@ dependencies {
     //room
     implementation("androidx.room:room-runtime:2.6.1")
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.animation.core.lint)
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     //  optional - Kotlin Extensions and Coroutines support for Room

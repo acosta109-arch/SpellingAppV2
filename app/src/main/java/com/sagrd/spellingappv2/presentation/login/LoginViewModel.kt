@@ -32,6 +32,13 @@ class UsuarioViewModel @Inject constructor(
                 return@launch
             }
 
+            if (_uiState.value.contrasena != _uiState.value.confirmarContrasena) {
+                _uiState.update {
+                    it.copy(errorMessage = "Las contraseñas no coinciden.", successMessage = null)
+                }
+                return@launch
+            }
+
             try {
                 usuarioRepository.insertUsuario(_uiState.value.toEntity())
                 _uiState.update {
@@ -45,6 +52,7 @@ class UsuarioViewModel @Inject constructor(
             }
         }
     }
+
 
     fun nuevoUsuario() {
         _uiState.update {
@@ -157,6 +165,13 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
+    fun onConfirmarContrasenaChange(confirmarContrasena: String) {
+        _uiState.update {
+            it.copy(confirmarContrasena = confirmarContrasena)
+        }
+    }
+
+
     fun onFotoUrlChange(fotoUrl: String) {
         _uiState.update {
             it.copy(fotoUrl = fotoUrl)
@@ -176,6 +191,7 @@ class UsuarioViewModel @Inject constructor(
         val telefono: String = "",
         val email: String = "",
         val contrasena: String = "",
+        val confirmarContrasena: String = "",
         val fotoUrl: String = "",
         val errorMessage: String? = null,
         val successMessage: String? = null,

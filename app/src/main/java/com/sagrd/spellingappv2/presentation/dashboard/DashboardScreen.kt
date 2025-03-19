@@ -23,7 +23,6 @@ fun DashboardScreen() {
             )
         }
     ) { paddingValues ->
-        // Contenido principal de la pantalla del Dashboard
         Column(
             modifier = Modifier
                 .fillMaxSize()

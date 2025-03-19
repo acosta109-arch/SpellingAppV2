@@ -6,6 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,6 +63,7 @@ fun LoginBodyScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
+    var contrasenaVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -175,23 +180,31 @@ fun LoginBodyScreen(
                         contrasena = it
                         onContrasenaChange(it)
                     },
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White,
                         focusedBorderColor = Color.Gray,
                         unfocusedBorderColor = Color.Gray
                     ),
-                    shape = RoundedCornerShape(4.dp)
+                    shape = RoundedCornerShape(4.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
+                            Icon(
+                                imageVector = if (contrasenaVisible) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                contentDescription = "Mostrar/Ocultar Contraseña"
+                            )
+                        }
+                    }
                 )
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally // Centra los botones
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(
                         onClick = { login(email, contrasena) },
                         modifier = Modifier
-                            .width(200.dp) // Define un ancho fijo, ajusta según necesidad
+                            .width(200.dp)
                             .padding(bottom = 12.dp)
                             .height(48.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006465)),
@@ -203,7 +216,7 @@ fun LoginBodyScreen(
                     Button(
                         onClick = { },
                         modifier = Modifier
-                            .width(200.dp) // Define un ancho fijo
+                            .width(200.dp)
                             .padding(bottom = 16.dp)
                             .height(48.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006465)),
