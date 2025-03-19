@@ -34,9 +34,17 @@ fun LoginScreen(
     viewModel: UsuarioViewModel = hiltViewModel(),
     goBack: () -> Unit,
     goToDashboard: () -> Unit,
-    goToRegistrar: () -> Unit
+    goToRegistrar: () -> Unit,
+    onLoginSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(uiState.successMessage) {
+        if (uiState.successMessage != null) {
+            goToDashboard()
+            onLoginSuccess()
+        }
+    }
 
     LoginBodyScreen(
         uiState = uiState,
@@ -44,9 +52,6 @@ fun LoginScreen(
         onContrasenaChange = viewModel::onContrasenaChange,
         login = { email, contrasena ->
             viewModel.login(email, contrasena)
-            if (uiState.successMessage != null) {
-                goToDashboard()
-            }
         },
         goToRegistrar = goToRegistrar
     )
