@@ -11,4 +11,10 @@ sealed class Screen {
 
     @Serializable
     data object Dashboard: Screen()
+
+    @Serializable
+    data class PinScreen(val pinId: Int): Screen()
+
+    @Serializable
+    data object PinListScreen: Screen()
 }

@@ -17,6 +17,8 @@ import com.sagrd.spellingappv2.data.local.database.SpellingAppDb
 import com.sagrd.spellingappv2.presentation.dashboard.DashboardScreen
 import com.sagrd.spellingappv2.presentation.login.LoginScreen
 import com.sagrd.spellingappv2.presentation.login.RegistrarScreen
+import com.sagrd.spellingappv2.presentation.pin.PinScreen
+import edu.ucne.registrotecnicos.presentation.pin.PinListScreen
 
 @Composable
 fun nav_spelling_app(
@@ -52,6 +54,22 @@ fun nav_spelling_app(
         composable<Screen.RegistrarScreen> {
             val args = it.toRoute<Screen.LoginScreen>()
             RegistrarScreen(
+                goBack = {
+                    navHostController.navigateUp()
+                }
+            )
+        }
+
+        composable<Screen.PinListScreen> {
+            PinListScreen(
+                onCreate = { navHostController.navigate(Screen.PinScreen(0))},
+                onDelete = { navHostController.navigate(Screen.PinScreen(it)) },
+                onBack = { navHostController.navigateUp() }
+            )
+        }
+
+        composable<Screen.PinScreen> {
+            PinScreen(
                 goBack = {
                     navHostController.navigateUp()
                 }

@@ -21,6 +21,7 @@ import edu.ucne.spellingapp.R
 import androidx.navigation.NavHostController
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.navigation.compose.rememberNavController
+import com.sagrd.spellingappv2.presentation.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,13 +34,13 @@ fun NavigationDrawer(
 ) {
     val scope = rememberCoroutineScope()
     val items = listOf(
-        DrawerItem("Inicio", painterResource(R.drawable.home)),
-        DrawerItem("Perfil", painterResource(R.drawable.perfil3d)),
-        DrawerItem("Hijos", painterResource(R.drawable.hijos)),
-        DrawerItem("Pines", painterResource(R.drawable.codigos)),
-        DrawerItem("Test", painterResource(R.drawable.probar)),
-        DrawerItem("Palabras", painterResource(R.drawable.palabras)),
-        DrawerItem("Estadisticas", painterResource(R.drawable.progreso)),
+        DrawerItem("Inicio", painterResource(R.drawable.home), Screen.Dashboard),
+        DrawerItem("Perfil", painterResource(R.drawable.perfil3d), Screen.Dashboard), // Puedes cambiar a perfil cuando lo tengas
+        DrawerItem("Hijos", painterResource(R.drawable.hijos), Screen.Dashboard), // Puedes cambiar a hijos cuando lo tengas
+        DrawerItem("Pines", painterResource(R.drawable.codigos), Screen.PinListScreen),
+        DrawerItem("Test", painterResource(R.drawable.probar), Screen.Dashboard), // Puedes cambiar a test cuando lo tengas
+        DrawerItem("Palabras", painterResource(R.drawable.palabras), Screen.Dashboard), // Puedes cambiar a palabras cuando lo tengas
+        DrawerItem("Estadisticas", painterResource(R.drawable.progreso), Screen.Dashboard), // Puedes cambiar a estadísticas cuando lo tengas
     )
 
     ModalNavigationDrawer(
@@ -49,7 +50,6 @@ fun NavigationDrawer(
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // Título y elementos del drawer
                     Text("SpellingApp", modifier = Modifier.padding(16.dp))
                     Divider()
 
@@ -67,19 +67,22 @@ fun NavigationDrawer(
                             },
                             label = { Text(item.title) },
                             selected = false,
-                            onClick = { scope.launch { drawerState.close() } },
-
+                            onClick = {
+                                navHostController.navigate(item.route)
+                                scope.launch { drawerState.close() }
+                            },
                         )
                         Divider()
                     }
-
-                    // Espacio para empujar el botón hacia abajo
                     Spacer(modifier = Modifier.weight(1f))
-
-                    // Cerrar sesión button
                     Button(
                         onClick = {
-                            onLoginSuccess() // Simular la acción de cerrar sesión
+                            onLoginSuccess()
+                            navHostController.navigate(Screen.LoginScreen) {
+                                popUpTo(0) {
+                                    inclusive = true
+                                }
+                            }
                             scope.launch { drawerState.close() }
                         },
                         modifier = Modifier
@@ -98,7 +101,8 @@ fun NavigationDrawer(
 
 data class DrawerItem(
     val title: String,
-    val icon: Painter
+    val icon: Painter,
+    val route: Screen
 )
 
 @Preview(showBackground = true)
@@ -108,14 +112,11 @@ fun PreviewNavigationDrawer() {
     val navHostController = rememberNavController()
     val onLoginSuccess = {}
 
-    // Simulamos el contenido de la pantalla
     NavigationDrawer(
         navHostController = navHostController,
         isLoggedIn = true,
         onLoginSuccess = onLoginSuccess,
         drawerState = drawerState
     ) {
-        // Aquí puedes agregar contenido de vista previa para el "content" que pasa como parámetro
-        Text("Contenido principal de la app", modifier = Modifier.padding(16.dp))
     }
 }

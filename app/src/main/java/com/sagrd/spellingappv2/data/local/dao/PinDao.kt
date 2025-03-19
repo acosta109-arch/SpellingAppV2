@@ -4,12 +4,13 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.sagrd.spellingappv2.data.local.entities.PinEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PinDao {
-    @Update
+    @Upsert
     suspend fun savePin(pin: PinEntity)
 
     @Delete
