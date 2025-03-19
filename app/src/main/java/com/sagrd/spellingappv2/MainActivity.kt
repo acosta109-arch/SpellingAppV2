@@ -37,11 +37,9 @@ class MainActivity : ComponentActivity() {
                 var isLoggedIn by rememberSaveable { mutableStateOf(false) }
                 val onLoginSuccess = { isLoggedIn = true }
 
-                // Monitorear la ruta actual para cambiar el título
                 val navBackStackEntry by navHost.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
-                // Determinar el título basado en la ruta actual
                 val currentTitle = when {
                     currentDestination?.route?.contains("Dashboard") == true -> "Inicio"
                     currentDestination?.route?.contains("LoginScreen") == true -> "Iniciar Sesión"

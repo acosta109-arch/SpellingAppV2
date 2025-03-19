@@ -40,7 +40,7 @@ fun nav_spelling_app(
                 goToRegistrar = {
                     navHostController.navigate(Screen.RegistrarScreen)
                 },
-                onLoginSuccess = onLoginSuccess // Aquí debes usar el parámetro recibido
+                onLoginSuccess = onLoginSuccess
             )
         }
 

@@ -251,8 +251,8 @@ fun RegistrarBodyScreen(
                     colors = textFieldColors,
                     trailingIcon = {
                         IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
-                            Icon(
-                                imageVector = if (contrasenaVisible) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                            Image(
+                                painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
                                 contentDescription = "Mostrar/Ocultar Contraseña"
                             )
                         }
@@ -269,9 +269,9 @@ fun RegistrarBodyScreen(
                     colors = textFieldColors,
                     trailingIcon = {
                         IconButton(onClick = { confirmarContrasenaVisible = !confirmarContrasenaVisible }) {
-                            Icon(
-                                imageVector = if (confirmarContrasenaVisible) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                                contentDescription = "Mostrar/Ocultar Confirmar Contraseña"
+                            Image(
+                                painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
+                                contentDescription = "Mostrar/Ocultar Contraseña"
                             )
                         }
                     }

@@ -4,8 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -70,10 +72,13 @@ fun LoginBodyScreen(
     var contrasena by remember { mutableStateOf("") }
     var contrasenaVisible by remember { mutableStateOf(false) }
 
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.White)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -194,8 +199,8 @@ fun LoginBodyScreen(
                     shape = RoundedCornerShape(4.dp),
                     trailingIcon = {
                         IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
-                            Icon(
-                                imageVector = if (contrasenaVisible) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                            Image(
+                                painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
                                 contentDescription = "Mostrar/Ocultar Contraseña"
                             )
                         }
