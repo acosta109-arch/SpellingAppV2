@@ -4,8 +4,9 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
+import androidx.room.Upsert
 import com.sagrd.spellingappv2.data.local.entities.HijoEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HijoDao {
@@ -15,14 +16,14 @@ interface HijoDao {
     @Insert
     suspend fun insertHijos(hijos: List<HijoEntity>): List<Long>  // Para inserciones masivas
 
-    @Update
-    suspend fun updateHijo(hijo: HijoEntity)
+    @Upsert
+    suspend fun saveHijo(hijo: HijoEntity)
 
     @Delete
     suspend fun deleteHijo(hijo: HijoEntity)
 
     @Query("SELECT * FROM Hijos")
-    suspend fun getAllHijos(): List<HijoEntity>
+    fun getAllHijos(): Flow<List<HijoEntity>>
 
     @Query("SELECT * FROM Hijos WHERE hijoId = :id")
     suspend fun getHijoById(id: Int): HijoEntity?

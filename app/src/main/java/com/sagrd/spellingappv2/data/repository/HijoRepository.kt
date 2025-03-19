@@ -16,21 +16,18 @@ class HijoRepository @Inject constructor(
         return hijoDao.insertHijos(hijos)
     }
 
-    suspend fun updateHijo(hijo: HijoEntity) {
-        hijoDao.updateHijo(hijo)
+    suspend fun saveHijo(hijo: HijoEntity) {
+        hijoDao.saveHijo(hijo)
     }
 
-    suspend fun deleteHijo(hijo: HijoEntity) {
-        hijoDao.deleteHijo(hijo)
-    }
+    suspend fun deleteHijo(hijo: HijoEntity) = hijoDao.deleteHijo(hijo)
 
-    suspend fun getAllHijos(): List<HijoEntity> {
-        return hijoDao.getAllHijos()
-    }
 
-    suspend fun getHijoById(id: Int): HijoEntity? {
-        return hijoDao.getHijoById(id)
-    }
+    suspend fun getAllHijos() = hijoDao.getAllHijos()
+
+
+    suspend fun getHijoById(id: Int) = hijoDao.getHijoById(id)
+
 
     suspend fun getHijosByUsuarioId(usuarioId: Int): List<HijoEntity> {
         return hijoDao.getHijosByUsuarioId(usuarioId)

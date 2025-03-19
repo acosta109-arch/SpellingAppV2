@@ -15,8 +15,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sagrd.spellingappv2.data.local.database.SpellingAppDb
 import com.sagrd.spellingappv2.presentation.dashboard.DashboardScreen
+import com.sagrd.spellingappv2.presentation.hijos.HijosEditScreen
+import com.sagrd.spellingappv2.presentation.hijos.HijosListScreen
+import com.sagrd.spellingappv2.presentation.hijos.HijosScreen
 import com.sagrd.spellingappv2.presentation.login.LoginScreen
 import com.sagrd.spellingappv2.presentation.login.RegistrarScreen
+import com.sagrd.spellingappv2.presentation.navigation.Screen.HijoScreen
 import com.sagrd.spellingappv2.presentation.pin.PinDelete
 import com.sagrd.spellingappv2.presentation.pin.PinScreen
 import edu.ucne.registrotecnicos.presentation.pin.PinListScreen
@@ -24,7 +28,7 @@ import edu.ucne.registrotecnicos.presentation.pin.PinListScreen
 @Composable
 fun nav_spelling_app(
     navHostController: NavHostController,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
 ) {
     NavHost(
         navController = navHostController,
@@ -63,7 +67,7 @@ fun nav_spelling_app(
 
         composable<Screen.PinListScreen> {
             PinListScreen(
-                onCreate = { navHostController.navigate(Screen.PinScreen(0))},
+                onCreate = { navHostController.navigate(Screen.PinScreen(0)) },
                 onDelete = { navHostController.navigate(Screen.PinDelete(it)) },
                 onBack = { navHostController.navigateUp() }
             )
@@ -86,5 +90,38 @@ fun nav_spelling_app(
                 }
             )
         }
+
+        composable<Screen.HijoListScreen> {
+            HijosListScreen(
+                onCreate = { navHostController.navigate(Screen.HijoScreen(0)) },
+                onDelete = { navHostController.navigate(Screen.HijoDelete(it)) },
+                onBack = { navHostController.navigateUp() },
+                onEdit = { navHostController.navigate(Screen.HijoEdit(it)) },
+            )
+        }
+
+        composable<Screen.HijoScreen> {
+            HijosScreen(
+                goBack = {
+                    navHostController.navigateUp()
+                }
+            )
+        }
+
+        composable<Screen.HijoDelete> {
+
+        }
+
+        composable<Screen.HijoEdit> {
+            val args = it.toRoute<Screen.HijoEdit>()
+            HijosEditScreen(
+                hijoId = args.hijoId,
+                goBack = {
+                    navHostController.navigateUp()
+                }
+            )
+
+        }
+
     }
 }

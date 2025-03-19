@@ -20,4 +20,16 @@ sealed class Screen {
 
     @Serializable
     data object PinListScreen: Screen()
+
+    @Serializable
+    data class HijoScreen(val hijoId: Int): Screen()
+
+    @Serializable
+    data class HijoDelete(val hijoId: Int): Screen()
+
+    @Serializable
+    data class HijoEdit(val hijoId: Int): Screen()
+
+    @Serializable
+    data object HijoListScreen: Screen()
 }
