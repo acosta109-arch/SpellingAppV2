@@ -19,10 +19,10 @@ import com.sagrd.spellingappv2.presentation.login.LoginScreen
 import com.sagrd.spellingappv2.presentation.login.RegistrarScreen
 
 @Composable
-fun nav_spelling_app(spellingAppDb: SpellingAppDb, navHostController: NavHostController) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    val scope = rememberCoroutineScope()
+fun nav_spelling_app(
+    navHostController: NavHostController,
+    onLoginSuccess: () -> Unit
+) {
     NavHost(
         navController = navHostController,
         startDestination = Screen.LoginScreen
@@ -37,7 +37,8 @@ fun nav_spelling_app(spellingAppDb: SpellingAppDb, navHostController: NavHostCon
                 },
                 goToRegistrar = {
                     navHostController.navigate(Screen.RegistrarScreen)
-                }
+                },
+                onLoginSuccess = onLoginSuccess // Aquí debes usar el parámetro recibido
             )
         }
 
@@ -56,7 +57,5 @@ fun nav_spelling_app(spellingAppDb: SpellingAppDb, navHostController: NavHostCon
                 }
             )
         }
-
-
     }
 }
