@@ -86,6 +86,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
+    implementation ("androidx.drawerlayout:drawerlayout:1.2.0")
+    implementation ("com.google.android.material:material:1.11.0")
+
     testImplementation(libs.junit)
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("com.google.truth:truth:1.4.2")
@@ -94,6 +97,8 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.11.1")
     testImplementation("com.google.truth:truth:1.4.2")
     testImplementation("junit:junit:4.13.2")
+
+
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
