@@ -135,7 +135,6 @@ fun PinRow(
     onDelete: (Int) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -184,8 +183,8 @@ fun PinRow(
                     DropdownMenuItem(
                         text = { Text("Eliminar") },
                         onClick = {
+                            onDelete(pin.pinId!!)
                             expanded = false
-                            showDeleteDialog = true
                         }
                     )
                 }
@@ -193,51 +192,7 @@ fun PinRow(
         }
     }
 
-    // Diálogo de confirmación para eliminar
-    if (showDeleteDialog) {
-        DeleteConfirmationDialog(
-            pinId = pin.pinId!!,
-            pinCode = pin.pin,
-            onConfirm = {
-                onDelete(pin.pinId!!)
-                showDeleteDialog = false
-            },
-            onDismiss = { showDeleteDialog = false }
-        )
-    }
-}
 
-@Composable
-fun DeleteConfirmationDialog(
-    pinId: Int,
-    pinCode: String,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Confirmar Eliminación") },
-        text = {
-            Text(
-                "¿Está seguro que desea eliminar el pin '$pinCode'?",
-                textAlign = TextAlign.Center
-            )
-        },
-        confirmButton = {
-            TextButton(
-                onClick = onConfirm
-            ) {
-                Text("Eliminar", color = Color.Red)
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss
-            ) {
-                Text("Cancelar")
-            }
-        }
-    )
 }
 
 @Preview
