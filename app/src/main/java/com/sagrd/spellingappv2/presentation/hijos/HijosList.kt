@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +55,7 @@ fun HijosListScreen(
     onDelete: (Int) -> Unit,
     onBack: () -> Unit,
     onEdit: (Int) -> Unit,
+    onMenuClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -61,7 +64,8 @@ fun HijosListScreen(
         onCreate = onCreate,
         onDelete = onDelete,
         onBack = onBack,
-        onEdit = onEdit
+        onEdit = onEdit,
+
     )
 }
 
@@ -74,7 +78,7 @@ private fun HijosBodyList(
     onBack: () -> Unit,
     onEdit: (Int) -> Unit,
 ) {
-    Scaffold(/*
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Lista de Pines", fontWeight = FontWeight.Bold) },
@@ -93,7 +97,7 @@ private fun HijosBodyList(
                 },
 
             )
-        },*/
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onCreate
