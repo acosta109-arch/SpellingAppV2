@@ -1,19 +1,16 @@
 package com.sagrd.spellingappv2.presentation.navigation
 
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHost
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.derivedStateOf
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
-import com.sagrd.spellingappv2.data.local.database.SpellingAppDb
+import com.sagrd.spellingappv2.presentation.component.NavDrawer
 import com.sagrd.spellingappv2.presentation.dashboard.DashboardScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijoDelete
 import com.sagrd.spellingappv2.presentation.hijos.HijosEditScreen
@@ -21,7 +18,6 @@ import com.sagrd.spellingappv2.presentation.hijos.HijosListScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijosScreen
 import com.sagrd.spellingappv2.presentation.login.LoginScreen
 import com.sagrd.spellingappv2.presentation.login.RegistrarScreen
-import com.sagrd.spellingappv2.presentation.navigation.Screen.HijoScreen
 import com.sagrd.spellingappv2.presentation.pin.PinDelete
 import com.sagrd.spellingappv2.presentation.pin.PinScreen
 import edu.ucne.registrotecnicos.presentation.pin.PinListScreen
@@ -30,6 +26,58 @@ import edu.ucne.registrotecnicos.presentation.pin.PinListScreen
 fun nav_spelling_app(
     navHostController: NavHostController,
     onLoginSuccess: () -> Unit,
+) {
+    val isDrawerVisible = remember { mutableStateOf(false) }
+
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route ?: ""
+
+    val shouldShowDrawer by remember(currentRoute) {
+        derivedStateOf {
+            !currentRoute.contains("LoginScreen") && !currentRoute.contains("RegistrarScreen")
+        }
+    }
+
+    val showDrawer = {
+        if (shouldShowDrawer) {
+            isDrawerVisible.value = true
+        }
+    }
+
+    val closeDrawer = {
+        isDrawerVisible.value = false
+    }
+
+    if (shouldShowDrawer) {
+        NavDrawer(
+            isVisible = isDrawerVisible.value,
+            navHostController = navHostController,
+            onItemClick = { itemTitle ->
+                when (itemTitle) {
+                    "Inicio" -> navHostController.navigate(Screen.Dashboard)
+                    "Perfil" -> navHostController.navigate(Screen.Dashboard)
+                    "Hijos" -> navHostController.navigate(Screen.HijoListScreen)
+                    "Pines" -> navHostController.navigate(Screen.PinListScreen)
+                    "Test" -> navHostController.navigate(Screen.Dashboard)
+                    "Palabras" -> navHostController.navigate(Screen.Dashboard)
+                    "Estadisticas" -> navHostController.navigate(Screen.Dashboard)
+                }
+                closeDrawer()
+            },
+            onClose = closeDrawer
+        ) {
+            NavContent(navHostController, onLoginSuccess, showDrawer)
+        }
+    } else {
+        NavContent(navHostController, onLoginSuccess, showDrawer)
+    }
+}
+
+@Composable
+private fun NavContent(
+    navHostController: NavHostController,
+    onLoginSuccess: () -> Unit,
+    onMenuClick: () -> Unit
 ) {
     NavHost(
         navController = navHostController,
@@ -51,14 +99,12 @@ fun nav_spelling_app(
         }
 
         composable<Screen.Dashboard> {
-            val args = it.toRoute<Screen.LoginScreen>()
             DashboardScreen(
-
+                onMenuClick = onMenuClick
             )
         }
 
         composable<Screen.RegistrarScreen> {
-            val args = it.toRoute<Screen.LoginScreen>()
             RegistrarScreen(
                 goBack = {
                     navHostController.navigateUp()
@@ -70,7 +116,8 @@ fun nav_spelling_app(
             PinListScreen(
                 onCreate = { navHostController.navigate(Screen.PinScreen(0)) },
                 onDelete = { navHostController.navigate(Screen.PinDelete(it)) },
-                onBack = { navHostController.navigateUp() }
+                onBack = { navHostController.navigateUp() },
+                onMenuClick = onMenuClick
             )
         }
 
@@ -98,6 +145,7 @@ fun nav_spelling_app(
                 onDelete = { navHostController.navigate(Screen.HijoDelete(it)) },
                 onBack = { navHostController.navigateUp() },
                 onEdit = { navHostController.navigate(Screen.HijoEdit(it)) },
+                onMenuClick = onMenuClick
             )
         }
 
@@ -117,7 +165,6 @@ fun nav_spelling_app(
                     navHostController.navigateUp()
                 }
             )
-
         }
 
         composable<Screen.HijoEdit> {
@@ -128,8 +175,6 @@ fun nav_spelling_app(
                     navHostController.navigateUp()
                 }
             )
-
         }
-
     }
 }
