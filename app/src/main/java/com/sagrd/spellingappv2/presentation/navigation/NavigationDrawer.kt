@@ -58,7 +58,7 @@ fun NavigationDrawer(
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Text("SpellingApp", modifier = Modifier.padding(16.dp))
+                    Text("SpellingApp", modifier = Modifier.padding(6.dp))
                     Divider()
 
                     items.forEach { item ->

@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -21,9 +22,11 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +42,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sagrd.spellingappv2.data.local.entities.HijoEntity
+import com.sagrd.spellingappv2.data.local.entities.PinEntity
 import edu.ucne.spellingapp.R
+import kotlinx.coroutines.launch
 
 @Composable
 fun HijosListScreen(
@@ -111,7 +116,8 @@ private fun HijosBodyList(
                     HijosRow(
                         hijos = pin,
                         onDelete = onDelete,
-                        onEdit = onEdit
+                        onEdit = onEdit,
+                        pines = uiState.pines
                     )
                 }
             }
@@ -125,8 +131,13 @@ fun HijosRow(
     hijos: HijoEntity,
     onDelete: (Int) -> Unit,
     onEdit: (Int) -> Unit,
+    pines: List<PinEntity>
 ) {
     var expanded by remember { mutableStateOf(false) }
+
+    val pinHijo = pines.find { pin ->
+        pin.pinId == hijos.pinId.toIntOrNull()
+    }?.pin ?: "Sin Tecnico"
 
     Card(
         modifier = Modifier
@@ -202,7 +213,7 @@ fun HijosRow(
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
-                    text = "Pin: " +  hijos.pinId,
+                    text = "Pin: $pinHijo",
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }

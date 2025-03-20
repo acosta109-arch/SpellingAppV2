@@ -50,7 +50,7 @@ fun HijosEditScreen(
     }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    HijoBodyScreen(
+    HijoBodyEdit(
         uiState = uiState,
         goBack = goBack,
         onSave = viewModel::saveHijo,
@@ -83,9 +83,9 @@ fun HijoBodyEdit(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Agregar Hijo", fontWeight = FontWeight.Bold) },
+                title = { Text("Modificar Hijo", fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(red = 0, green = 200, blue = 210, alpha = 255),
+                    containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
                     titleContentColor = Color.White
                 )
             )
@@ -202,7 +202,7 @@ fun HijoBodyEdit(
                         goBack()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(red = 0, green = 200, blue = 210, alpha = 255),
+                        containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
                         contentColor = Color.White
                     )
                 ) {
@@ -217,18 +217,19 @@ fun HijoBodyEdit(
                     modifier = Modifier.padding(15.dp),
                     onClick = {
                         onSave()
+                        goBack()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(red = 0, green = 200, blue = 210, alpha = 255),
+                        containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
                         contentColor = Color.White
                     )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Guardar"
+                        contentDescription = "Modificar"
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Crear")
+                    Text(text = "Modificar")
                 }
             }
         }
@@ -238,7 +239,7 @@ fun HijoBodyEdit(
 @Preview(showBackground = true)
 @Composable
 private fun HijoScreenPreview(){
-    HijoBodyScreen(
+    HijoBodyEdit(
         uiState = Uistate(
             nombre = "Juan",
             apellido = "Perez",

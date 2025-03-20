@@ -76,15 +76,7 @@ fun HijoBodyScreen(
     var expandedGenero by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Modificar Hijo", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
-                    titleContentColor = Color.White
-                )
-            )
-        }
+
     ){
         Column(
             modifier = Modifier
@@ -197,7 +189,7 @@ fun HijoBodyScreen(
                         goBack()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
+                        containerColor = Color(red = 0, green = 200, blue = 210, alpha = 255),
                         contentColor = Color.White
                     )
                 ) {
@@ -215,16 +207,16 @@ fun HijoBodyScreen(
                         goBack()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
+                        containerColor = Color(red = 0, green = 200, blue = 210, alpha = 255),
                         contentColor = Color.White
                     )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Modificar"
+                        contentDescription = "Crear"
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Modificar")
+                    Text(text = "Crear")
                 }
             }
         }

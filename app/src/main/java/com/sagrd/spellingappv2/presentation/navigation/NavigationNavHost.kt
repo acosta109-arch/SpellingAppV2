@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sagrd.spellingappv2.data.local.database.SpellingAppDb
 import com.sagrd.spellingappv2.presentation.dashboard.DashboardScreen
+import com.sagrd.spellingappv2.presentation.hijos.HijoDelete
 import com.sagrd.spellingappv2.presentation.hijos.HijosEditScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijosListScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijosScreen
@@ -109,6 +110,13 @@ fun nav_spelling_app(
         }
 
         composable<Screen.HijoDelete> {
+            val args = it.toRoute<Screen.HijoDelete>()
+            HijoDelete(
+                hijoId = args.hijoId,
+                goBack = {
+                    navHostController.navigateUp()
+                }
+            )
 
         }
 

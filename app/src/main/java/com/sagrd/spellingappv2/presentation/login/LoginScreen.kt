@@ -154,9 +154,12 @@ fun LoginBodyScreen(
 
         Box(
             modifier = Modifier
+                .background(Color(0xFFBEEE3B))
                 .fillMaxWidth()
-                .fillMaxHeight()
-                .background(Color(0xFFBEEE3B)),
+                .fillMaxHeight(1f) .width(200.dp)
+                .padding(bottom = 16.dp)
+                .height(550.dp),
+
             contentAlignment = Alignment.TopCenter
         ) {
             Column(

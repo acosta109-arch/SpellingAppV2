@@ -46,6 +46,11 @@ class MainActivity : ComponentActivity() {
                     currentDestination?.route?.contains("RegistrarScreen") == true -> "Registrarse"
                     currentDestination?.route?.contains("PinListScreen") == true -> "Lista Pines"
                     currentDestination?.route?.contains("PinScreen") == true -> "Agregar Pin"
+                    currentDestination?.route?.contains("HijoListScreen") == true -> "Lista Hijos"
+                    currentDestination?.route?.contains("HijoScreen") == true -> "Agregar Hijo"
+                    currentDestination?.route?.contains("HijosList") == true -> "Detalle Hijo"
+                    currentDestination?.route?.contains("HijosEdit") == true -> "Editar Hijo"
+
                     else -> "SpellingApp"
                 }
 
@@ -84,16 +89,18 @@ class MainActivity : ComponentActivity() {
                     }
                 } else {
                     Scaffold(
-                        topBar = {
-                            // También mostrar el título dinámico en la pantalla de login
-                            TopAppBar(
-                                title = { Text(currentTitle) }
-                            )
-                        }
+                        /* topBar = {
+                             // También mostrar el título dinámico en la pantalla de login
+                             TopAppBar(
+                                 title = { Text(currentTitle) }
+                             )
+                         }*/
                     ) { paddingValues ->
-                        Surface(modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues)) {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues)
+                        ) {
                             nav_spelling_app(
                                 navHostController = navHost,
                                 onLoginSuccess = onLoginSuccess
