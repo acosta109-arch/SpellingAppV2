@@ -4,17 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,23 +13,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -92,11 +72,7 @@ fun RegistrarBodyScreen(
     save: () -> Unit,
     goBack: () -> Unit
 ) {
-    val tealColor = Color(0xFF006465)
-    val limeGreenColor = Color(0xFFBBF24B)
-    val grayTextColor = Color(0xFF4A4A4A)
     val scrollState = rememberScrollState()
-
     var showImageDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -112,291 +88,256 @@ fun RegistrarBodyScreen(
 
     isImageValid = imagePainter.state is AsyncImagePainter.State.Success
 
-    Column(
+    // Matching the color scheme from LoginScreen
+    val isDarkMode = isSystemInDarkTheme()
+    val backgroundColor = if (isDarkMode) Color(0xFF489DA7) else Color(0xFF9DF0FB)
+    val backgroundColorButton = Color(0xFF2B3132)
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(backgroundColor)
+            .verticalScroll(scrollState),
+        contentAlignment = Alignment.Center
     ) {
-        Surface(
-            color = tealColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp),
-            shape = RoundedCornerShape(bottomStart = 0.dp, bottomEnd = 0.dp)
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Spacer(modifier = Modifier.height(40.dp))
-                Text(
-                    text = "Bienvenido/a",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
+                .fillMaxWidth()
+                .padding(24.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.White)
+                .border(4.dp, Color.Black, RoundedCornerShape(16.dp))
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column(
+            Image(
+                painter = painterResource(id = R.drawable.abeja),
+                contentDescription = "Logo",
+                modifier = Modifier.size(80.dp)
+            )
+
+            Text(
+                text = "Spelling App",
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+
+            Text(
+                text = "Registrarse",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            // Nombre Field
+            OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF666666)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.abeja),
-                        contentDescription = "Logo",
-                        modifier = Modifier.size(50.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Spelling App",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-            }
-
-            Surface(
-                color = Color(0xFF666666),
-                shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Registrarse",
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(limeGreenColor)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                val textFieldModifier = Modifier.fillMaxWidth()
-                val textFieldColors = OutlinedTextFieldDefaults.colors(
+                    .padding(bottom = 8.dp),
+                label = { Text(text = "Nombre", color = Color.Black) },
+                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                value = uiState.nombre,
+                onValueChange = onNombreChange,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
                     focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
-                )
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(4.dp)
+            )
 
-                OutlinedTextField(
-                    modifier = textFieldModifier,
-                    value = uiState.nombre,
-                    onValueChange = onNombreChange,
-                    label = { Text("Nombre", color = grayTextColor) },
-                    singleLine = true,
-                    colors = textFieldColors
-                )
+            // Apellido Field
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                label = { Text(text = "Apellido", color = Color.Black) },
+                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                value = uiState.apellido,
+                onValueChange = onApellidoChange,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(4.dp)
+            )
 
-                OutlinedTextField(
-                    modifier = textFieldModifier,
-                    value = uiState.apellido,
-                    onValueChange = onApellidoChange,
-                    label = { Text("Apellido", color = grayTextColor) },
-                    singleLine = true,
-                    colors = textFieldColors
-                )
+            // Telefono Field
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                label = { Text(text = "Número De Teléfono", color = Color.Black) },
+                leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
+                value = uiState.telefono,
+                onValueChange = onTelefonoChange,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(4.dp)
+            )
 
-                OutlinedTextField(
-                    modifier = textFieldModifier,
-                    value = uiState.telefono,
-                    onValueChange = onTelefonoChange,
-                    label = { Text("Número De Teléfono", color = grayTextColor) },
-                    singleLine = true,
-                    colors = textFieldColors
-                )
+            // Email Field
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                label = { Text(text = "Correo Electrónico", color = Color.Black) },
+                leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+                value = uiState.email,
+                onValueChange = onEmailChange,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(4.dp)
+            )
 
-                OutlinedTextField(
-                    modifier = textFieldModifier,
-                    value = uiState.email,
-                    onValueChange = onEmailChange,
-                    label = { Text("Correo Electrónico", color = grayTextColor) },
-                    singleLine = true,
-                    colors = textFieldColors
-                )
-
-                OutlinedTextField(
-                    modifier = textFieldModifier,
-                    value = uiState.contrasena,
-                    onValueChange = onContrasenaChange,
-                    label = { Text("Contraseña", color = grayTextColor) },
-                    singleLine = true,
-                    visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    colors = textFieldColors,
-                    trailingIcon = {
-                        IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
-                            Image(
-                                painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
-                                contentDescription = "Mostrar/Ocultar Contraseña"
-                            )
-                        }
-                    }
-                )
-
-                OutlinedTextField(
-                    modifier = textFieldModifier,
-                    value = uiState.confirmarContrasena,
-                    onValueChange = onConfirmarContrasenaChange,
-                    label = { Text("Confirmar Contraseña", color = grayTextColor) },
-                    singleLine = true,
-                    visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    colors = textFieldColors,
-                    trailingIcon = {
-                        IconButton(onClick = { confirmarContrasenaVisible = !confirmarContrasenaVisible }) {
-                            Image(
-                                painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
-                                contentDescription = "Mostrar/Ocultar Contraseña"
-                            )
-                        }
-                    }
-                )
-
-                OutlinedTextField(
-                    modifier = textFieldModifier,
-                    value = uiState.fotoUrl,
-                    onValueChange = onFotoUrlChange,
-                    label = { Text("URL de Foto", color = grayTextColor) },
-                    singleLine = true,
-                    colors = textFieldColors,
-                    trailingIcon = {
-                        if (uiState.fotoUrl.isNotEmpty()) {
-                            Button(
-                                onClick = { showImageDialog = true },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = tealColor
-                                ),
-                                modifier = Modifier.padding(end = 8.dp)
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = Icons.Default.Check,
-                                        contentDescription = "Ver foto",
-                                        tint = Color.White,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.size(4.dp))
-                                    Text(
-                                        text = "Vista previa",
-                                        color = Color.White,
-                                        fontSize = 12.sp
-                                    )
-                                }
-                            }
-                        }
-                    }
-                )
-
-                if (uiState.fotoUrl.isNotEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp)
-                            .background(Color.White)
-                            .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
-                            .padding(4.dp)
-                            .clickable { showImageDialog = true },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (isImageValid) {
-                            Image(
-                                painter = imagePainter,
-                                contentDescription = "Vista previa de foto",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Fit
-                            )
-                        } else {
-                            Text(
-                                text = "URL de imagen no válida o en carga",
-                                color = Color.Gray,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Button(
-                        onClick = {save() },
-                        modifier = Modifier
-                            .width(200.dp)
-                            .padding(bottom = 16.dp)
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006465)),
-                        shape = RoundedCornerShape(24.dp)
-                    ) {
-                        Text(text = "Registrar", color = Color.White)
-                    }
-                }
-
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TextButton(onClick = goBack) {
-                        Text(
-                            text = "¿Ya tienes cuenta? Iniciar sesión",
-                            color = Color.Black,
-                            fontSize = 14.sp
+            // Contraseña Field
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                label = { Text(text = "Contraseña", color = Color.Black) },
+                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                value = uiState.contrasena,
+                onValueChange = onContrasenaChange,
+                visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(4.dp),
+                trailingIcon = {
+                    IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
+                        Image(
+                            painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
+                            contentDescription = "Mostrar/Ocultar Contraseña"
                         )
                     }
                 }
+            )
 
-                uiState.successMessage?.let { message ->
-                    Text(
-                        text = message,
-                        color = Color.Green,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+            // Confirmar Contraseña Field
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                label = { Text(text = "Confirmar Contraseña", color = Color.Black) },
+                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                value = uiState.confirmarContrasena,
+                onValueChange = onConfirmarContrasenaChange,
+                visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(4.dp),
+                trailingIcon = {
+                    IconButton(onClick = { confirmarContrasenaVisible = !confirmarContrasenaVisible }) {
+                        Image(
+                            painter = painterResource(id = if (confirmarContrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
+                            contentDescription = "Mostrar/Ocultar Contraseña"
+                        )
+                    }
+                }
+            )
+
+            // Foto URL Field
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                label = { Text(text = "URL de Foto", color = Color.Black) },
+                value = uiState.fotoUrl,
+                onValueChange = onFotoUrlChange,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(4.dp),
+                trailingIcon = {
+                    if (uiState.fotoUrl.isNotEmpty()) {
+                        IconButton(onClick = { showImageDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = "Ver foto",
+                                tint = Color.Black
+                            )
+                        }
+                    }
+                }
+            )
+
+            if (uiState.fotoUrl.isNotEmpty() && isImageValid) {
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, Color.Black, CircleShape)
+                        .clickable { showImageDialog = true },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = "Vista previa de foto",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
                 }
+            }
 
-                uiState.errorMessage?.let { message ->
-                    Text(
-                        text = message,
-                        color = Color.Red,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+            // Error and Success Messages
+            uiState.errorMessage?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-                Spacer(modifier = Modifier.height(24.dp))
+            uiState.successMessage?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Green,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // Register Button
+            Button(
+                onClick = { save() },
+                colors = ButtonDefaults.buttonColors(containerColor = backgroundColorButton),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(28.dp)
+            ) {
+                Text(text = "Registrar", color = Color.White)
+            }
+
+            // Login Link
+            TextButton(onClick = goBack) {
+                Text("¿Ya tienes cuenta? Iniciar sesión", color = Color.Black, fontWeight = FontWeight.Bold)
             }
         }
     }
 
+    // Image Preview Dialog
     if (showImageDialog && uiState.fotoUrl.isNotEmpty()) {
         Dialog(onDismissRequest = { showImageDialog = false }) {
             Box(

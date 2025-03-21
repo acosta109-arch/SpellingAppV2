@@ -2,8 +2,10 @@ package com.sagrd.spellingappv2.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.sagrd.spellingappv2.data.local.entities.UsuarioEntity
 import com.sagrd.spellingappv2.data.repository.UsuarioRepository
+import com.sagrd.spellingappv2.presentation.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +20,7 @@ class UsuarioViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState get() = _uiState.asStateFlow()
+    private var _navController: NavHostController? = null
 
     init {
         getUsuarios()
@@ -122,6 +125,21 @@ class UsuarioViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(errorMessage = "Email o contraseña incorrectos", successMessage = null)
                 }
+            }
+        }
+    }
+
+    fun setNavController(navController: NavHostController) {
+        _navController = navController
+    }
+
+    fun logout() {
+        _uiState.update { currentState ->
+            currentState.copy(usuarioActual = null)
+        }
+        _navController?.navigate(Screen.LoginScreen) {
+            popUpTo(0) {
+                inclusive = true
             }
         }
     }

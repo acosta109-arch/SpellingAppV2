@@ -223,25 +223,3 @@ fun HijoBodyScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun HijoScreenPreview(){
-    HijoBodyScreen(
-        uiState = Uistate(
-            nombre = "Juan",
-            apellido = "Perez",
-            edad = 12,
-            genero = "Masculino",
-            pinId = "1234",
-            usuarioId = 1,
-        ),
-        goBack = {},
-        onSave = {},
-        onNombreChange = {},
-        onApellidoChange = {},
-        onGeneroChange = {},
-        onEdadChange = {},
-        onUsuarioIdChange = {},
-        onPinChange = {}
-    )
-}

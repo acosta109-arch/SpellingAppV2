@@ -2,15 +2,19 @@ package com.sagrd.spellingappv2.presentation.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -75,191 +79,102 @@ fun LoginBodyScreen(
     var contrasena by remember { mutableStateOf("") }
     var contrasenaVisible by remember { mutableStateOf(false) }
 
-    val scrollState = rememberScrollState()
+    val isDarkMode = isSystemInDarkTheme()
+    val backgroundColor = if (isDarkMode) Color(0xFF489DA7) else Color(0xFF9DF0FB)
+    val backgroundColorLogin = Color(0xFF2B3132)
+    val textColor = Color.White
+    val buttonColor = Color(0xFF006465)
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(backgroundColor),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF006465))
-                .padding(vertical = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Spacer(modifier = Modifier.height(5.dp))
-            Text(
-                text = "Bienvenido/a",
-                modifier = Modifier.padding(top = 10.dp),
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.SansSerif,
-                    color = Color.White
-                ),
-                textAlign = TextAlign.Center
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .size(100.dp)
-                .clip(CircleShape)
-                .background(Color(0xFF666666)),
-            contentAlignment = Alignment.Center
+                .padding(24.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.White)
+                .border(4.dp, Color.Black, RoundedCornerShape(16.dp))
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.abeja),
                 contentDescription = "Logo",
-                modifier = Modifier
-                    .size(70.dp),
-                contentScale = ContentScale.Fit
+                modifier = Modifier.size(80.dp)
             )
-        }
 
-        Text(
-            text = "Spelling App",
-            style = TextStyle(
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.SansSerif,
-                color = Color.Black
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF666666))
-                .padding(vertical = 12.dp),
-            contentAlignment = Alignment.Center
-        ) {
             Text(
-                text = "Login",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                ),
-                textAlign = TextAlign.Center
+                text = "Spelling App",
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
-        }
 
-        Box(
-            modifier = Modifier
-                .background(Color(0xFFBEEE3B))
-                .fillMaxWidth()
-                .fillMaxHeight(1f) .width(200.dp)
-                .padding(bottom = 16.dp)
-                .height(550.dp),
-
-            contentAlignment = Alignment.TopCenter
-        ) {
-            Column(
+            OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(bottom = 12.dp),
+                label = { Text(text = "Correo Electrónico", color = Color.Black) },
+                leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+                value = email,
+                onValueChange = {
+                    email = it
+                    onEmailChange(it)
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(4.dp)
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                label = { Text(text = "Contraseña", color = Color.Black) },
+                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                value = contrasena,
+                onValueChange = {
+                    contrasena = it
+                    onContrasenaChange(it)
+                },
+                visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(4.dp),
+                trailingIcon = {
+                    IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
+                        Image(
+                            painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
+                            contentDescription = "Mostrar/Ocultar Contraseña"
+                        )
+                    }
+                }
+            )
+
+            Button(
+                onClick = { login(email, contrasena) },
+                colors = ButtonDefaults.elevatedButtonColors(containerColor = backgroundColorLogin),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(28.dp)
             ) {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    label = { Text(text = "Correo Electrónico") },
-                    value = email,
-                    onValueChange = {
-                        email = it
-                        onEmailChange(it)
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.White,
-                        focusedBorderColor = Color.Gray,
-                        unfocusedBorderColor = Color.Gray
-                    ),
-                    shape = RoundedCornerShape(4.dp)
-                )
+                Text(text = "Ingresar", color = Color.White)
+            }
 
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    label = { Text(text = "Contraseña") },
-                    value = contrasena,
-                    onValueChange = {
-                        contrasena = it
-                        onContrasenaChange(it)
-                    },
-                    visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.White,
-                        focusedBorderColor = Color.Gray,
-                        unfocusedBorderColor = Color.Gray
-                    ),
-                    shape = RoundedCornerShape(4.dp),
-                    trailingIcon = {
-                        IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
-                            Image(
-                                painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
-                                contentDescription = "Mostrar/Ocultar Contraseña"
-                            )
-                        }
-                    }
-                )
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Button(
-                        onClick = { login(email, contrasena) },
-                        modifier = Modifier
-                            .width(200.dp)
-                            .padding(bottom = 12.dp)
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006465)),
-                        shape = RoundedCornerShape(24.dp)
-                    ) {
-                        Text(text = "Ingresar", color = Color.White)
-                    }
-
-                    Button(
-                        onClick = { },
-                        modifier = Modifier
-                            .width(200.dp)
-                            .padding(bottom = 16.dp)
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006465)),
-                        shape = RoundedCornerShape(24.dp)
-                    ) {
-                        Text(text = "Soy hijo", color = Color.White)
-                    }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "¿No tienes cuenta? ",
-                        color = Color.White,
-                        fontSize = 12.sp
-                    )
-                    Text(
-                        text = "Regístrate",
-                        color = Color(0xFF006465),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp,
-                        modifier = Modifier.clickable { goToRegistrar() }
-                    )
-                }
-
+            TextButton(onClick = goToRegistrar) {
+                Text("¿No tienes cuenta? Regístrate", color = Color.Black, fontWeight = FontWeight.Bold)
             }
         }
     }
