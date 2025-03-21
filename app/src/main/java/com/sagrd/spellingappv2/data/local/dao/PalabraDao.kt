@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PalabraDao {
     @Update
-    suspend fun save(palabra: PalabraEntity)
+    suspend fun save(palabra: List<PalabraEntity>)
 
     @Delete
     suspend fun deletePalabra(palabra: PalabraEntity)
