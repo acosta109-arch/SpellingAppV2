@@ -23,10 +23,10 @@ class PalabraRepository @Inject constructor(
 
             val listaPalabras = palabrasRemotas.map { dto ->
                 PalabraEntity(
-                    palabraId = dto.PalabraId,
-                    palabra = dto.Nombre,
-                    descripcion = dto.Descripcion,
-                    fotoUrl = dto.FotoUrl
+                    palabraId = dto.palabraId,
+                    nombre = dto.nombre,
+                    descripcion = dto.descripcion,
+                    fotoUrl = dto.fotoUrl
                 )
             }
             palabraDao.save(listaPalabras)
@@ -48,13 +48,13 @@ class PalabraRepository @Inject constructor(
     suspend fun find(id: Int): PalabraEntity? {
         val palabrasDto = dataSource.getPalabras()
         return palabrasDto
-            .firstOrNull { it.PalabraId == id }
+            .firstOrNull { it.palabraId == id }
             ?.let { palabraDto ->
                 PalabraEntity(
-                    palabraId = palabraDto.PalabraId,
-                    palabra = palabraDto.Nombre,
-                    descripcion = palabraDto.Descripcion,
-                    fotoUrl = palabraDto.FotoUrl
+                    palabraId = palabraDto.palabraId,
+                    nombre = palabraDto.nombre,
+                    descripcion = palabraDto.descripcion,
+                    fotoUrl = palabraDto.fotoUrl
                 )
             }
     }
