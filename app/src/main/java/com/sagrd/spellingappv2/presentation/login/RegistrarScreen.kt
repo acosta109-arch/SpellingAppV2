@@ -89,21 +89,18 @@ fun RegistrarBodyScreen(
 
     isImageValid = imagePainter.state is AsyncImagePainter.State.Success
 
-    // Different gradient colors for dark and light modes - copied from DashboardScreen
     val isDarkMode = isSystemInDarkTheme()
     val gradientColors = if (isDarkMode) {
-        // Dark mode colors (original dark blues/teals)
         listOf(
             Color(0xFF283653),
             Color(0xFF003D42),
             Color(0xFF177882)
         )
     } else {
-        // Light mode colors (lighter sky blues/cyans)
         listOf(
-            Color(0xFF7FB3D5),  // Light sky blue
-            Color(0xFF76D7EA),  // Cyan / light teal
-            Color(0xFFAED6F1)   // Baby blue
+            Color(0xFF7FB3D5),
+            Color(0xFF76D7EA),
+            Color(0xFFAED6F1)
         )
     }
 
@@ -152,7 +149,6 @@ fun RegistrarBodyScreen(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Nombre Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -169,7 +165,6 @@ fun RegistrarBodyScreen(
                 shape = RoundedCornerShape(4.dp)
             )
 
-            // Apellido Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -186,7 +181,6 @@ fun RegistrarBodyScreen(
                 shape = RoundedCornerShape(4.dp)
             )
 
-            // Telefono Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -203,7 +197,6 @@ fun RegistrarBodyScreen(
                 shape = RoundedCornerShape(4.dp)
             )
 
-            // Email Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -220,7 +213,6 @@ fun RegistrarBodyScreen(
                 shape = RoundedCornerShape(4.dp)
             )
 
-            // Contraseña Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -246,7 +238,6 @@ fun RegistrarBodyScreen(
                 }
             )
 
-            // Confirmar Contraseña Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -272,7 +263,6 @@ fun RegistrarBodyScreen(
                 }
             )
 
-            // Foto URL Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -338,7 +328,6 @@ fun RegistrarBodyScreen(
                 )
             }
 
-            // Register Button
             Button(
                 onClick = { save() },
                 colors = ButtonDefaults.buttonColors(containerColor = backgroundColorButton),
@@ -350,14 +339,12 @@ fun RegistrarBodyScreen(
                 Text(text = "Registrar", color = Color.White)
             }
 
-            // Login Link
             TextButton(onClick = goBack) {
                 Text("¿Ya tienes cuenta? Iniciar sesión", color = Color.Black, fontWeight = FontWeight.Bold)
             }
         }
     }
 
-    // Image Preview Dialog
     if (showImageDialog && uiState.fotoUrl.isNotEmpty()) {
         Dialog(onDismissRequest = { showImageDialog = false }) {
             Box(

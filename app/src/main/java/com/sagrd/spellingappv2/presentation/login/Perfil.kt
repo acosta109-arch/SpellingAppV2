@@ -73,25 +73,21 @@ fun PerfilBody(
     onMenuClick: () -> Unit,
     goEdit: () -> Unit,
 ){
-    // Different gradient colors for dark and light modes - copied from DashboardScreen
     val isDarkMode = isSystemInDarkTheme()
 
-    // App bar color based on theme
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
 
     val gradientColors = if (isDarkMode) {
-        // Dark mode colors (original dark blues/teals)
         listOf(
             Color(0xFF283653),
             Color(0xFF003D42),
             Color(0xFF177882)
         )
     } else {
-        // Light mode colors (lighter sky blues/cyans)
         listOf(
-            Color(0xFF7FB3D5),  // Light sky blue
-            Color(0xFF76D7EA),  // Cyan / light teal
-            Color(0xFFAED6F1)   // Baby blue
+            Color(0xFF7FB3D5),
+            Color(0xFF76D7EA),
+            Color(0xFFAED6F1)
         )
     }
 
@@ -146,7 +142,6 @@ fun PerfilBody(
                     //     contentScale = ContentScale.Crop
                     // )
 
-                    // Placeholder de icono para cuando no hay imagen
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "Foto de perfil",

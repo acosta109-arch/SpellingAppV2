@@ -96,7 +96,6 @@ private fun PalabrasBodyList(
                 .padding(16.dp)
         ) {
             if (uiState.isLoading) {
-                // You could add a loading indicator here
                 Text("Cargando palabras...")
             } else if (uiState.errorMessage != null) {
                 // Error message
@@ -128,7 +127,7 @@ fun PalabraRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp)
-            .clickable { expanded = true } // Abre el menú al tocar
+            .clickable { expanded = true }
             .border(width = 2.dp, color = Color.Black, shape = MaterialTheme.shapes.medium),
         colors = CardDefaults.cardColors(
             containerColor = Color(red = 190, green = 240, blue = 60, alpha = 255)
@@ -147,15 +146,14 @@ fun PalabraRow(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.palabras), // Asegúrate de tener este recurso
+                        painter = painterResource(id = R.drawable.palabras),
                         contentDescription = "Icono de Palabra",
                         modifier = Modifier
                             .size(40.dp)
                             .padding(end = 5.dp),
                     )
                     Text(
-                        // Asumiendo que PalabraEntity tiene una propiedad 'nombre'
-                        text = palabra.nombre ?: "Sin nombre",
+                        text = palabra.nombre,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -166,19 +164,18 @@ fun PalabraRow(
                     .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
             ) {
                 Text(
-                    text = palabra.descripcion ?: "Sin descripción",
+                    text = palabra.descripcion,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                // Cargar la imagen real desde la URL
                 palabra.fotoUrl?.let { url ->
                     AsyncImage(
                         model = ImageRequest.Builder(context)
                             .data(url)
                             .crossfade(true)
                             .build(),
-                        contentDescription = "Imagen de ${palabra.nombre ?: "palabra"}",
+                        contentDescription = "Imagen de ${palabra.nombre}",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
