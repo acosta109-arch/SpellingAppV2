@@ -38,4 +38,7 @@ sealed class Screen {
 
     @Serializable
     data class EditPerfil(val UsuarioId: Int): Screen()
+
+    @Serializable
+    data object PalabrasListScreen: Screen()
 }
