@@ -12,14 +12,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun PinScreen(
     viewModel: PinViewModel = hiltViewModel(),
     goBack: () -> Unit,
+    onMenuClick: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -42,7 +46,8 @@ fun PinScreen(
         uiState = uiState,
         goBack = goBack,
         onPinChange = viewModel::onPinChange,
-        onSave = viewModel::savePin
+        onSave = viewModel::savePin,
+        onMenuClick = onMenuClick
     )
 
 }
@@ -53,17 +58,26 @@ fun PinBodyScreen(
     goBack: () -> Unit,
     onPinChange: (String) -> Unit,
     onSave: () -> Unit,
+    onMenuClick: () -> Unit
 ){
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = { Text("Agregar Pin", fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(red = 0, green = 200, blue = 210, alpha = 255),
-                    titleContentColor = Color.White
+                    containerColor = Color.White,
+                ),
+                navigationIcon = {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu"
+                        )
+                    }
+                },
+
                 )
-            )
-        }
+        },
     ){
         Column(
             modifier = Modifier
@@ -134,6 +148,7 @@ private fun PinScreenPreview(){
         ),
         goBack = {},
         onPinChange = {},
-        onSave = {}
+        onSave = {},
+        onMenuClick = {}
     )
 }

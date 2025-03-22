@@ -55,7 +55,7 @@ fun HijosListScreen(
     onDelete: (Int) -> Unit,
     onBack: () -> Unit,
     onEdit: (Int) -> Unit,
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -65,8 +65,9 @@ fun HijosListScreen(
         onDelete = onDelete,
         onBack = onBack,
         onEdit = onEdit,
+        onMenuClick = onMenuClick
 
-    )
+        )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,26 +78,25 @@ private fun HijosBodyList(
     onDelete: (Int) -> Unit,
     onBack: () -> Unit,
     onEdit: (Int) -> Unit,
+    onMenuClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lista de Pines", fontWeight = FontWeight.Bold) },
-               colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
-                    titleContentColor = Color.White
+                title = { Text("Hijos", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onMenuClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = Color.White
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu"
                         )
                     }
                 },
 
-            )
+                )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -135,7 +135,7 @@ fun HijosRow(
     hijos: HijoEntity,
     onDelete: (Int) -> Unit,
     onEdit: (Int) -> Unit,
-    pines: List<PinEntity>
+    pines: List<PinEntity>,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -244,6 +244,7 @@ private fun hijosListPreview() {
         onCreate = {},
         onDelete = {},
         onBack = {},
-        onEdit = {}
+        onEdit = {},
+        onMenuClick = {}
     )
 }

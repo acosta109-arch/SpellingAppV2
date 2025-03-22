@@ -26,6 +26,37 @@ class UsuarioViewModel @Inject constructor(
         getUsuarios()
     }
 
+    fun updateUsuario(){
+        viewModelScope.launch {
+            if (_uiState.value.nombre.isBlank() || _uiState.value.email.isBlank() || _uiState.value.contrasena.isBlank()) {
+                _uiState.update {
+                    it.copy(errorMessage = "Todos los campos son obligatorios.", successMessage = null)
+                }
+                return@launch
+            }
+
+            if (_uiState.value.contrasena != _uiState.value.confirmarContrasena) {
+                _uiState.update {
+                    it.copy(errorMessage = "Las contraseñas no coinciden.", successMessage = null)
+                }
+                return@launch
+            }
+
+            try {
+                usuarioRepository.updateUsuario(_uiState.value.toEntity())
+                _uiState.update {
+                    it.copy(successMessage = "Usuario guardado correctamente.", errorMessage = null)
+                }
+                nuevoUsuario()
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(errorMessage = "Error al guardar el usuario: ${e.message}", successMessage = null)
+                }
+            }
+        }
+
+    }
+
     fun saveUsuario() {
         viewModelScope.launch {
             if (_uiState.value.nombre.isBlank() || _uiState.value.email.isBlank() || _uiState.value.contrasena.isBlank()) {

@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -60,7 +61,8 @@ fun PinListScreen(
         uiState = uiState,
         onCreate = onCreate,
         onDelete = onDelete,
-        onBack = onBack
+        onBack = onBack,
+        onMenuClick = onMenuClick
     )
 }
 
@@ -71,26 +73,25 @@ private fun PinBodyListScreen(
     onCreate: () -> Unit,
     onDelete: (Int) -> Unit,
     onBack: () -> Unit,
+    onMenuClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lista de Pines", fontWeight = FontWeight.Bold) },
-               colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
-                    titleContentColor = Color.White
+                title = { Text("Agregar Hijo", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onMenuClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = Color.White
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu"
                         )
                     }
                 },
 
-            )
+                )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -199,6 +200,7 @@ private fun PinListScreenPreview() {
         uiState = Uistate(pins = list),
         onCreate = {},
         onDelete = {},
-        onBack = {}
+        onBack = {},
+        onMenuClick = {}
     )
 }

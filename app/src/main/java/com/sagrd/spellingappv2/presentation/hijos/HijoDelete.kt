@@ -12,18 +12,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +43,7 @@ fun HijoDelete(
     viewModel: hijosViewModel = hiltViewModel(),
     goBack: () -> Unit,
     hijoId: Int,
+    onMenuClick: () -> Unit
 ) {
     LaunchedEffect(hijoId) {
         viewModel.selectedHijos(hijoId)
@@ -47,22 +54,43 @@ fun HijoDelete(
         uiState = uiState,
         goBack = goBack,
         onDelete = viewModel::deleteHijo,
-        pines = uiState.pines
+        pines = uiState.pines,
+        onMenuClick = onMenuClick
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HijoBodyDelete(
     uiState: Uistate,
     goBack: () -> Unit,
     onDelete: () -> Unit,
-    pines: List<PinEntity>
+    pines: List<PinEntity>,
+    onMenuClick: () -> Unit
 ) {
     val pinHijo = pines.find { pin ->
         pin.pinId == uiState.pinId.toIntOrNull()
     }?.pin ?: "Pin no encontrado"
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Eliminar Hijo", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White,
+                ),
+                navigationIcon = {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu"
+                        )
+                    }
+                },
+
+                )
+        },
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -201,6 +229,7 @@ private fun HijoDeletePreview() {
         uiState = fake,
         goBack = {},
         onDelete = {},
-        pines = emptyList()
+        pines = emptyList(),
+        onMenuClick = {}
     )
 }

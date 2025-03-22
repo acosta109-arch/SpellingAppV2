@@ -14,16 +14,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun HijosScreen(
     viewModel: hijosViewModel = hiltViewModel(),
     goBack: () -> Unit,
+    onMenuClick: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -54,7 +59,8 @@ fun HijosScreen(
         onGeneroChange = viewModel::onGeneroChange,
         onEdadChange = viewModel::onEdadChange,
         onUsuarioIdChange = viewModel::onUsuarioIdChange,
-        onPinChange = viewModel::onPinIdChange
+        onPinChange = viewModel::onPinIdChange,
+        onMenuClick = onMenuClick
     )
 }
 
@@ -70,13 +76,30 @@ fun HijoBodyScreen(
     onGeneroChange: (String) -> Unit,
     onEdadChange: (Int) -> Unit,
     onUsuarioIdChange: (Int) -> Unit,
+    onMenuClick: () -> Unit
 ){
 
     var expandedPin by remember { mutableStateOf(false) }
     var expandedGenero by remember { mutableStateOf(false) }
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Agregar Hijo", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White,
+                ),
+                navigationIcon = {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu"
+                        )
+                    }
+                },
 
+                )
+        },
     ){
         Column(
             modifier = Modifier
@@ -178,7 +201,9 @@ fun HijoBodyScreen(
             uiState.errorMessage?.let {
                 Text(text = it, color = Color.Red)
             }
-            Spacer(modifier = Modifier.height(16.dp).weight(1f))
+            Spacer(modifier = Modifier
+                .height(16.dp)
+                .weight(1f))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -221,5 +246,25 @@ fun HijoBodyScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun HijoScreenPreiew() {
+    HijoBodyScreen(
+        uiState = Uistate(
+
+        ),
+        goBack = {},
+        onSave = {},
+        onNombreChange = {},
+        onApellidoChange = {},
+        onGeneroChange = {},
+        onEdadChange = {},
+        onUsuarioIdChange = {},
+        onPinChange = {},
+        onMenuClick = {}
+    )
+    
 }
 

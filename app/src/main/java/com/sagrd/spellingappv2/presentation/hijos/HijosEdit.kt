@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -21,9 +22,11 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,7 +46,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun HijosEditScreen(
     viewModel: hijosViewModel = hiltViewModel(),
     goBack: () -> Unit,
-    hijoId: Int
+    hijoId: Int,
+    onMenuClick: () -> Unit
 ){
     LaunchedEffect(hijoId) {
         viewModel.selectedHijos(hijoId)
@@ -59,7 +63,8 @@ fun HijosEditScreen(
         onGeneroChange = viewModel::onGeneroChange,
         onEdadChange = viewModel::onEdadChange,
         onUsuarioIdChange = viewModel::onUsuarioIdChange,
-        onPinChange = viewModel::onPinIdChange
+        onPinChange = viewModel::onPinIdChange,
+        onMenuClick = onMenuClick
     )
 }
 
@@ -75,6 +80,8 @@ fun HijoBodyEdit(
     onGeneroChange: (String) -> Unit,
     onEdadChange: (Int) -> Unit,
     onUsuarioIdChange: (Int) -> Unit,
+    onMenuClick: () -> Unit
+
 ){
 
     var expandedPin by remember { mutableStateOf(false) }
@@ -82,14 +89,22 @@ fun HijoBodyEdit(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Modificar Hijo", fontWeight = FontWeight.Bold) },
+            TopAppBar(
+                title = { Text("Editar Hijo", fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
-                    titleContentColor = Color.White
+                    containerColor = Color.White,
+                ),
+                navigationIcon = {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu"
+                        )
+                    }
+                },
+
                 )
-            )
-        }
+        },
     ){
         Column(
             modifier = Modifier
@@ -255,6 +270,7 @@ private fun HijoScreenPreview(){
         onGeneroChange = {},
         onEdadChange = {},
         onUsuarioIdChange = {},
-        onPinChange = {}
+        onPinChange = {},
+        onMenuClick = {}
     )
 }
