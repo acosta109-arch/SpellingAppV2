@@ -21,9 +21,5 @@ interface PalabraDao {
     @Query("SELECT * FROM palabras WHERE palabraId = :id")
     suspend fun getPalabraById(id: Int): PalabraEntity?
 
-    @Query("SELECT * FROM palabras WHERE palabra LIKE :termino")
-    suspend fun buscarPalabrasPorTermino(termino: String): List<PalabraEntity>
 
-    @Query("DELETE FROM palabras")
-    suspend fun deleteAllPalabras()
 }
