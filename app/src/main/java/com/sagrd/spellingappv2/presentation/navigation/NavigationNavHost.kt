@@ -16,7 +16,9 @@ import com.sagrd.spellingappv2.presentation.hijos.HijoDelete
 import com.sagrd.spellingappv2.presentation.hijos.HijosEditScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijosListScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijosScreen
+import com.sagrd.spellingappv2.presentation.login.EditarPerfil
 import com.sagrd.spellingappv2.presentation.login.LoginScreen
+import com.sagrd.spellingappv2.presentation.login.Perfil
 import com.sagrd.spellingappv2.presentation.login.RegistrarScreen
 import com.sagrd.spellingappv2.presentation.pin.PinDelete
 import com.sagrd.spellingappv2.presentation.pin.PinScreen
@@ -55,7 +57,7 @@ fun nav_spelling_app(
             onItemClick = { itemTitle ->
                 when (itemTitle) {
                     "Inicio" -> navHostController.navigate(Screen.Dashboard)
-                    "Perfil" -> navHostController.navigate(Screen.Dashboard)
+                    "Perfil" -> navHostController.navigate(Screen.Perfil(0))
                     "Hijos" -> navHostController.navigate(Screen.HijoListScreen)
                     "Pines" -> navHostController.navigate(Screen.PinListScreen)
                     "Test" -> navHostController.navigate(Screen.Dashboard)
@@ -108,7 +110,7 @@ private fun NavContent(
             RegistrarScreen(
                 goBack = {
                     navHostController.navigateUp()
-                }
+                },
             )
         }
 
@@ -125,7 +127,8 @@ private fun NavContent(
             PinScreen(
                 goBack = {
                     navHostController.navigateUp()
-                }
+                },
+                onMenuClick = onMenuClick
             )
         }
 
@@ -135,7 +138,8 @@ private fun NavContent(
                 pinId = args.pinId,
                 goBack = {
                     navHostController.navigateUp()
-                }
+                },
+                onMenuClick = onMenuClick
             )
         }
 
@@ -153,7 +157,8 @@ private fun NavContent(
             HijosScreen(
                 goBack = {
                     navHostController.navigateUp()
-                }
+                },
+                onMenuClick = onMenuClick
             )
         }
 
@@ -163,7 +168,9 @@ private fun NavContent(
                 hijoId = args.hijoId,
                 goBack = {
                     navHostController.navigateUp()
-                }
+                },
+                onMenuClick = onMenuClick
+
             )
         }
 
@@ -173,7 +180,31 @@ private fun NavContent(
                 hijoId = args.hijoId,
                 goBack = {
                     navHostController.navigateUp()
-                }
+                },
+                onMenuClick = onMenuClick
+            )
+        }
+
+        composable<Screen.Perfil> {
+            val args = it.toRoute<Screen.Perfil>()
+            Perfil(
+                usuarioId = args.usuarioId,
+                goBack = {
+                    navHostController.navigateUp()
+                },
+                onMenuClick = onMenuClick,
+                goEdit = { navHostController.navigate(Screen.EditPerfil(args.usuarioId)) }
+            )
+        }
+
+        composable<Screen.EditPerfil> {
+            val args = it.toRoute<Screen.EditPerfil>()
+            EditarPerfil(
+                usuarioId = args.UsuarioId,
+                goBack = {
+                    navHostController.navigateUp()
+                    },
+                onMenuClick = onMenuClick
             )
         }
     }

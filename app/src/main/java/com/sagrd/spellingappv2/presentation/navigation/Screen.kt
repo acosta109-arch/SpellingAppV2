@@ -32,4 +32,10 @@ sealed class Screen {
 
     @Serializable
     data object HijoListScreen: Screen()
+
+    @Serializable
+    data class Perfil(val usuarioId: Int): Screen()
+
+    @Serializable
+    data class EditPerfil(val UsuarioId: Int): Screen()
 }
