@@ -112,6 +112,45 @@ class PalabrasViewModel @Inject constructor(
         }
     }
 
+    fun filterPalabras(query: String) {
+        viewModelScope.launch {
+            // Get all palabras first
+            palabrasRepository.getPalabras().collectLatest { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+                    is Resource.Success -> {
+                        // Filter the palabras based on the query
+                        val filteredPalabras = if (query.isBlank()) {
+                            result.data ?: emptyList()
+                        } else {
+                            result.data?.filter {
+                                it.nombre.contains(query, ignoreCase = true) ||
+                                        it.descripcion.contains(query, ignoreCase = true)
+                            } ?: emptyList()
+                        }
+
+                        _uiState.update {
+                            it.copy(
+                                palabras = filteredPalabras,
+                                isLoading = false
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = result.message ?: "Error desconocido",
+                                isLoading = false
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun isValid(): Boolean {
         return uiState.value.nombre.isNotBlank() &&
                 uiState.value.descripcion.isNotBlank() &&

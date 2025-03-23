@@ -41,4 +41,6 @@ sealed class Screen {
 
     @Serializable
     data object PalabrasListScreen: Screen()
+
+
 }

@@ -1,6 +1,9 @@
 package com.sagrd.spellingappv2.presentation.pin
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,18 +18,21 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,8 +55,8 @@ fun PinScreen(
         onSave = viewModel::savePin,
         onMenuClick = onMenuClick
     )
-
 }
+
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun PinBodyScreen(
@@ -60,12 +66,39 @@ fun PinBodyScreen(
     onSave: () -> Unit,
     onMenuClick: () -> Unit
 ){
+    val isDarkMode = isSystemInDarkTheme()
+
+    // Definir los colores de gradiente basados en el modo oscuro o claro
+    val gradientColors = if (isDarkMode) {
+        listOf(
+            Color(0xFF283653),
+            Color(0xFF003D42),
+            Color(0xFF177882)
+        )
+    } else {
+        listOf(
+            Color(0xFF7FB3D5),
+            Color(0xFF76D7EA),
+            Color(0xFFAED6F1)
+        )
+    }
+
+    // Color del AppBar basado en el modo
+    val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
+
+    // Colores para elementos de UI
+    val textColor = if (isDarkMode) Color.White else Color.Black
+    val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
+    val accentColor = Color(0xFF5DADE2)
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Agregar Pin", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.White,
+                title = { Text("Agregar Pin", fontWeight = FontWeight.Bold, color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = appBarColor,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 ),
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
@@ -74,81 +107,109 @@ fun PinBodyScreen(
                             contentDescription = "Menu"
                         )
                     }
-                },
-
-                )
-        },
-    ){
-        Column(
+                }
+            )
+        }
+    ) { padding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-                .padding(16.dp)
-        ){
-            OutlinedTextField(
-                value = uiState.pin,
-                onValueChange = onPinChange,
-                label = { Text("Pin") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            uiState.errorMessage?.let {
-                Text(text = it, color = Color.Red)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                .background(
+                    Brush.verticalGradient(
+                        colors = gradientColors
+                    )
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(24.dp)
             ) {
-                Button(
-                    modifier = Modifier.padding(15.dp),
-                    onClick = {
-                        goBack()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(red = 0, green = 200, blue = 210, alpha = 255),
-                        contentColor = Color.White
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = uiState.pin,
+                    onValueChange = onPinChange,
+                    label = { Text("Pin", color = textColor) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedTextColor = textColor,
+                        unfocusedTextColor = textColor,
+                        cursorColor = textColor,
+                        focusedBorderColor = if (isDarkMode) Color.White else accentColor,
+                        unfocusedBorderColor = borderColor,
+                        focusedLabelColor = if (isDarkMode) Color.White else accentColor,
+                        unfocusedLabelColor = textColor
                     )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Volver"
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Volver")
+                )
+
+                uiState.errorMessage?.let {
+                    Text(text = it, color = Color.Red)
                 }
-                Button(
-                    modifier = Modifier.padding(15.dp),
-                    onClick = {
-                        onSave()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(red = 0, green = 200, blue = 210, alpha = 255),
-                        contentColor = Color.White
-                    )
+
+                Spacer(modifier = Modifier
+                    .height(16.dp)
+                    .weight(1f))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Guardar"
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Crear")
+                    // Botón Volver con ancho fijo
+                    Button(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .width(140.dp), // Ancho fijo
+                        onClick = goBack,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = accentColor,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Volver"
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = "Volver")
+                        }
+                    }
+
+                    // Botón Crear con el mismo ancho fijo
+                    Button(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .width(140.dp), // Mismo ancho fijo
+                        onClick = {
+                            onSave()
+                            goBack()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = accentColor,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Crear"
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = "Crear")
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun PinScreenPreview(){
-    PinBodyScreen(
-        uiState = Uistate(
-            pin = "1234"
-        ),
-        goBack = {},
-        onPinChange = {},
-        onSave = {},
-        onMenuClick = {}
-    )
-}

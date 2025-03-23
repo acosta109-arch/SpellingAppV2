@@ -1,11 +1,14 @@
 package com.sagrd.spellingappv2.presentation.palabras
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,18 +16,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -36,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -59,7 +65,8 @@ fun PalabrasListScreen(
 
     PalabrasBodyList(
         uiState = uiState,
-        onBack = onBack
+        onBack = onBack,
+        onFilterChange = viewModel::filterPalabras
     )
 }
 
@@ -67,15 +74,56 @@ fun PalabrasListScreen(
 @Composable
 private fun PalabrasBodyList(
     uiState: PalabrasUiState,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onFilterChange: (String) -> Unit
 ) {
+    val isDarkMode = isSystemInDarkTheme()
+    var filterText by remember { mutableStateOf("") }
+
+    // Definir los colores de gradiente basados en el modo oscuro o claro
+    val gradientColors = if (isDarkMode) {
+        listOf(
+            Color(0xFF283653),
+            Color(0xFF003D42),
+            Color(0xFF177882)
+        )
+    } else {
+        listOf(
+            Color(0xFF7FB3D5),
+            Color(0xFF76D7EA),
+            Color(0xFFAED6F1)
+        )
+    }
+
+    // Color del AppBar basado en el modo
+    val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
+
+    // Color del texto adaptado al tema
+    val textColor = if (isDarkMode) Color.White else Color.Black
+
+    // Color de las cards adaptado al tema
+    val cardColor = if (isDarkMode)
+        Color(0xFF1F2937).copy(alpha = 0.7f)
+    else
+        Color.White.copy(alpha = 0.7f)
+
+    // Color del borde de las cards
+    val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
+
+    // Color del campo de filtro
+    val filterBackgroundColor = if (isDarkMode)
+        Color(0xFF1F2937).copy(alpha = 0.8f)
+    else
+        Color.White.copy(alpha = 0.8f)
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lista de Palabras", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(red = 0, green = 100, blue = 100, alpha = 255),
-                    titleContentColor = Color.White
+                title = { Text("Lista de Palabras", fontWeight = FontWeight.Bold, color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = appBarColor,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 ),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -87,28 +135,80 @@ private fun PalabrasBodyList(
                     }
                 }
             )
-        },
+        }
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = gradientColors
+                    )
+                )
         ) {
-            if (uiState.isLoading) {
-                Text("Cargando palabras...")
-            } else if (uiState.errorMessage != null) {
-                // Error message
-                Text("Error: ${uiState.errorMessage}", color = Color.Red)
-            } else {
-                LazyColumn(
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                OutlinedTextField(
+                    value = filterText,
+                    onValueChange = {
+                        filterText = it
+                        onFilterChange(it)
+                    },
                     modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    items(uiState.palabras) { palabra ->
-                        PalabraRow(
-                            palabra = palabra
+                        .fillMaxWidth()
+                        .background(
+                            filterBackgroundColor,
+                            shape = RoundedCornerShape(8.dp)
                         )
+                        .border(
+                            width = 1.dp,
+                            color = borderColor,
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    placeholder = { Text("Buscar palabras...") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Buscar",
+                            tint = if (isDarkMode) Color.White else Color.Gray
+                        )
+                    },
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    colors = androidx.compose.material3.TextFieldDefaults.outlinedTextFieldColors(
+                        unfocusedTextColor = textColor,
+                        focusedTextColor = textColor,
+                        cursorColor = textColor,
+                        focusedBorderColor = if (isDarkMode) Color.White else Color(0xFF5DADE2),
+                        unfocusedBorderColor = borderColor,
+                        unfocusedPlaceholderColor = if (isDarkMode) Color.White.copy(alpha = 0.6f) else Color.Gray,
+                        focusedPlaceholderColor = if (isDarkMode) Color.White.copy(alpha = 0.6f) else Color.Gray
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (uiState.isLoading) {
+                    Text("Cargando palabras...", color = textColor)
+                } else if (uiState.errorMessage != null) {
+                    // Error message
+                    Text("Error: ${uiState.errorMessage}", color = Color.Red)
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(uiState.palabras) { palabra ->
+                            PalabraRow(
+                                palabra = palabra,
+                                cardColor = cardColor,
+                                textColor = textColor,
+                                borderColor = borderColor
+                            )
+                        }
                     }
                 }
             }
@@ -118,7 +218,10 @@ private fun PalabrasBodyList(
 
 @Composable
 fun PalabraRow(
-    palabra: PalabraEntity
+    palabra: PalabraEntity,
+    cardColor: Color,
+    textColor: Color,
+    borderColor: Color
 ) {
     var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -128,9 +231,12 @@ fun PalabraRow(
             .fillMaxWidth()
             .padding(vertical = 10.dp)
             .clickable { expanded = true }
-            .border(width = 2.dp, color = Color.Black, shape = MaterialTheme.shapes.medium),
+            .border(width = 1.dp, color = borderColor, shape = MaterialTheme.shapes.medium),
         colors = CardDefaults.cardColors(
-            containerColor = Color(red = 190, green = 240, blue = 60, alpha = 255)
+            containerColor = cardColor
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
         )
     ) {
         Column {
@@ -141,8 +247,7 @@ fun PalabraRow(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(
-                    modifier = Modifier
-                        .weight(1f),
+                    modifier = Modifier.weight(1f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
@@ -155,8 +260,23 @@ fun PalabraRow(
                     Text(
                         text = palabra.nombre,
                         style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
                     )
+                }
+                Box {
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Ver detalles") },
+                            onClick = {
+                                // Acción para ver detalles
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
             Column(
@@ -166,7 +286,8 @@ fun PalabraRow(
                 Text(
                     text = palabra.descripcion,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    color = textColor
                 )
 
                 palabra.fotoUrl?.let { url ->
@@ -180,7 +301,7 @@ fun PalabraRow(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(150.dp)
-                            .border(1.dp, Color.Gray, MaterialTheme.shapes.small)
+                            .border(1.dp, borderColor, MaterialTheme.shapes.small)
                     )
                 }
             }

@@ -71,6 +71,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.animation.core.lint)
+    implementation(libs.firebase.auth.ktx)
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     //  optional - Kotlin Extensions and Coroutines support for Room

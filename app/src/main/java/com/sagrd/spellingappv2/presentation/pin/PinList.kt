@@ -1,8 +1,10 @@
 package edu.ucne.registrotecnicos.presentation.pin
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -75,12 +77,49 @@ private fun PinBodyListScreen(
     onBack: () -> Unit,
     onMenuClick: () -> Unit
 ) {
+    val isDarkMode = isSystemInDarkTheme()
+
+    // Definir los colores de gradiente basados en el modo oscuro o claro
+    val gradientColors = if (isDarkMode) {
+        listOf(
+            Color(0xFF283653),
+            Color(0xFF003D42),
+            Color(0xFF177882)
+        )
+    } else {
+        listOf(
+            Color(0xFF7FB3D5),
+            Color(0xFF76D7EA),
+            Color(0xFFAED6F1)
+        )
+    }
+
+    // Color del AppBar basado en el modo
+    val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
+
+    // Color del FAB adaptado al tema
+    val fabColor = Color(0xFF5DADE2)
+
+    // Color del texto adaptado al tema
+    val textColor = if (isDarkMode) Color.White else Color.Black
+
+    // Color de las cards adaptado al tema
+    val cardColor = if (isDarkMode)
+        Color(0xFF1F2937).copy(alpha = 0.7f)
+    else
+        Color.White.copy(alpha = 0.7f)
+
+    // Color del borde de las cards
+    val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Agregar Hijo", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.White,
+                title = { Text("Pines", fontWeight = FontWeight.Bold, color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = appBarColor,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 ),
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
@@ -90,32 +129,48 @@ private fun PinBodyListScreen(
                         )
                     }
                 },
-
-                )
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onCreate
+                onClick = onCreate,
+                containerColor = fabColor
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar Pin")
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Agregar Pin",
+                    tint = if (isDarkMode) Color.White else Color.White
+                )
             }
         }
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = gradientColors
+                    )
+                )
         ) {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
             ) {
-                items(uiState.pins) { pin ->
-                    PinRow(
-                        pin = pin,
-                        onDelete = onDelete,
-                    )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(uiState.pins) { pin ->
+                        PinRow(
+                            pin = pin,
+                            onDelete = onDelete,
+                            cardColor = cardColor,
+                            textColor = textColor,
+                            borderColor = borderColor
+                        )
+                    }
                 }
             }
         }
@@ -126,6 +181,9 @@ private fun PinBodyListScreen(
 fun PinRow(
     pin: PinEntity,
     onDelete: (Int) -> Unit,
+    cardColor: Color,
+    textColor: Color,
+    borderColor: Color
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -133,74 +191,56 @@ fun PinRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp)
-            .clickable { expanded = true } // Abre el menú al tocar
-            .border(width = 2.dp, color = Color.Black, shape = MaterialTheme.shapes.medium),
+            .clickable { expanded = true }
+            .border(width = 1.dp, color = borderColor, shape = MaterialTheme.shapes.medium),
         colors = CardDefaults.cardColors(
-            containerColor = Color(red = 190, green = 240, blue = 60, alpha = 255)
+            containerColor = cardColor
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
         )
     ) {
-        Row(
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Column {
             Row(
                 modifier = Modifier
-                    .weight(1f),
-                verticalAlignment = Alignment.CenterVertically
-
+                    .padding(top = 10.dp, start = 10.dp, end = 10.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.codigos),
-                    contentDescription = "Imagen del Pin",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .padding(end = 8.dp),
-
-                    )
-                Text(
-                    text = "Pin: ",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Text(
-                    text = pin.pin,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            }
-            Box {
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    DropdownMenuItem(
-                        text = { Text("Eliminar") },
-                        onClick = {
-                            onDelete(pin.pinId!!)
-                            expanded = false
-                        }
+                    Image(
+                        painter = painterResource(id = R.drawable.codigos),
+                        contentDescription = "Imagen del Pin",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(end = 5.dp),
                     )
+                    Text(
+                        text = "Pin: " + pin.pin,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
+                    )
+                }
+                Box {
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Eliminar") },
+                            onClick = {
+                                onDelete(pin.pinId!!)
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
         }
     }
-
-
 }
 
-@Preview
-@Composable
-private fun PinListScreenPreview() {
-    val list = listOf(
-        PinEntity(pinId = 1, pin = "1234"),
-        PinEntity(pinId = 2, pin = "5678"),
-        PinEntity(pinId = 3, pin = "9012")
-    )
-    PinBodyListScreen(
-        uiState = Uistate(pins = list),
-        onCreate = {},
-        onDelete = {},
-        onBack = {},
-        onMenuClick = {}
-    )
-}
