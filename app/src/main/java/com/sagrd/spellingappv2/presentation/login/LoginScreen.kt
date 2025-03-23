@@ -1,41 +1,35 @@
 package com.sagrd.spellingappv2.presentation.login
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import edu.ucne.spellingapp.R
 
 @Composable
@@ -47,6 +41,30 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    // Check if user is already logged in
+    LaunchedEffect(Unit) {
+        if (AuthManager.isLoggedIn) {
+            goToDashboard()
+            onLoginSuccess()
+        }
+    }
+
+    // Configure Google Sign In
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken("617138256064-jc5tu8he582ta80gj4s2gbvataddr3hb.apps.googleusercontent.com") // Replace with your actual web client ID
+        .requestEmail()
+        .build()
+    val googleSignInClient = GoogleSignIn.getClient(context, gso)
+
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            viewModel.handleGoogleSignInResult(result.data)
+        }
+    }
 
     LaunchedEffect(uiState.successMessage) {
         if (uiState.successMessage != null) {
@@ -62,7 +80,11 @@ fun LoginScreen(
         login = { email, contrasena ->
             viewModel.login(email, contrasena)
         },
-        goToRegistrar = goToRegistrar
+        goToRegistrar = goToRegistrar,
+        onGoogleSignInClick = {
+            val signInIntent = googleSignInClient.signInIntent
+            googleSignInLauncher.launch(signInIntent)
+        }
     )
 }
 
@@ -73,7 +95,8 @@ fun LoginBodyScreen(
     onEmailChange: (String) -> Unit,
     onContrasenaChange: (String) -> Unit,
     login: (String, String) -> Unit,
-    goToRegistrar: () -> Unit
+    goToRegistrar: () -> Unit,
+    onGoogleSignInClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
@@ -162,6 +185,15 @@ fun LoginBodyScreen(
                 }
             )
 
+            // Show error message if exists
+            if (uiState.errorMessage != null) {
+                Text(
+                    text = uiState.errorMessage,
+                    color = Color.Red,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
             Button(
                 onClick = { login(email, contrasena) },
                 colors = ButtonDefaults.elevatedButtonColors(containerColor = backgroundColorLogin),
@@ -173,14 +205,69 @@ fun LoginBodyScreen(
                 Text(text = "Ingresar", color = Color.White)
             }
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Divider(
+                    modifier = Modifier.weight(1f),
+                    color = Color.Gray
+                )
+                Text(
+                    text = " O ",
+                    color = Color.Gray,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                Divider(
+                    modifier = Modifier.weight(1f),
+                    color = Color.Gray
+                )
+            }
+
+            // In LoginScreen.kt
+            Button(
+                onClick = onGoogleSignInClick,
+                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .border(1.dp, Color.Gray, RoundedCornerShape(28.dp)),
+                shape = RoundedCornerShape(28.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.google),
+                        contentDescription = "Google logo",
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Continuar con Google",
+                        color = Color.Black
+                    )
+                }
+            }
+
             TextButton(onClick = goToRegistrar) {
                 Text("¿No tienes cuenta? Regístrate", color = Color.Black, fontWeight = FontWeight.Bold)
+            }
+
+            // Loading indicator
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
         }
     }
 }
 
-@Preview( showBackground = true)
+@Preview(showBackground = true)
 @Composable
 private fun LoginPreview() {
     LoginBodyScreen(
@@ -188,6 +275,7 @@ private fun LoginPreview() {
         onEmailChange = {},
         onContrasenaChange = {},
         login = { _, _ -> },
-        goToRegistrar = {}
+        goToRegistrar = {},
+        onGoogleSignInClick = {}
     )
 }

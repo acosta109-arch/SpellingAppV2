@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "617138256064",
+    "project_id": "spellingapp-1",
+    "storage_bucket": "spellingapp-1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617138256064:android:15939c111ed1d72faf5525",
+        "android_client_info": {
+          "package_name": "com.sagrd.spellingappv2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbu74DdGF1VRo1FZghxQibG7gn2siYcZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617138256064:android:687e71714575e648af5525",
+        "android_client_info": {
+          "package_name": "edu.ucne.spellingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbu74DdGF1VRo1FZghxQibG7gn2siYcZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

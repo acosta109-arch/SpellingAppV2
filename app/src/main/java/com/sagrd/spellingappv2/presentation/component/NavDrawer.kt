@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.sagrd.spellingappv2.presentation.login.AuthManager
 import com.sagrd.spellingappv2.presentation.navigation.Screen
 import edu.ucne.spellingapp.R
 import kotlinx.coroutines.launch
@@ -96,6 +97,7 @@ fun NavDrawer(
 
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
+
                     onClick = {
                         navHostController.navigate(Screen.LoginScreen) {
                             popUpTo(0) {
@@ -103,6 +105,7 @@ fun NavDrawer(
                             }
                         }
                         scope.launch { drawerState.close() }
+                        AuthManager.logout()
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB71C1C)),
                     modifier = Modifier

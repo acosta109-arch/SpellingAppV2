@@ -6,6 +6,8 @@ plugins {
     id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization")
 
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -79,7 +81,6 @@ dependencies {
     ksp("com.google.dagger:hilt-android-compiler:2.51")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
-
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
@@ -89,6 +90,20 @@ dependencies {
     implementation ("androidx.drawerlayout:drawerlayout:1.2.0")
     implementation ("com.google.android.material:material:1.11.0")
 
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    // Declare the dependency for the Cloud Firestore library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-firestore")
+
+
+
     testImplementation(libs.junit)
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("com.google.truth:truth:1.4.2")
@@ -97,8 +112,6 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.11.1")
     testImplementation("com.google.truth:truth:1.4.2")
     testImplementation("junit:junit:4.13.2")
-
-
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
