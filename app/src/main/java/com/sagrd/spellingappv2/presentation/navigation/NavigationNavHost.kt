@@ -20,6 +20,7 @@ import com.sagrd.spellingappv2.presentation.login.EditarPerfil
 import com.sagrd.spellingappv2.presentation.login.LoginScreen
 import com.sagrd.spellingappv2.presentation.login.Perfil
 import com.sagrd.spellingappv2.presentation.login.RegistrarScreen
+import com.sagrd.spellingappv2.presentation.palabras.PalabrasListScreen
 import com.sagrd.spellingappv2.presentation.pin.PinDelete
 import com.sagrd.spellingappv2.presentation.pin.PinScreen
 import edu.ucne.registrotecnicos.presentation.pin.PinListScreen
@@ -61,7 +62,7 @@ fun nav_spelling_app(
                     "Hijos" -> navHostController.navigate(Screen.HijoListScreen)
                     "Pines" -> navHostController.navigate(Screen.PinListScreen)
                     "Test" -> navHostController.navigate(Screen.Dashboard)
-                    "Palabras" -> navHostController.navigate(Screen.Dashboard)
+                    "Palabras" -> navHostController.navigate(Screen.PalabrasListScreen)
                     "Estadisticas" -> navHostController.navigate(Screen.Dashboard)
                 }
                 closeDrawer()
@@ -205,6 +206,14 @@ private fun NavContent(
                     navHostController.navigateUp()
                     },
                 onMenuClick = onMenuClick
+            )
+        }
+
+        composable<Screen.PalabrasListScreen> {
+            PalabrasListScreen(
+                onBack = {
+                    navHostController.navigateUp()
+                }
             )
         }
     }

@@ -1,17 +1,22 @@
 package com.sagrd.spellingappv2.presentation.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -20,6 +25,8 @@ import com.sagrd.spellingappv2.presentation.login.AuthManager
 import com.sagrd.spellingappv2.presentation.navigation.Screen
 import edu.ucne.spellingapp.R
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.graphics.luminance
 
 @Composable
 fun NavDrawer(
@@ -34,6 +41,24 @@ fun NavDrawer(
     )
     val scope = rememberCoroutineScope()
     val selectedItem = remember { mutableStateOf(0) }
+
+    val darkGradientColors = listOf(
+        Color(0xFF0D47A1),
+        Color(0xFF0277BD),
+        Color(0xFF006064)
+    )
+
+    val lightGradientColors = listOf(
+        Color(0xFF81D4FA),
+        Color(0xFF4FC3F7),
+        Color(0xFF80DEEA)
+    )
+
+    val isDarkTheme = MaterialTheme.colorScheme.background.luminance() < 0.5f
+
+    val gradientColors = if (isDarkTheme) darkGradientColors else lightGradientColors
+
+    val selectedTextColor = if (isDarkTheme) Color.White else Color.Black
 
     LaunchedEffect(isVisible) {
         if (isVisible) {
@@ -70,28 +95,49 @@ fun NavDrawer(
                         .padding(16.dp)
                 ) {
                     items.forEachIndexed { index, item ->
-                        NavigationDrawerItem(
-                            icon = {
-                                Image(
-                                    painter = item.icon,
-                                    contentDescription = item.title,
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .padding(4.dp),
-                                    contentScale = ContentScale.Fit
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .then(
+                                    if (index == selectedItem.value) {
+                                        Modifier.background(
+                                            brush = Brush.horizontalGradient(colors = gradientColors),
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                    } else {
+                                        Modifier.background(Color.Transparent)
+                                    }
                                 )
-                            },
-                            label = { Text(item.title) },
-                            selected = index == selectedItem.value,
-                            onClick = {
-                                selectedItem.value = index
-                                scope.launch {
-                                    drawerState.close()
-                                    onItemClick(item.title)
-                                }
-                            },
-                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                        )
+                                .padding(12.dp)
+                                .clickable {
+                                    selectedItem.value = index
+                                    scope.launch {
+                                        drawerState.close()
+                                        onItemClick(item.title)
+                                    }
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = item.icon,
+                                contentDescription = item.title,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(4.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = item.title,
+                                color = if (index == selectedItem.value) selectedTextColor
+                                else MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Start,
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
+                        }
                     }
                 }
 
@@ -121,6 +167,10 @@ fun NavDrawer(
         }
     )
 }
+
+
+
+
 data class DrawerItem(
     val title: String,
     val icon: Painter,

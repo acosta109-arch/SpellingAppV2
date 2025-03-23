@@ -1,20 +1,24 @@
 package com.sagrd.spellingappv2.presentation.dashboard
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.Font
@@ -27,6 +31,43 @@ import edu.ucne.spellingapp.R
 fun DashboardScreen(
     onMenuClick: () -> Unit = {}
 ) {
+    val isDarkMode = isSystemInDarkTheme()
+
+    // Different gradient colors for dark and light modes
+    val gradientColors = if (isDarkMode) {
+        // Dark mode colors (original dark blues/teals)
+        listOf(
+            Color(0xFF283653),
+            Color(0xFF003D42),
+            Color(0xFF177882)
+        )
+    } else {
+        // Light mode colors (lighter sky blues/cyans)
+        listOf(
+            Color(0xFF7FB3D5),  // Light sky blue
+            Color(0xFF76D7EA),  // Cyan / light teal
+            Color(0xFFAED6F1)   // Baby blue
+        )
+    }
+
+    // Welcome box gradient colors
+    val welcomeBoxGradient = if (isDarkMode) {
+        // Dark mode welcome box gradient
+        listOf(
+            Color(0xFF1F2B42),
+            Color(0xFF0A5159)
+        )
+    } else {
+        // Light mode welcome box gradient
+        listOf(
+            Color(0xFF5499C7),
+            Color(0xFF45B7D1)
+        )
+    }
+
+    // App bar color based on theme
+    val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -39,7 +80,12 @@ fun DashboardScreen(
                             contentDescription = "Menu"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = appBarColor,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
         }
     ) { paddingValues ->
@@ -49,44 +95,59 @@ fun DashboardScreen(
                 .padding(paddingValues)
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color(0xFFcde7eb), Color.White)
+                        colors = gradientColors
                     )
                 ),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(16.dp)
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Welcome text with emoji on background that adapts to theme
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        Brush.linearGradient(
+                            colors = welcomeBoxGradient
+                        )
+                    )
+                    .padding(vertical = 16.dp, horizontal = 24.dp)
             ) {
                 Text(
-                    text = "SpellingApp",
+                    text = "Hola, Bienvenido 👋",
                     style = TextStyle(
-                        fontSize = 45.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            Image(
-                painter = painterResource(id = R.drawable.familia),
-                contentDescription = "Imagen de bienvenida",
+            // Centered and enlarged image
+            Box(
                 modifier = Modifier
+                    .weight(1f)
                     .fillMaxWidth()
-                    .height(250.dp)
-                    .padding(16.dp)
-            )
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.familia),
+                    contentDescription = "Imagen de bienvenida",
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .aspectRatio(1.2f)
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
-@Preview
-@Composable
-private fun DashPrev() {
-    DashboardScreen(
-
-    )
-
-
-}

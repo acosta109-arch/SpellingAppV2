@@ -22,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -88,15 +89,31 @@ fun RegistrarBodyScreen(
 
     isImageValid = imagePainter.state is AsyncImagePainter.State.Success
 
-    // Matching the color scheme from LoginScreen
     val isDarkMode = isSystemInDarkTheme()
-    val backgroundColor = if (isDarkMode) Color(0xFF489DA7) else Color(0xFF9DF0FB)
+    val gradientColors = if (isDarkMode) {
+        listOf(
+            Color(0xFF283653),
+            Color(0xFF003D42),
+            Color(0xFF177882)
+        )
+    } else {
+        listOf(
+            Color(0xFF7FB3D5),
+            Color(0xFF76D7EA),
+            Color(0xFFAED6F1)
+        )
+    }
+
     val backgroundColorButton = Color(0xFF2B3132)
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColor)
+            .background(
+                Brush.verticalGradient(
+                    colors = gradientColors
+                )
+            )
             .verticalScroll(scrollState),
         contentAlignment = Alignment.Center
     ) {
@@ -132,7 +149,6 @@ fun RegistrarBodyScreen(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Nombre Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,7 +165,6 @@ fun RegistrarBodyScreen(
                 shape = RoundedCornerShape(4.dp)
             )
 
-            // Apellido Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,7 +181,6 @@ fun RegistrarBodyScreen(
                 shape = RoundedCornerShape(4.dp)
             )
 
-            // Telefono Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -183,7 +197,6 @@ fun RegistrarBodyScreen(
                 shape = RoundedCornerShape(4.dp)
             )
 
-            // Email Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -200,7 +213,6 @@ fun RegistrarBodyScreen(
                 shape = RoundedCornerShape(4.dp)
             )
 
-            // Contraseña Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -226,7 +238,6 @@ fun RegistrarBodyScreen(
                 }
             )
 
-            // Confirmar Contraseña Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -252,7 +263,6 @@ fun RegistrarBodyScreen(
                 }
             )
 
-            // Foto URL Field
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -318,7 +328,6 @@ fun RegistrarBodyScreen(
                 )
             }
 
-            // Register Button
             Button(
                 onClick = { save() },
                 colors = ButtonDefaults.buttonColors(containerColor = backgroundColorButton),
@@ -330,14 +339,12 @@ fun RegistrarBodyScreen(
                 Text(text = "Registrar", color = Color.White)
             }
 
-            // Login Link
             TextButton(onClick = goBack) {
                 Text("¿Ya tienes cuenta? Iniciar sesión", color = Color.Black, fontWeight = FontWeight.Bold)
             }
         }
     }
 
-    // Image Preview Dialog
     if (showImageDialog && uiState.fotoUrl.isNotEmpty()) {
         Dialog(onDismissRequest = { showImageDialog = false }) {
             Box(
