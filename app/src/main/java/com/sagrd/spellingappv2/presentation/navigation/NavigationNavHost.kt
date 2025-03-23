@@ -12,6 +12,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import com.sagrd.spellingappv2.presentation.component.NavDrawer
 import com.sagrd.spellingappv2.presentation.dashboard.DashboardScreen
+import com.sagrd.spellingappv2.presentation.examTest.TestScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijoDelete
 import com.sagrd.spellingappv2.presentation.hijos.HijosEditScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijosListScreen
@@ -61,7 +62,7 @@ fun nav_spelling_app(
                     "Perfil" -> navHostController.navigate(Screen.Perfil(0))
                     "Hijos" -> navHostController.navigate(Screen.HijoListScreen)
                     "Pines" -> navHostController.navigate(Screen.PinListScreen)
-                    "Test" -> navHostController.navigate(Screen.Dashboard)
+                    "Test" -> navHostController.navigate(Screen.TestScreen)
                     "Palabras" -> navHostController.navigate(Screen.PalabrasListScreen)
                     "Estadisticas" -> navHostController.navigate(Screen.Dashboard)
                 }
@@ -211,6 +212,14 @@ private fun NavContent(
 
         composable<Screen.PalabrasListScreen> {
             PalabrasListScreen(
+                onBack = {
+                    navHostController.navigateUp()
+                }
+            )
+        }
+
+        composable<Screen.TestScreen> {
+            TestScreen(
                 onBack = {
                     navHostController.navigateUp()
                 }
