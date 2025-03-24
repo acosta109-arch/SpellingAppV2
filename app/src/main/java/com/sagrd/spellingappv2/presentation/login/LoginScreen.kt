@@ -44,7 +44,6 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    // Check if user is already logged in
     LaunchedEffect(Unit) {
         if (AuthManager.isLoggedIn) {
             goToDashboard()
@@ -52,9 +51,8 @@ fun LoginScreen(
         }
     }
 
-    // Configure Google Sign In
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken("617138256064-jc5tu8he582ta80gj4s2gbvataddr3hb.apps.googleusercontent.com") // Replace with your actual web client ID
+        .requestIdToken("617138256064-jc5tu8he582ta80gj4s2gbvataddr3hb.apps.googleusercontent.com")
         .requestEmail()
         .build()
     val googleSignInClient = GoogleSignIn.getClient(context, gso)
