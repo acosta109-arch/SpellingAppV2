@@ -68,7 +68,6 @@ fun PinBodyScreen(
 ){
     val isDarkMode = isSystemInDarkTheme()
 
-    // Definir los colores de gradiente basados en el modo oscuro o claro
     val gradientColors = if (isDarkMode) {
         listOf(
             Color(0xFF283653),
@@ -83,10 +82,8 @@ fun PinBodyScreen(
         )
     }
 
-    // Color del AppBar basado en el modo
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
 
-    // Colores para elementos de UI
     val textColor = if (isDarkMode) Color.White else Color.Black
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
     val accentColor = Color(0xFF5DADE2)
@@ -155,11 +152,10 @@ fun PinBodyScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    // Botón Volver con ancho fijo
                     Button(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
-                            .width(140.dp), // Ancho fijo
+                            .width(140.dp),
                         onClick = goBack,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = accentColor,
@@ -180,11 +176,10 @@ fun PinBodyScreen(
                         }
                     }
 
-                    // Botón Crear con el mismo ancho fijo
                     Button(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
-                            .width(140.dp), // Mismo ancho fijo
+                            .width(140.dp),
                         onClick = {
                             onSave()
                             goBack()

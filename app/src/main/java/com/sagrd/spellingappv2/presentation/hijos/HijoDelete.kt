@@ -79,7 +79,6 @@ fun HijoBodyDelete(
 ) {
     val isDarkMode = isSystemInDarkTheme()
 
-    // Definir los colores de gradiente basados en el modo oscuro o claro
     val gradientColors = if (isDarkMode) {
         listOf(
             Color(0xFF283653),
@@ -94,10 +93,8 @@ fun HijoBodyDelete(
         )
     }
 
-    // Color del AppBar basado en el modo
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
 
-    // Colores para elementos de UI
     val textColor = if (isDarkMode) Color.White else Color.Black
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
     val accentColor = Color(0xFF5DADE2)
@@ -253,7 +250,6 @@ fun HijoBodyDelete(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    // Botón Cancelar
                     Button(
                         modifier = Modifier.width(150.dp),
                         onClick = goBack,
@@ -281,7 +277,6 @@ fun HijoBodyDelete(
                         }
                     }
 
-                    // Botón Eliminar
                     Button(
                         modifier = Modifier.width(150.dp),
                         onClick = {
@@ -289,7 +284,7 @@ fun HijoBodyDelete(
                             goBack()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFE74C3C), // Rojo para eliminar
+                            containerColor = Color(0xFFE74C3C),
                             contentColor = Color.White
                         )
                     ) {

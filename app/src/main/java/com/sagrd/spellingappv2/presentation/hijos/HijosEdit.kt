@@ -91,7 +91,6 @@ fun HijoBodyEdit(
 ){
     val isDarkMode = isSystemInDarkTheme()
 
-    // Definir los colores de gradiente basados en el modo oscuro o claro
     val gradientColors = if (isDarkMode) {
         listOf(
             Color(0xFF283653),
@@ -106,10 +105,8 @@ fun HijoBodyEdit(
         )
     }
 
-    // Color del AppBar basado en el modo
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
 
-    // Colores para elementos de UI
     val textColor = if (isDarkMode) Color.White else Color.Black
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
     val accentColor = Color(0xFF5DADE2)
@@ -186,7 +183,6 @@ fun HijoBodyEdit(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Dropdown para selección de género
                 Box(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
                         modifier = Modifier
@@ -296,12 +292,10 @@ fun HijoBodyEdit(
                     .height(16.dp)
                     .weight(1f))
 
-                // Modificación de la sección de botones para asegurar tamaños iguales
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    // Botón Volver
                     Button(
                         modifier = Modifier.width(150.dp),
                         onClick = goBack,
@@ -329,7 +323,6 @@ fun HijoBodyEdit(
                         }
                     }
 
-                    // Botón Modificar
                     Button(
                         modifier = Modifier.width(150.dp),
                         onClick = {

@@ -79,7 +79,6 @@ private fun PinBodyListScreen(
 ) {
     val isDarkMode = isSystemInDarkTheme()
 
-    // Definir los colores de gradiente basados en el modo oscuro o claro
     val gradientColors = if (isDarkMode) {
         listOf(
             Color(0xFF283653),
@@ -94,22 +93,17 @@ private fun PinBodyListScreen(
         )
     }
 
-    // Color del AppBar basado en el modo
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
 
-    // Color del FAB adaptado al tema
     val fabColor = Color(0xFF5DADE2)
 
-    // Color del texto adaptado al tema
     val textColor = if (isDarkMode) Color.White else Color.Black
 
-    // Color de las cards adaptado al tema
     val cardColor = if (isDarkMode)
         Color(0xFF1F2937).copy(alpha = 0.7f)
     else
         Color.White.copy(alpha = 0.7f)
 
-    // Color del borde de las cards
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
 
     Scaffold(

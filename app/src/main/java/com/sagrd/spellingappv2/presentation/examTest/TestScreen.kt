@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -85,6 +85,7 @@ private fun TestBody(
 ) {
     val isDarkMode = isSystemInDarkTheme()
     var showStartDialog by remember { mutableStateOf(true) }
+    var showExitDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val gradientColors = if (isDarkMode) {
@@ -103,6 +104,10 @@ private fun TestBody(
 
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
 
+    val primaryButtonColor = if (isDarkMode) Color(0xFF177882) else Color(0xFF5499C7)
+    val progressColor = if (isDarkMode) Color(0xFF177882) else Color(0xFF5499C7)
+    val progressTrackColor = if (isDarkMode) Color(0xFF283653).copy(alpha = 0.3f) else Color(0xFFAED6F1).copy(alpha = 0.5f)
+
     val textColor = if (isDarkMode) Color.White else Color.Black
 
     val cardColor = if (isDarkMode)
@@ -115,22 +120,107 @@ private fun TestBody(
     if (showStartDialog) {
         AlertDialog(
             onDismissRequest = { showStartDialog = false },
-            title = { Text("Iniciar Test") },
-            text = { Text("¿Quieres comenzar el test de palabras?") },
+            title = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.abeja),
+                        contentDescription = "Abeja",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(bottom = 16.dp)
+                    )
+                    Text(
+                        "Iniciar Test",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            },
+            text = {
+                Text(
+                    "¿Quieres comenzar el test de palabras?",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
                         showStartDialog = false
-                    }
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = primaryButtonColor
+                    )
                 ) {
                     Text("Sí")
                 }
             },
             dismissButton = {
                 TextButton(
-                    onClick = onBack
+                    onClick = onBack,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = primaryButtonColor
+                    )
                 ) {
                     Text("No")
+                }
+            },
+            containerColor = cardColor,
+            titleContentColor = textColor,
+            textContentColor = textColor
+        )
+    }
+
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.abeja),
+                        contentDescription = "Abeja",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(bottom = 16.dp)
+                    )
+                    Text(
+                        "Salir del Test",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            },
+            text = {
+                Text(
+                    "¿Estás seguro de terminar el test?",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = onBack,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = primaryButtonColor
+                    )
+                ) {
+                    Text("Sí, salir")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showExitDialog = false },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = primaryButtonColor
+                    )
+                ) {
+                    Text("No, continuar")
                 }
             },
             containerColor = cardColor,
@@ -149,7 +239,9 @@ private fun TestBody(
                     navigationIconContentColor = Color.White
                 ),
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = { showExitDialog = true }
+                    ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Regresar",
@@ -197,7 +289,13 @@ private fun TestBody(
                     ) {
                         Button(
                             onClick = onPrevious,
-                            enabled = uiState.palabraActual > 0
+                            enabled = uiState.palabraActual > 0,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = primaryButtonColor,
+                                contentColor = Color.White,
+                                disabledContainerColor = primaryButtonColor.copy(alpha = 0.5f),
+                                disabledContentColor = Color.White.copy(alpha = 0.7f)
+                            )
                         ) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
@@ -208,7 +306,13 @@ private fun TestBody(
 
                         Button(
                             onClick = onNext,
-                            enabled = uiState.palabraActual < uiState.totalPalabras - 1
+                            enabled = uiState.palabraActual < uiState.totalPalabras - 1,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = primaryButtonColor,
+                                contentColor = Color.White,
+                                disabledContainerColor = primaryButtonColor.copy(alpha = 0.5f),
+                                disabledContentColor = Color.White.copy(alpha = 0.7f)
+                            )
                         ) {
                             Text("Siguiente")
                             Icon(
@@ -227,7 +331,9 @@ private fun TestBody(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(8.dp)
-                                .clip(RoundedCornerShape(4.dp))
+                                .clip(RoundedCornerShape(4.dp)),
+                            color = progressColor,
+                            trackColor = progressTrackColor
                         )
 
                         Text(

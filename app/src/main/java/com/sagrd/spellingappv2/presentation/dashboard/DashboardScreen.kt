@@ -33,39 +33,32 @@ fun DashboardScreen(
 ) {
     val isDarkMode = isSystemInDarkTheme()
 
-    // Different gradient colors for dark and light modes
     val gradientColors = if (isDarkMode) {
-        // Dark mode colors (original dark blues/teals)
         listOf(
             Color(0xFF283653),
             Color(0xFF003D42),
             Color(0xFF177882)
         )
     } else {
-        // Light mode colors (lighter sky blues/cyans)
         listOf(
-            Color(0xFF7FB3D5),  // Light sky blue
-            Color(0xFF76D7EA),  // Cyan / light teal
-            Color(0xFFAED6F1)   // Baby blue
+            Color(0xFF7FB3D5),
+            Color(0xFF76D7EA),
+            Color(0xFFAED6F1)
         )
     }
 
-    // Welcome box gradient colors
     val welcomeBoxGradient = if (isDarkMode) {
-        // Dark mode welcome box gradient
         listOf(
             Color(0xFF1F2B42),
             Color(0xFF0A5159)
         )
     } else {
-        // Light mode welcome box gradient
         listOf(
             Color(0xFF5499C7),
             Color(0xFF45B7D1)
         )
     }
 
-    // App bar color based on theme
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
 
     Scaffold(
@@ -103,7 +96,6 @@ fun DashboardScreen(
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Welcome text with emoji on background that adapts to theme
             Box(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
@@ -127,7 +119,6 @@ fun DashboardScreen(
                 )
             }
 
-            // Centered and enlarged image
             Box(
                 modifier = Modifier
                     .weight(1f)
