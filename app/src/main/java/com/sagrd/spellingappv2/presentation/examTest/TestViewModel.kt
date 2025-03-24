@@ -44,12 +44,20 @@ class TestViewModel @Inject constructor(
     }
 
     private fun initTextToSpeech() {
-        val locSpanish = Locale("es", "ES")
-        if (TextToSpeech.LANG_AVAILABLE == textToSpeech.isLanguageAvailable(locSpanish)) {
-            textToSpeech.language = locSpanish
+        val locEnglish = Locale.US // or Locale.UK for British English
+        if (TextToSpeech.LANG_AVAILABLE == textToSpeech.isLanguageAvailable(locEnglish)) {
+            textToSpeech.language = locEnglish
         }
         textToSpeech.setSpeechRate(0.8f)
         textToSpeech.setPitch(1.0f)
+    }
+
+
+    fun playDescripcion(description: String) {
+        textToSpeech?.let { tts ->
+            tts.language = Locale.ENGLISH
+            tts.speak(description, TextToSpeech.QUEUE_FLUSH, null, null)
+        }
     }
 
     fun getPalabras() {

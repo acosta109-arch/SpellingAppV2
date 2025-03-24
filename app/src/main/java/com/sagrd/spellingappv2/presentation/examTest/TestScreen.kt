@@ -67,6 +67,7 @@ fun TestScreen(
         uiState = uiState,
         onBack = onBack,
         onPlayAudio = viewModel::playAudio,
+        onPlayDescripcion = viewModel::playDescripcion,
         onNext = viewModel::nextPalabra,
         onPrevious = viewModel::previousPalabra
     )
@@ -78,6 +79,7 @@ private fun TestBody(
     uiState: TestUiState,
     onBack: () -> Unit,
     onPlayAudio: (String) -> Unit,
+    onPlayDescripcion: (String) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit
 ) {
@@ -85,7 +87,6 @@ private fun TestBody(
     var showStartDialog by remember { mutableStateOf(true) }
     val context = LocalContext.current
 
-    // Definir los colores de gradiente basados en el modo oscuro o claro
     val gradientColors = if (isDarkMode) {
         listOf(
             Color(0xFF283653),
@@ -100,22 +101,17 @@ private fun TestBody(
         )
     }
 
-    // Color del AppBar basado en el modo
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
 
-    // Color del texto adaptado al tema
     val textColor = if (isDarkMode) Color.White else Color.Black
 
-    // Color de las cards adaptado al tema
     val cardColor = if (isDarkMode)
         Color(0xFF1F2937).copy(alpha = 0.7f)
     else
         Color.White.copy(alpha = 0.7f)
 
-    // Color del borde de las cards
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
 
-    // Diálogo de inicio del test
     if (showStartDialog) {
         AlertDialog(
             onDismissRequest = { showStartDialog = false },
@@ -184,16 +180,15 @@ private fun TestBody(
                 if (uiState.palabras.isNotEmpty() && !showStartDialog) {
                     val currentPalabra = uiState.palabras[uiState.palabraActual]
 
-                    // Contenido principal del test
                     TestContent(
                         palabra = currentPalabra,
                         cardColor = cardColor,
                         textColor = textColor,
                         borderColor = borderColor,
-                        onPlayAudio = { onPlayAudio(currentPalabra.nombre) }
+                        onPlayAudio = { onPlayAudio(currentPalabra.nombre) },
+                        onPlayDescripcion = { onPlayDescripcion(currentPalabra.descripcion) }
                     )
 
-                    // Botones de navegación
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -223,7 +218,6 @@ private fun TestBody(
                         }
                     }
 
-                    // Barra de progreso
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -244,18 +238,14 @@ private fun TestBody(
                         )
                     }
                 } else if (uiState.isLoading) {
-                    // Mensaje de carga
                     Text(
                         text = "Cargando palabras...",
                         color = textColor
-                        // No modifier.align needed here since Column already has horizontalAlignment = Alignment.CenterHorizontally
                     )
                 } else if (uiState.errorMessage != null) {
-                    // Mensaje de error
                     Text(
                         text = "Error: ${uiState.errorMessage}",
                         color = Color.Red
-                        // No modifier.align needed here
                     )
                 }
             }
@@ -269,7 +259,8 @@ fun TestContent(
     cardColor: Color,
     textColor: Color,
     borderColor: Color,
-    onPlayAudio: () -> Unit
+    onPlayAudio: () -> Unit,
+    onPlayDescripcion: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -289,7 +280,6 @@ fun TestContent(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Imagen de la palabra
             palabra.fotoUrl?.let { url ->
                 AsyncImage(
                     model = ImageRequest.Builder(context)
@@ -316,7 +306,6 @@ fun TestContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nombre de la palabra con icono de audio
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
@@ -333,7 +322,6 @@ fun TestContent(
                     Image(
                         painter = painterResource(id = R.drawable.bocina),
                         contentDescription = "Reproducir audio",
-                        colorFilter = ColorFilter.tint(textColor),
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -341,13 +329,29 @@ fun TestContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Descripción de la palabra
-            Text(
-                text = palabra.descripcion,
-                style = MaterialTheme.typography.bodyLarge,
-                color = textColor,
-                textAlign = TextAlign.Center
-            )
+            Row(
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = palabra.descripcion,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = textColor,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = onPlayDescripcion,
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.bocina),
+                        contentDescription = "Reproducir descripción",
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
         }
     }
 }
