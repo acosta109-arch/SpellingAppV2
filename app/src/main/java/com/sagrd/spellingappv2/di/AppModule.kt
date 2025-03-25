@@ -2,6 +2,7 @@ package com.sagrd.spellingappv2.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.firestore.FirebaseFirestore
 import com.sagrd.spellingappv2.data.local.database.SpellingAppDb
 import dagger.Module
 import dagger.Provides
@@ -37,4 +38,5 @@ object AppModule {
     @Provides
     @Singleton
     fun providePalabra(spellingAppDb: SpellingAppDb) = spellingAppDb.palabraDao()
+
 }
