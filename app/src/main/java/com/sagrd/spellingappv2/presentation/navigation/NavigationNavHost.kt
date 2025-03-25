@@ -191,17 +191,15 @@ private fun NavContent(
             val args = it.toRoute<Screen.Perfil>()
             Perfil(
                 usuarioId = args.usuarioId,
-                goBack = {
-                    navHostController.navigateUp()
-                },
+                goBack = {navHostController.navigateUp()},
                 onMenuClick = onMenuClick,
-                goEdit = { navHostController.navigate(Screen.EditPerfil(args.usuarioId)) },
+                goEdit = { navHostController.navigate(Screen.EditPerfil(it)) },
                 navHostController = navHostController
             )
         }
 
-        composable<Screen.EditPerfil> {
-            val args = it.toRoute<Screen.EditPerfil>()
+        composable<Screen.EditPerfil> {backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.EditPerfil>()
             EditarPerfil(
                 usuarioId = args.UsuarioId,
                 goBack = {

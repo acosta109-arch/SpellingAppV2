@@ -54,7 +54,7 @@ fun Perfil (
     goBack: () -> Unit,
     onMenuClick: () -> Unit,
     usuarioId: Int,
-    goEdit: () -> Unit,
+    goEdit: (Int) -> Unit,
 ){
     LaunchedEffect(usuarioId) {
         viewModel.selectUsuario(usuarioId)
@@ -78,7 +78,7 @@ fun PerfilBody(
     goBack: () -> Unit,
     onDelete: () -> Unit,
     onMenuClick: () -> Unit,
-    goEdit: () -> Unit,
+    goEdit: (Int) -> Unit,
 ){
     val isDarkMode = isSystemInDarkTheme()
 
@@ -157,7 +157,7 @@ fun PerfilBody(
                     )
                 }
                 Button(
-                    onClick = { goEdit() },
+                    onClick = { goEdit(uiState.usuarioActual?.usuarioId ?: 0) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(red = 190, green = 240, blue = 60, alpha = 255)),
                     modifier = Modifier
                         .padding(top = 16.dp)

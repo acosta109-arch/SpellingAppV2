@@ -149,7 +149,7 @@ class UsuarioViewModel @Inject constructor(
                 // First create the user in Firebase
                 val authResult = firebaseAuth.createUserWithEmailAndPassword(
                     _uiState.value.email,
-                    _uiState.value.contrasena
+                    _uiState.value.contrasena,
                 ).await()
 
                 // Then save to local database
