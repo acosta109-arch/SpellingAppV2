@@ -28,6 +28,10 @@ class UsuarioRepository @Inject constructor(
         return usuarioDao.getUsuarioById(id)
     }
 
+    suspend fun getUsuarioByEmail(email: String): UsuarioEntity? {
+        return usuarioDao.getUsuarioByEmail(email)
+    }
+
     suspend fun getUsuarioConHijos(usuarioId: Int): UsuarioConHijoEntity? {
         return usuarioDao.getUsuarioConHijos(usuarioId)
     }

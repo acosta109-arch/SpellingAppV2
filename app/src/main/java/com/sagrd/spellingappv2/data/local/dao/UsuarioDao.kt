@@ -33,4 +33,7 @@ interface UsuarioDao {
     @Transaction
     @Query("SELECT * FROM Usuarios")
     suspend fun getAllUsuariosConHijos(): List<UsuarioConHijoEntity>
+
+    @Query("SELECT * FROM Usuarios WHERE email = :email LIMIT 1")
+    suspend fun getUsuarioByEmail(email: String): UsuarioEntity?
 }

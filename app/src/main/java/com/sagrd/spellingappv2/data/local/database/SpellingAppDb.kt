@@ -16,7 +16,7 @@ import com.sagrd.spellingappv2.data.local.entities.UsuarioEntity
     PalabraEntity::class,
     PinEntity::class,
     UsuarioEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 
