@@ -41,10 +41,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel.UiState
+import com.sagrd.spellingappv2.presentation.navigation.Screen
+import kotlinx.coroutines.launch
 
 @Composable
 fun Perfil (
+    navHostController: NavHostController,
     viewModel: UsuarioViewModel = hiltViewModel(),
     goBack: () -> Unit,
     onMenuClick: () -> Unit,
@@ -56,6 +61,7 @@ fun Perfil (
     }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     PerfilBody(
+        navHostController = navHostController,
         uiState = uiState,
         goBack = goBack,
         onDelete = viewModel::deleteUsuario,
@@ -67,6 +73,7 @@ fun Perfil (
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PerfilBody(
+    navHostController: NavHostController,
     uiState: UiState,
     goBack: () -> Unit,
     onDelete: () -> Unit,
@@ -177,7 +184,7 @@ fun PerfilBody(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "${uiState.nombre}",
+                            text = "${uiState.usuarioActual?.nombre}",
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(start = 12.dp, top = 2.dp, bottom = 12.dp,end = 12.dp),
                             textAlign = TextAlign.Center
@@ -204,7 +211,7 @@ fun PerfilBody(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "${uiState.apellido}",
+                            text = "${uiState.usuarioActual?.apellido}",
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(start = 12.dp, top = 2.dp, bottom = 12.dp,end = 12.dp),
                             textAlign = TextAlign.Center
@@ -231,7 +238,7 @@ fun PerfilBody(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "${uiState.telefono}",
+                            text = "${uiState.usuarioActual?.telefono}",
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(start = 12.dp, top = 2.dp, bottom = 12.dp,end = 12.dp),
                             textAlign = TextAlign.Center
@@ -240,8 +247,21 @@ fun PerfilBody(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
-                    onClick = onDelete,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(red = 240, green = 60, blue = 60, alpha = 255)),
+                    onClick = {
+                        navHostController.navigate(Screen.LoginScreen) {
+                            popUpTo(0) {
+                                inclusive = true
+                            }
+                        }
+                        AuthManager.logout()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(
+                        red = 183,
+                        green = 28,
+                        blue = 28,
+                        alpha = 255
+                    )
+                    ),
                     modifier = Modifier
                         .padding(top = 16.dp)
                 ){
@@ -264,6 +284,7 @@ private fun PerfilPreview() {
         goBack = {},
         onDelete = {},
         onMenuClick = {},
-        goEdit = {}
+        goEdit = {},
+        navHostController = rememberNavController()
     )
 }
