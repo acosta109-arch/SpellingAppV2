@@ -195,7 +195,8 @@ private fun NavContent(
                     navHostController.navigateUp()
                 },
                 onMenuClick = onMenuClick,
-                goEdit = { navHostController.navigate(Screen.EditPerfil(args.usuarioId)) }
+                goEdit = { navHostController.navigate(Screen.EditPerfil(args.usuarioId)) },
+                navHostController = navHostController
             )
         }
 

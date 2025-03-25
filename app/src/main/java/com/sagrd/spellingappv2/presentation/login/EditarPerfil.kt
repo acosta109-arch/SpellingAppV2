@@ -69,9 +69,7 @@ fun EditarPerfil(
     onMenuClick: () -> Unit,
     usuarioId: Int,
 ) {
-    LaunchedEffect(usuarioId) {
-        viewModel.selectUsuario(usuarioId)
-    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     EditarPerfilBody(
         uiState = uiState,
