@@ -193,14 +193,7 @@ fun EditarPerfilBody(
                         tint = Color.White
                     )
                 }
-                Button(
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(red = 190, green = 240, blue = 60, alpha = 255)),
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                ) {
-                    Text("Cambiar Foto")
-                }
+
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -310,24 +303,6 @@ fun EditarPerfilBody(
                         }
                     }
                 )
-
-                if (uiState.fotoUrl.isNotEmpty() && isImageValid) {
-                    Box(
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, Color.White, CircleShape)
-                            .clickable { showImageDialog = true },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = imagePainter,
-                            contentDescription = "Vista previa de foto",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                }
 
                 uiState.errorMessage?.let { message ->
                     Text(

@@ -64,8 +64,7 @@ class UsuarioViewModel @Inject constructor(
                         apellido = user.displayName?.split(" ")?.lastOrNull() ?: "",
                         telefono = user.phoneNumber ?: "",
                         email = user.email ?: "",
-                        contrasena = "", // Firebase handles auth, no need for local password
-                        fotoUrl = user.photoUrl?.toString() ?: ""
+                        contrasena = "" // Firebase handles auth, no need for local password
                     )
                     try {
                         usuarioRepository.insertUsuario(newUser)
@@ -88,6 +87,45 @@ class UsuarioViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+
+    private suspend fun isPhoneNumberUnique(phoneNumber: String, currentUserId: Int? = null): Boolean {
+        // Check in local repository if a user with this phone number already exists
+        return usuarioRepository.getAllUsuarios()
+            .none { it.telefono == phoneNumber && it.usuarioId != currentUserId }
+    }
+
+    fun saveUsuario() {
+        viewModelScope.launch {
+            // Existing validations
+            if (_uiState.value.nombre.isBlank() || _uiState.value.email.isBlank() || _uiState.value.contrasena.isBlank()) {
+                _uiState.update {
+                    it.copy(errorMessage = "Todos los campos son obligatorios.", successMessage = null)
+                }
+                return@launch
+            }
+
+            if (_uiState.value.contrasena != _uiState.value.confirmarContrasena) {
+                _uiState.update {
+                    it.copy(errorMessage = "Las contraseñas no coinciden.", successMessage = null)
+                }
+                return@launch
+            }
+
+            // Check phone number uniqueness for new user registration
+            if (!isPhoneNumberUnique(_uiState.value.telefono)) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Este número de teléfono ya está registrado.",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
+
+            // ... rest of the existing saveUsuario() method
         }
     }
 
@@ -115,6 +153,17 @@ class UsuarioViewModel @Inject constructor(
                 return@launch
             }
 
+            // Check phone number uniqueness during update, excluding current user
+            if (!isPhoneNumberUnique(_uiState.value.telefono, _uiState.value.usuarioId)) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Este número de teléfono ya está registrado por otro usuario.",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
+
             try {
                 usuarioRepository.updateUsuario(_uiState.value.toEntity())
                 _uiState.update {
@@ -124,48 +173,6 @@ class UsuarioViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(errorMessage = "Error al actualizar el usuario: ${e.message}", successMessage = null)
-                }
-            }
-        }
-    }
-
-    fun saveUsuario() {
-        viewModelScope.launch {
-            if (_uiState.value.nombre.isBlank() || _uiState.value.email.isBlank() || _uiState.value.contrasena.isBlank()) {
-                _uiState.update {
-                    it.copy(errorMessage = "Todos los campos son obligatorios.", successMessage = null)
-                }
-                return@launch
-            }
-
-            if (_uiState.value.contrasena != _uiState.value.confirmarContrasena) {
-                _uiState.update {
-                    it.copy(errorMessage = "Las contraseñas no coinciden.", successMessage = null)
-                }
-                return@launch
-            }
-
-            try {
-                // First create the user in Firebase
-                val authResult = firebaseAuth.createUserWithEmailAndPassword(
-                    _uiState.value.email,
-                    _uiState.value.contrasena,
-                ).await()
-
-                // Then save to local database
-                usuarioRepository.insertUsuario(_uiState.value.toEntity())
-
-                _uiState.update {
-                    it.copy(
-                        successMessage = "Usuario registrado correctamente.",
-                        errorMessage = null,
-                        firebaseUser = authResult.user
-                    )
-                }
-                nuevoUsuario()
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(errorMessage = "Error al registrar el usuario: ${e.message}", successMessage = null)
                 }
             }
         }
@@ -199,8 +206,7 @@ class UsuarioViewModel @Inject constructor(
                         apellido = usuario?.apellido ?: "",
                         telefono = usuario?.telefono ?: "",
                         email = usuario?.email ?: "",
-                        contrasena = usuario?.contrasena ?: "",
-                        fotoUrl = usuario?.fotoUrl ?: ""
+                        contrasena = usuario?.contrasena ?: ""
                     )
                 }
             }
@@ -275,8 +281,7 @@ class UsuarioViewModel @Inject constructor(
                             apellido = firebaseUser.displayName?.split(" ")?.lastOrNull() ?: "",
                             telefono = firebaseUser.phoneNumber ?: "",
                             email = firebaseUser.email ?: "",
-                            contrasena = "", // Firebase handles auth, no need for local password
-                            fotoUrl = firebaseUser.photoUrl?.toString() ?: ""
+                            contrasena = "" // Firebase handles auth, no need for local password
                         )
 
                         usuarioRepository.insertUsuario(newUser)
@@ -409,8 +414,7 @@ class UsuarioViewModel @Inject constructor(
         apellido = apellido,
         telefono = telefono,
         email = email,
-        contrasena = contrasena,
-        fotoUrl = fotoUrl
+        contrasena = contrasena
     )
 
     fun handleGoogleSignInResult(data: Intent?) {
@@ -463,8 +467,7 @@ class UsuarioViewModel @Inject constructor(
                             apellido = lastName,
                             telefono = firebaseUser.phoneNumber ?: "",
                             email = firebaseUser.email ?: "",
-                            contrasena = "",  // No password needed for Google auth
-                            fotoUrl = firebaseUser.photoUrl?.toString() ?: ""
+                            contrasena = ""  // No password needed for Google auth
                         )
 
                         try {

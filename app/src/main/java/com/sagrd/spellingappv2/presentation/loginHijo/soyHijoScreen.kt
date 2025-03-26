@@ -50,7 +50,8 @@ fun LoginPinScreen(
         login = { pin ->
             viewModel.login()
         },
-        goToRegistrar = goToRegistrar
+        goToRegistrar = goToRegistrar,
+        goBack = goBack
     )
 }
 
@@ -60,7 +61,8 @@ fun LoginPinBodyScreen(
     uiState: LoginUiState,
     onPinChange: (String) -> Unit,
     login: (String) -> Unit,
-    goToRegistrar: () -> Unit
+    goToRegistrar: () -> Unit,
+    goBack: () -> Unit
 ) {
     var pin by remember { mutableStateOf("") }
     var pinVisible by remember { mutableStateOf(false) }
@@ -200,20 +202,10 @@ fun LoginPinBodyScreen(
                 )
             }
 
-            TextButton(onClick = goToRegistrar) {
-                Text("¿No tienes un PIN? Regístrate", color = Color.Black, fontWeight = FontWeight.Bold)
+            TextButton(onClick = goBack) {
+                Text("¿Ya tienes cuenta? Iniciar sesión", color = Color.Black, fontWeight = FontWeight.Bold)
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun LoginPinPreview() {
-    LoginPinBodyScreen(
-        uiState = LoginUiState(),
-        onPinChange = {},
-        login = {},
-        goToRegistrar = {}
-    )
-}

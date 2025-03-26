@@ -188,7 +188,11 @@ fun RegistrarBodyScreen(
                 label = { Text(text = "Número De Teléfono", color = Color.Black) },
                 leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
                 value = uiState.telefono,
-                onValueChange = onTelefonoChange,
+                onValueChange = { newValue ->
+                    if (newValue.all { it.isDigit() }) {
+                        onTelefonoChange(newValue)
+                    }
+                },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White,
                     focusedBorderColor = Color.Gray,
@@ -210,7 +214,8 @@ fun RegistrarBodyScreen(
                     focusedBorderColor = Color.Gray,
                     unfocusedBorderColor = Color.Gray
                 ),
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(4.dp),
+                singleLine = true
             )
 
             OutlinedTextField(

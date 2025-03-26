@@ -57,7 +57,13 @@ fun HijosScreen(
     HijoBodyScreen(
         uiState = uiState,
         goBack = goBack,
-        onSave = viewModel::saveHijo,
+        onSave = {
+            viewModel.saveHijo {
+                if (viewModel.canSave()) {
+                    goBack()
+                }
+            }
+        },
         onNombreChange = viewModel::onNombreChange,
         onApellidoChange = viewModel::onApellidoChange,
         onGeneroChange = viewModel::onGeneroChange,
@@ -278,9 +284,27 @@ fun HijoBodyScreen(
                         }
                     }
                 }
+
+                // Error message display
                 uiState.errorMessage?.let {
-                    Text(text = it, color = Color.Red)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
+
+                // Success message display
+                uiState.successMessage?.let {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = it,
+                        color = Color.Green,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
                 Spacer(modifier = Modifier
                     .height(16.dp)
                     .weight(1f))
@@ -316,10 +340,7 @@ fun HijoBodyScreen(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .width(140.dp),
-                        onClick = {
-                            onSave()
-                            goBack()
-                        },
+                        onClick = onSave,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = accentColor,
                             contentColor = Color.White

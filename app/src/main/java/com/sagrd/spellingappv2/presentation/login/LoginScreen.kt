@@ -173,7 +173,8 @@ fun LoginBodyScreen(
                     focusedBorderColor = Color.Gray,
                     unfocusedBorderColor = Color.Gray
                 ),
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(4.dp),
+                singleLine = true
             )
 
             OutlinedTextField(

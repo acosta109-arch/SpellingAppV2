@@ -61,10 +61,19 @@ fun HijosEditScreen(
     }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    // Add a local state to control navigation
+    var canNavigate by remember { mutableStateOf(false) }
+
     HijoBodyEdit(
         uiState = uiState,
         goBack = goBack,
-        onSave = viewModel::saveHijo,
+        onSave = {
+            viewModel.saveHijo(
+                onSuccess = {
+                    canNavigate = true
+                }
+            )
+        },
         onNombreChange = viewModel::onNombreChange,
         onApellidoChange = viewModel::onApellidoChange,
         onGeneroChange = viewModel::onGeneroChange,
@@ -73,6 +82,13 @@ fun HijosEditScreen(
         onPinChange = viewModel::onPinIdChange,
         onMenuClick = onMenuClick
     )
+
+    // Only navigate back if save was successful
+    LaunchedEffect(canNavigate) {
+        if (canNavigate) {
+            goBack()
+        }
+    }
 }
 
 @Composable
@@ -285,9 +301,19 @@ fun HijoBodyEdit(
                         }
                     }
                 }
+
+                // Error message display
                 uiState.errorMessage?.let {
-                    Text(text = it, color = Color.Red)
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        textAlign = TextAlign.Center
+                    )
                 }
+
                 Spacer(modifier = Modifier
                     .height(16.dp)
                     .weight(1f))
@@ -325,10 +351,7 @@ fun HijoBodyEdit(
 
                     Button(
                         modifier = Modifier.width(150.dp),
-                        onClick = {
-                            onSave()
-                            goBack()
-                        },
+                        onClick = onSave,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = accentColor,
                             contentColor = Color.White
