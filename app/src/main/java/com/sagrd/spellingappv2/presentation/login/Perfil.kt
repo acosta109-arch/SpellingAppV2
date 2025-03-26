@@ -238,7 +238,7 @@ fun PerfilBody(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "${uiState.usuarioActual?.telefono}",
+                            text = formatPhoneNumber(uiState.usuarioActual?.telefono),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(start = 12.dp, top = 2.dp, bottom = 12.dp,end = 12.dp),
                             textAlign = TextAlign.Center
@@ -272,6 +272,20 @@ fun PerfilBody(
     }
 }
 
+fun formatPhoneNumber(phoneNumber: String?): String {
+    // Remove any non-digit characters
+    val digitsOnly = phoneNumber?.replace("\\D".toRegex(), "") ?: return ""
+
+    // Check if the number has at least 10 digits
+    return if (digitsOnly.length >= 10) {
+        val areaCode = digitsOnly.substring(0, 3)
+        val middleThree = digitsOnly.substring(3, 6)
+        val lastFour = digitsOnly.substring(6, 10)
+        "($areaCode) $middleThree-$lastFour"
+    } else {
+        digitsOnly // Return original if not enough digits
+    }
+}
 @Preview
 @Composable
 private fun PerfilPreview() {

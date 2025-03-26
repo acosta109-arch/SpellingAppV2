@@ -2,6 +2,7 @@ package com.sagrd.spellingappv2.presentation.login
 
 import android.content.Intent
 import android.util.Log
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -116,15 +117,52 @@ class UsuarioViewModel @Inject constructor(
             }
 
             try {
+                // If a new password is provided and the user is authenticated with Firebase
+                if (_uiState.value.firebaseUser != null && _uiState.value.contrasena.isNotBlank()) {
+                    // Update Firebase Authentication password
+                    firebaseAuth.currentUser?.updatePassword(_uiState.value.contrasena)?.await()
+
+                    // Update user info in Firestore
+                    val db = FirebaseFirestore.getInstance()
+                    val userId = firebaseAuth.currentUser?.uid
+
+                    if (userId != null) {
+                        val userUpdates = hashMapOf<String, Any>(
+                            "nombre" to _uiState.value.nombre,
+                            "apellido" to _uiState.value.apellido,
+                            "telefono" to _uiState.value.telefono,
+                            "email" to _uiState.value.email
+                        )
+
+                        // Only add password if it's not blank
+                        if (_uiState.value.contrasena.isNotBlank()) {
+                            userUpdates["contrasena"] = _uiState.value.contrasena
+                        }
+
+                        db.collection("usuarios").document(userId)
+                            .update(userUpdates)
+                            .await()
+                    }
+                }
+
+                // Update local database
                 usuarioRepository.updateUsuario(_uiState.value.toEntity())
+
                 _uiState.update {
-                    it.copy(successMessage = "Usuario actualizado correctamente.", errorMessage = null)
+                    it.copy(
+                        successMessage = "Usuario actualizado correctamente.",
+                        errorMessage = null
+                    )
                 }
                 nuevoUsuario()
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(errorMessage = "Error al actualizar el usuario: ${e.message}", successMessage = null)
+                    it.copy(
+                        errorMessage = "Error al actualizar el usuario: ${e.message}",
+                        successMessage = null
+                    )
                 }
+                Log.e("UpdateUsuario", "Error updating user: ${e.message}", e)
             }
         }
     }
@@ -393,7 +431,7 @@ class UsuarioViewModel @Inject constructor(
         val telefono: String = "",
         val email: String = "",
         val contrasena: String = "",
-        val confirmarContrasena: String = "",
+        var confirmarContrasena: String = "",
         val fotoUrl: String = "",
         val errorMessage: String? = null,
         val successMessage: String? = null,

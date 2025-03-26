@@ -27,8 +27,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -187,8 +190,12 @@ fun RegistrarBodyScreen(
                     .padding(bottom = 8.dp),
                 label = { Text(text = "Número De Teléfono", color = Color.Black) },
                 leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
-                value = uiState.telefono,
-                onValueChange = onTelefonoChange,
+                value = uiState.telefono, // Mantenemos solo los números
+                onValueChange = { newValue ->
+                    val digits = newValue.filter { it.isDigit() }.take(10) // Solo números, máx. 10
+                    onTelefonoChange(digits) // Guardamos solo los números sin formato
+                },
+                visualTransformation = PhoneVisualTransformation(), // Aplica el formato visualmente
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White,
                     focusedBorderColor = Color.Gray,
@@ -196,6 +203,7 @@ fun RegistrarBodyScreen(
                 ),
                 shape = RoundedCornerShape(4.dp)
             )
+
 
             OutlinedTextField(
                 modifier = Modifier
@@ -299,5 +307,56 @@ fun RegistrarBodyScreen(
                 Text("¿Ya tienes cuenta? Iniciar sesión", color = Color.Black, fontWeight = FontWeight.Bold)
             }
         }
+    }
+}
+
+class PhoneVisualTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val digits = text.text.filter { it.isDigit() }
+
+        val formatted = if (digits.isEmpty()) {
+            ""
+        } else {
+            buildString {
+                append("(")
+                append(digits.take(3)) // Código de área
+                if (digits.length > 3) append(") ")
+                if (digits.length in 4..6) append(digits.substring(3))
+                if (digits.length > 6) append(digits.substring(3, minOf(6, digits.length)) + "-")
+                if (digits.length > 6) append(digits.substring(6, minOf(10, digits.length)))
+            }
+        }
+
+        return TransformedText(AnnotatedString(formatted), PhoneOffsetMapping(digits, formatted))
+    }
+}
+
+
+class PhoneOffsetMapping(private val original: String, private val transformed: String) : OffsetMapping {
+    override fun originalToTransformed(offset: Int): Int {
+        val digitsOnly = original.take(offset)
+        var transformedOffset = 0
+        var digitCount = 0
+
+        for (char in transformed) {
+            if (digitCount == digitsOnly.length) break
+            transformedOffset++
+            if (char.isDigit()) digitCount++
+        }
+
+        return transformedOffset
+    }
+
+    override fun transformedToOriginal(offset: Int): Int {
+        var originalOffset = 0
+        var digitCount = 0
+
+        for (char in transformed) {
+            if (digitCount == offset) break
+            if (char.isDigit()) originalOffset++
+            digitCount++
+        }
+
+        return originalOffset.coerceAtMost(original.length)
     }
 }

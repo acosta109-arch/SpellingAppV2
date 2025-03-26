@@ -108,9 +108,6 @@ private fun NavContent(
                 goToDashboard = {
                     navHostController.navigate(Screen.Dashboard)
                 },
-                goBack = {
-                    navHostController.navigateUp()
-                },
                 goToRegistrar = {
                     navHostController.navigate(Screen.RegistrarScreen)
                 },
