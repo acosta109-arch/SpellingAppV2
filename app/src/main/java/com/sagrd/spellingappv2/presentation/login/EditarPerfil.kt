@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -53,6 +54,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TransformedText
@@ -240,7 +242,8 @@ fun EditarPerfilBody(
                     leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = Color.White) },
                     value = uiState.telefono,
                     onValueChange = onTelefonoChange,
-                    visualTransformation = PhoneVisualTrans(), // Aplica el formato visualmente
+                    visualTransformation = PhoneVisualTrans(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White.copy(alpha = 0.2f),
                         focusedBorderColor = Color.White,
@@ -362,11 +365,11 @@ class PhoneVisualTrans : VisualTransformation {
             }
         }
 
-        return TransformedText(AnnotatedString(formatted), PhoneOffsetMapping(digits, formatted))
+        return TransformedText(AnnotatedString(formatted), PhoneOffsetMap(digits, formatted))
     }
 }
 
-class PhoneOffsetMapping(private val original: String, private val transformed: String) : OffsetMapping {
+class PhoneOffsetMap(private val original: String, private val transformed: String) : OffsetMapping {
     override fun originalToTransformed(offset: Int): Int {
         val digitsOnly = original.take(offset)
         var transformedOffset = 0
