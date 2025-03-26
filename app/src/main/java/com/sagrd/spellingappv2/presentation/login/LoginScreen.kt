@@ -36,7 +36,6 @@ import edu.ucne.spellingapp.R
 @Composable
 fun LoginScreen(
     viewModel: UsuarioViewModel = hiltViewModel(),
-    goBack: () -> Unit,
     goToDashboard: () -> Unit,
     goToRegistrar: () -> Unit,
     goToLoginPinHijo: () -> Unit,

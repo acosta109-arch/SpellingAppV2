@@ -51,8 +51,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -83,7 +86,6 @@ fun EditarPerfil(
         onNombreChange = viewModel::onNombreChange,
         onApellidoChange = viewModel::onApellidoChange,
         onTelefonoChange = viewModel::onTelefonoChange,
-        onEmailChange = viewModel::onEmailChange,
         onContrasenaChange = viewModel::onContrasenaChange,
         onConfirmarContrasenaChange = viewModel::onConfirmarContrasenaChange,
         onFotoUrlChange = viewModel::onFotoUrlChange,
@@ -101,7 +103,6 @@ fun EditarPerfilBody(
     onNombreChange: (String) -> Unit,
     onApellidoChange: (String) -> Unit,
     onTelefonoChange: (String) -> Unit,
-    onEmailChange: (String) -> Unit,
     onContrasenaChange: (String) -> Unit,
     onConfirmarContrasenaChange: (String) -> Unit,
     onFotoUrlChange: (String) -> Unit,
@@ -139,6 +140,8 @@ fun EditarPerfilBody(
             Color(0xFFAED6F1)
         )
     }
+
+    val copiaContraseña = uiState.contrasena
 
     Scaffold(
         topBar = {
@@ -237,6 +240,7 @@ fun EditarPerfilBody(
                     leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = Color.White) },
                     value = uiState.telefono,
                     onValueChange = onTelefonoChange,
+                    visualTransformation = PhoneVisualTrans(), // Aplica el formato visualmente
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White.copy(alpha = 0.2f),
                         focusedBorderColor = Color.White,
@@ -280,7 +284,7 @@ fun EditarPerfilBody(
                         .fillMaxWidth(),
                     label = { Text(text = "Confirmar Contraseña", color = Color.White) },
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
-                    value = uiState.confirmarContrasena,
+                    value = copiaContraseña,
                     onValueChange = onConfirmarContrasenaChange,
                     visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -341,6 +345,58 @@ fun EditarPerfilBody(
     }
 }
 
+class PhoneVisualTrans : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val digits = text.text.filter { it.isDigit() }
+
+        val formatted = if (digits.isEmpty()) {
+            ""
+        } else {
+            buildString {
+                append("(")
+                append(digits.take(3)) // Código de área
+                if (digits.length > 3) append(") ")
+                if (digits.length in 4..6) append(digits.substring(3))
+                if (digits.length > 6) append(digits.substring(3, minOf(6, digits.length)) + "-")
+                if (digits.length > 6) append(digits.substring(6, minOf(10, digits.length)))
+            }
+        }
+
+        return TransformedText(AnnotatedString(formatted), PhoneOffsetMapping(digits, formatted))
+    }
+}
+
+
+class PhoneOffsetMap(private val original: String, private val transformed: String) : OffsetMapping {
+    override fun originalToTransformed(offset: Int): Int {
+        val digitsOnly = original.take(offset)
+        var transformedOffset = 0
+        var digitCount = 0
+
+        for (char in transformed) {
+            if (digitCount == digitsOnly.length) break
+            transformedOffset++
+            if (char.isDigit()) digitCount++
+        }
+
+        return transformedOffset
+    }
+
+    override fun transformedToOriginal(offset: Int): Int {
+        var originalOffset = 0
+        var digitCount = 0
+
+        for (char in transformed) {
+            if (digitCount == offset) break
+            if (char.isDigit()) originalOffset++
+            digitCount++
+        }
+
+        return originalOffset.coerceAtMost(original.length)
+    }
+}
+
+
 @Preview
 @Composable
 private fun EditPreview() {
@@ -353,7 +409,6 @@ private fun EditPreview() {
         onNombreChange = {},
         onApellidoChange = {},
         onTelefonoChange = {},
-        onEmailChange = {},
         onContrasenaChange = {},
         onConfirmarContrasenaChange = {},
         onFotoUrlChange = {}
