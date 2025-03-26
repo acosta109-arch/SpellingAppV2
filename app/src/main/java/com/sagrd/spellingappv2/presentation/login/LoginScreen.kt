@@ -242,33 +242,6 @@ fun LoginBodyScreen(
                 )
             }
 
-            // In LoginScreen.kt
-            Button(
-                onClick = onGoogleSignInClick,
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .border(1.dp, Color.Gray, RoundedCornerShape(28.dp)),
-                shape = RoundedCornerShape(28.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.google),
-                        contentDescription = "Google logo",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Continuar con Google",
-                        color = Color.Black
-                    )
-                }
-            }
-
             TextButton(onClick = goToRegistrar) {
                 Text("¿No tienes cuenta? Regístrate", color = Color.Black, fontWeight = FontWeight.Bold)
             }
