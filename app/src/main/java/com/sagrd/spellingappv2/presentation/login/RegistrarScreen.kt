@@ -263,50 +263,6 @@ fun RegistrarBodyScreen(
                 }
             )
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                label = { Text(text = "URL de Foto", color = Color.Black) },
-                value = uiState.fotoUrl,
-                onValueChange = onFotoUrlChange,
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
-                ),
-                shape = RoundedCornerShape(4.dp),
-                trailingIcon = {
-                    if (uiState.fotoUrl.isNotEmpty()) {
-                        IconButton(onClick = { showImageDialog = true }) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = "Ver foto",
-                                tint = Color.Black
-                            )
-                        }
-                    }
-                }
-            )
-
-            if (uiState.fotoUrl.isNotEmpty() && isImageValid) {
-                Box(
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, Color.Black, CircleShape)
-                        .clickable { showImageDialog = true },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = imagePainter,
-                        contentDescription = "Vista previa de foto",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-
             // Error and Success Messages
             uiState.errorMessage?.let { message ->
                 Text(
@@ -341,54 +297,6 @@ fun RegistrarBodyScreen(
 
             TextButton(onClick = goBack) {
                 Text("¿Ya tienes cuenta? Iniciar sesión", color = Color.Black, fontWeight = FontWeight.Bold)
-            }
-        }
-    }
-
-    if (showImageDialog && uiState.fotoUrl.isNotEmpty()) {
-        Dialog(onDismissRequest = { showImageDialog = false }) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(450.dp)
-                    .background(Color.White, RoundedCornerShape(8.dp))
-            ) {
-                if (isImageValid) {
-                    Image(
-                        painter = imagePainter,
-                        contentDescription = "Vista previa",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "No se pudo cargar la imagen",
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                IconButton(
-                    onClick = { showImageDialog = false },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .size(36.dp)
-                        .background(Color(0x80000000), CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Cerrar",
-                        tint = Color.White
-                    )
-                }
             }
         }
     }
