@@ -115,7 +115,7 @@ class UsuarioViewModel @Inject constructor(
                 return@launch
             }
 
-            // Check phone number uniqueness for new user registration
+            // New: Check phone number uniqueness
             if (!isPhoneNumberUnique(_uiState.value.telefono)) {
                 _uiState.update {
                     it.copy(
@@ -126,7 +126,29 @@ class UsuarioViewModel @Inject constructor(
                 return@launch
             }
 
-            // ... rest of the existing saveUsuario() method
+            try {
+                // First create the user in Firebase
+                val authResult = firebaseAuth.createUserWithEmailAndPassword(
+                    _uiState.value.email,
+                    _uiState.value.contrasena,
+                ).await()
+
+                // Then save to local database
+                usuarioRepository.insertUsuario(_uiState.value.toEntity())
+
+                _uiState.update {
+                    it.copy(
+                        successMessage = "Usuario registrado correctamente.",
+                        errorMessage = null,
+                        firebaseUser = authResult.user
+                    )
+                }
+                nuevoUsuario()
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(errorMessage = "Error al registrar el usuario: ${e.message}", successMessage = null)
+                }
+            }
         }
     }
 
