@@ -366,8 +366,7 @@ class PhoneVisualTrans : VisualTransformation {
     }
 }
 
-
-class PhoneOffsetMap(private val original: String, private val transformed: String) : OffsetMapping {
+class PhoneOffsetMapping(private val original: String, private val transformed: String) : OffsetMapping {
     override fun originalToTransformed(offset: Int): Int {
         val digitsOnly = original.take(offset)
         var transformedOffset = 0
@@ -395,7 +394,6 @@ class PhoneOffsetMap(private val original: String, private val transformed: Stri
         return originalOffset.coerceAtMost(original.length)
     }
 }
-
 
 @Preview
 @Composable
