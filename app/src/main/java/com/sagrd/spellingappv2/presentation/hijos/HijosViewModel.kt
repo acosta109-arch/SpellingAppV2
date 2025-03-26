@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sagrd.spellingappv2.data.local.entities.HijoEntity
 import com.sagrd.spellingappv2.data.local.entities.PinEntity
+import com.sagrd.spellingappv2.data.remote.Resource
 import com.sagrd.spellingappv2.data.repository.HijoRepository
 import com.sagrd.spellingappv2.data.repository.PinRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -67,9 +68,29 @@ class hijosViewModel @Inject constructor(
 
     private fun getPines() {
         viewModelScope.launch {
-            pinRepository.getAllPines().collect { pines ->
-                _uiState.update {
-                    it.copy(pines = pines)
+            pinRepository.getPines().collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                pines = resource.data ?: emptyList(),
+                                errorMessage = null
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                pines = emptyList(),
+                                errorMessage = resource.message
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+                        _uiState.update {
+                            it.copy(errorMessage = null)
+                        }
+                    }
                 }
             }
         }

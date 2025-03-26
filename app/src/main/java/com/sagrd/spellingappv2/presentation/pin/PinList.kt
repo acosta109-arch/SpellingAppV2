@@ -47,7 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sagrd.spellingappv2.data.local.entities.PinEntity
 import com.sagrd.spellingappv2.presentation.pin.PinViewModel
-import com.sagrd.spellingappv2.presentation.pin.Uistate
+import com.sagrd.spellingappv2.presentation.pin.UiState
 import edu.ucne.spellingapp.R
 
 @Composable
@@ -71,7 +71,7 @@ fun PinListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PinBodyListScreen(
-    uiState: Uistate,
+    uiState: UiState,
     onCreate: () -> Unit,
     onDelete: (Int) -> Unit,
     onBack: () -> Unit,
@@ -227,7 +227,7 @@ fun PinRow(
                         DropdownMenuItem(
                             text = { Text("Eliminar") },
                             onClick = {
-                                onDelete(pin.pinId!!)
+                                onDelete(pin.pinId ?: 0)
                                 expanded = false
                             }
                         )
@@ -237,4 +237,3 @@ fun PinRow(
         }
     }
 }
-

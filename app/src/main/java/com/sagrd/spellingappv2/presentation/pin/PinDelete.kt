@@ -68,7 +68,7 @@ fun PinDelete(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PinBodyDelete(
-    uiState: Uistate,
+    uiState: UiState,
     goBack: () -> Unit,
     onDelete: () -> Unit,
     onMenuClick: () -> Unit
@@ -230,18 +230,4 @@ fun PinBodyDelete(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PinDeletePreview() {
-    val fake = Uistate(
-        pinId = 1, pin = "1234"
-    )
-    PinBodyDelete(
-        uiState = fake,
-        goBack = {},
-        onDelete = {},
-        onMenuClick = {}
-    )
 }

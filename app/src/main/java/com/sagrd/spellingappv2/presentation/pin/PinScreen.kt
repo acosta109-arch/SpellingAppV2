@@ -60,7 +60,7 @@ fun PinScreen(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun PinBodyScreen(
-    uiState: Uistate,
+    uiState: UiState,
     goBack: () -> Unit,
     onPinChange: (String) -> Unit,
     onSave: () -> Unit,
