@@ -14,11 +14,12 @@ import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import android.util.Log
+import com.sagrd.spellingappv2.data.remote.pines.PinesManagerApi
 
 @InstallIn(SingletonComponent::class)
 @Module
 object ApiModule {
-    private const val BASE_URL_PALABRAS = "https://spellingappv2.azurewebsites.net/"
+    private const val BASE_URL_APP = "https://spellingappv2.azurewebsites.net/"
 
     @Provides
     @Singleton
@@ -29,13 +30,25 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun providesArticuloManagerApi(moshi: Moshi): PalabrasManagerApi {
+    fun providesPalabraManagerApi(moshi: Moshi): PalabrasManagerApi {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL_PALABRAS)
+            .baseUrl(BASE_URL_APP)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(PalabrasManagerApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun providesPinesManagerApi(moshi: Moshi): PinesManagerApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL_APP)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(PinesManagerApi::class.java)
+    }
+
+
 
     @Provides
     @Singleton
