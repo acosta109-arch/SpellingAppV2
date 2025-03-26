@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PinDao {
     @Upsert
-    suspend fun savePin(pin: PinEntity)
+    suspend fun savePin(pin: List<PinEntity>)
 
     @Delete
     suspend fun deletePin(pin: PinEntity)
