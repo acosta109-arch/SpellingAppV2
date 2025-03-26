@@ -21,6 +21,7 @@ import com.sagrd.spellingappv2.presentation.login.EditarPerfil
 import com.sagrd.spellingappv2.presentation.login.LoginScreen
 import com.sagrd.spellingappv2.presentation.login.Perfil
 import com.sagrd.spellingappv2.presentation.login.RegistrarScreen
+import com.sagrd.spellingappv2.presentation.loginHijo.LoginPinScreen
 import com.sagrd.spellingappv2.presentation.palabras.PalabrasListScreen
 import com.sagrd.spellingappv2.presentation.pin.PinDelete
 import com.sagrd.spellingappv2.presentation.pin.PinScreen
@@ -38,7 +39,9 @@ fun nav_spelling_app(
 
     val shouldShowDrawer by remember(currentRoute) {
         derivedStateOf {
-            !currentRoute.contains("LoginScreen") && !currentRoute.contains("RegistrarScreen")
+            !currentRoute.contains("LoginScreen") &&
+                    !currentRoute.contains("RegistrarScreen") &&
+                    !currentRoute.contains("LoginPinScreen")
         }
     }
 
@@ -97,6 +100,9 @@ private fun NavContent(
                 },
                 goToRegistrar = {
                     navHostController.navigate(Screen.RegistrarScreen)
+                },
+                goToLoginPinHijo = {
+                    navHostController.navigate(Screen.LoginPinScreen)
                 },
                 onLoginSuccess = onLoginSuccess
             )
@@ -222,6 +228,21 @@ private fun NavContent(
                 onBack = {
                     navHostController.navigateUp()
                 }
+            )
+        }
+
+        composable<Screen.LoginPinScreen> {
+            LoginPinScreen(
+                goBack = {
+                    navHostController.navigateUp()
+                },
+                goToDashboard = {
+                    navHostController.navigate(Screen.Dashboard)
+                },
+                goToRegistrar = {
+                    navHostController.navigate(Screen.RegistrarScreen)
+                },
+                onLoginSuccess = onLoginSuccess
             )
         }
     }

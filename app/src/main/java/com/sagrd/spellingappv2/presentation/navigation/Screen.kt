@@ -45,5 +45,8 @@ sealed class Screen {
     @Serializable
     data object TestScreen: Screen()
 
+    @Serializable
+    data object LoginPinScreen: Screen()
+
 
 }

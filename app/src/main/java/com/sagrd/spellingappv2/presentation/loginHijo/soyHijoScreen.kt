@@ -1,8 +1,5 @@
-package com.sagrd.spellingappv2.presentation.login
+package com.sagrd.spellingappv2.presentation.loginHijo
 
-import android.app.Activity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,7 +7,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,80 +25,45 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import edu.ucne.spellingapp.R
 
 @Composable
-fun LoginScreen(
-    viewModel: UsuarioViewModel = hiltViewModel(),
+fun LoginPinScreen(
+    viewModel: LoginHijoViewModel = hiltViewModel(),
     goBack: () -> Unit,
     goToDashboard: () -> Unit,
     goToRegistrar: () -> Unit,
-    goToLoginPinHijo: () -> Unit,
     onLoginSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        if (AuthManager.isLoggedIn) {
+    LaunchedEffect(uiState.isLoginSuccessful) {
+        if (uiState.isLoginSuccessful) {
             goToDashboard()
             onLoginSuccess()
         }
     }
 
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken("617138256064-jc5tu8he582ta80gj4s2gbvataddr3hb.apps.googleusercontent.com")
-        .requestEmail()
-        .build()
-    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-
-    val googleSignInLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            viewModel.handleGoogleSignInResult(result.data)
-        }
-    }
-
-    LaunchedEffect(uiState.successMessage) {
-        if (uiState.successMessage != null) {
-            goToDashboard()
-            onLoginSuccess()
-        }
-    }
-
-    LoginBodyScreen(
+    LoginPinBodyScreen(
         uiState = uiState,
-        onEmailChange = viewModel::onEmailChange,
-        onContrasenaChange = viewModel::onContrasenaChange,
-        login = { email, contrasena ->
-            viewModel.login(email, contrasena)
+        onPinChange = viewModel::onPinChange,
+        login = { pin ->
+            viewModel.login()
         },
-        goToRegistrar = goToRegistrar,
-        goToLoginPinHijo = goToLoginPinHijo, // Pass the navigation callback
-        onGoogleSignInClick = {
-            val signInIntent = googleSignInClient.signInIntent
-            googleSignInLauncher.launch(signInIntent)
-        }
+        goToRegistrar = goToRegistrar
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginBodyScreen(
-    uiState: UsuarioViewModel.UiState,
-    onEmailChange: (String) -> Unit,
-    onContrasenaChange: (String) -> Unit,
-    login: (String, String) -> Unit,
-    goToRegistrar: () -> Unit,
-    goToLoginPinHijo: () -> Unit, // New parameter
-    onGoogleSignInClick: () -> Unit
+fun LoginPinBodyScreen(
+    uiState: LoginUiState,
+    onPinChange: (String) -> Unit,
+    login: (String) -> Unit,
+    goToRegistrar: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var contrasena by remember { mutableStateOf("") }
-    var contrasenaVisible by remember { mutableStateOf(false) }
+    var pin by remember { mutableStateOf("") }
+    var pinVisible by remember { mutableStateOf(false) }
 
     val isDarkMode = isSystemInDarkTheme()
 
@@ -157,37 +118,24 @@ fun LoginBodyScreen(
                 color = Color.Black
             )
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
-                label = { Text(text = "Correo Electrónico", color = Color.Black) },
-                leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                value = email,
-                onValueChange = {
-                    email = it
-                    onEmailChange(it)
-                },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
-                ),
-                shape = RoundedCornerShape(4.dp)
+            Text(
+                text = "Iniciar Sesión con PIN",
+                fontSize = 18.sp,
+                color = Color.Gray
             )
 
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                label = { Text(text = "Contraseña", color = Color.Black) },
+                label = { Text(text = "PIN", color = Color.Black) },
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                value = contrasena,
+                value = pin,
                 onValueChange = {
-                    contrasena = it
-                    onContrasenaChange(it)
+                    pin = it
+                    onPinChange(it)
                 },
-                visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = if (pinVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White,
                     focusedBorderColor = Color.Gray,
@@ -195,10 +143,10 @@ fun LoginBodyScreen(
                 ),
                 shape = RoundedCornerShape(4.dp),
                 trailingIcon = {
-                    IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
+                    IconButton(onClick = { pinVisible = !pinVisible }) {
                         Image(
-                            painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
-                            contentDescription = "Mostrar/Ocultar Contraseña"
+                            painter = painterResource(id = if (pinVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
+                            contentDescription = "Mostrar/Ocultar PIN"
                         )
                     }
                 }
@@ -214,7 +162,7 @@ fun LoginBodyScreen(
             }
 
             Button(
-                onClick = { login(email, contrasena) },
+                onClick = { login(pin) },
                 colors = ButtonDefaults.elevatedButtonColors(containerColor = backgroundColorLogin),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -252,19 +200,8 @@ fun LoginBodyScreen(
                 )
             }
 
-            Button(
-                onClick = goToLoginPinHijo,
-                colors = ButtonDefaults.elevatedButtonColors(containerColor = backgroundColorLogin),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(28.dp)
-            ) {
-                Text(text = "Soy Hijo", color = Color.White)
-            }
-
             TextButton(onClick = goToRegistrar) {
-                Text("¿No tienes cuenta? Regístrate", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("¿No tienes un PIN? Regístrate", color = Color.Black, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -272,14 +209,11 @@ fun LoginBodyScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun LoginPreview() {
-    LoginBodyScreen(
-        uiState = UsuarioViewModel.UiState(),
-        onEmailChange = {},
-        onContrasenaChange = {},
-        login = { _, _ -> },
-        goToRegistrar = {},
-        goToLoginPinHijo = {}, // Add this to the preview
-        onGoogleSignInClick = {}
+private fun LoginPinPreview() {
+    LoginPinBodyScreen(
+        uiState = LoginUiState(),
+        onPinChange = {},
+        login = {},
+        goToRegistrar = {}
     )
 }
