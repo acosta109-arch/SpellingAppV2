@@ -204,7 +204,6 @@ fun LoginBodyScreen(
                 }
             )
 
-            // Show error message if exists
             if (uiState.errorMessage != null) {
                 Text(
                     text = uiState.errorMessage,

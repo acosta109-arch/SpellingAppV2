@@ -44,7 +44,7 @@ class TestViewModel @Inject constructor(
     }
 
     private fun initTextToSpeech() {
-        val locEnglish = Locale.US // or Locale.UK for British English
+        val locEnglish = Locale.US
         if (TextToSpeech.LANG_AVAILABLE == textToSpeech.isLanguageAvailable(locEnglish)) {
             textToSpeech.language = locEnglish
         }

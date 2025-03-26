@@ -76,7 +76,6 @@ class LoginHijoViewModel @Inject constructor(
                 return@launch
             }
 
-            // Check if the entered PIN exists in the registered pins
             val existingPin = uiState.value.registeredPins
                 .firstOrNull { it.pin == uiState.value.pin }
 

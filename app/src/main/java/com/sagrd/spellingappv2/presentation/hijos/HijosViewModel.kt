@@ -23,7 +23,6 @@ class hijosViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(Uistate())
     val uiState = _uiState.asStateFlow()
 
-    // Track whether save should be prevented
     private var shouldPreventSave = false
 
     init {
@@ -69,13 +68,12 @@ class hijosViewModel @Inject constructor(
                         )
                     }
                     nuevo()
-                    onSuccess() // Call the success callback
+                    onSuccess()
                 }
             }
         }
     }
 
-    // Modified to expose whether save should be prevented
     fun canSave(): Boolean = !shouldPreventSave
 
     fun nuevo(){

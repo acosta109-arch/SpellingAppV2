@@ -38,11 +38,10 @@ fun SplashScreen(
         )
     }
 
-    // Text color to match the login screen
     val textColor = Color.White
 
     LaunchedEffect(Unit) {
-        delay(3000) // 3 seconds splash screen duration
+        delay(3000)
         onNavigateToLogin()
     }
 

@@ -43,14 +43,12 @@ class UsuarioViewModel @Inject constructor(
     private fun checkCurrentUser() {
         val firebaseUser = firebaseAuth.currentUser
         firebaseUser?.let { user ->
-            // Update the state with current Firebase user
             viewModelScope.launch {
-                // Check if user exists in local DB
+
                 val localUser = usuarioRepository.getAllUsuarios()
                     .find { it.email == user.email }
 
                 if (localUser != null) {
-                    // User exists in local DB, update state with local user
                     _uiState.update {
                         it.copy(
                             usuarioActual = localUser,
@@ -58,7 +56,7 @@ class UsuarioViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    // User doesn't exist in local DB, create a new entry
+
                     val newUser = UsuarioEntity(
                         usuarioId = null,
                         nombre = user.displayName?.split(" ")?.firstOrNull() ?: "",
@@ -93,14 +91,12 @@ class UsuarioViewModel @Inject constructor(
 
 
     private suspend fun isPhoneNumberUnique(phoneNumber: String, currentUserId: Int? = null): Boolean {
-        // Check in local repository if a user with this phone number already exists
         return usuarioRepository.getAllUsuarios()
             .none { it.telefono == phoneNumber && it.usuarioId != currentUserId }
     }
 
     fun saveUsuario() {
         viewModelScope.launch {
-            // Existing validations
             if (_uiState.value.nombre.isBlank() || _uiState.value.email.isBlank() || _uiState.value.contrasena.isBlank()) {
                 _uiState.update {
                     it.copy(errorMessage = "Todos los campos son obligatorios.", successMessage = null)
@@ -115,7 +111,6 @@ class UsuarioViewModel @Inject constructor(
                 return@launch
             }
 
-            // New: Check phone number uniqueness
             if (!isPhoneNumberUnique(_uiState.value.telefono)) {
                 _uiState.update {
                     it.copy(
@@ -127,13 +122,11 @@ class UsuarioViewModel @Inject constructor(
             }
 
             try {
-                // First create the user in Firebase
                 val authResult = firebaseAuth.createUserWithEmailAndPassword(
                     _uiState.value.email,
                     _uiState.value.contrasena,
                 ).await()
 
-                // Then save to local database
                 usuarioRepository.insertUsuario(_uiState.value.toEntity())
 
                 _uiState.update {
@@ -161,7 +154,6 @@ class UsuarioViewModel @Inject constructor(
                 return@launch
             }
 
-            // Only validate password if it's a regular account (not Firebase)
             if (_uiState.value.firebaseUser == null && _uiState.value.contrasena.isBlank()) {
                 _uiState.update {
                     it.copy(errorMessage = "La contraseña es obligatoria.", successMessage = null)
@@ -176,7 +168,6 @@ class UsuarioViewModel @Inject constructor(
                 return@launch
             }
 
-            // Check phone number uniqueness during update, excluding current user
             if (!isPhoneNumberUnique(_uiState.value.telefono, _uiState.value.usuarioId)) {
                 _uiState.update {
                     it.copy(
@@ -188,12 +179,9 @@ class UsuarioViewModel @Inject constructor(
             }
 
             try {
-                // If a new password is provided and the user is authenticated with Firebase
                 if (_uiState.value.firebaseUser != null && _uiState.value.contrasena.isNotBlank()) {
-                    // Update Firebase Authentication password
                     firebaseAuth.currentUser?.updatePassword(_uiState.value.contrasena)?.await()
 
-                    // Update user info in Firestore
                     val db = FirebaseFirestore.getInstance()
                     val userId = firebaseAuth.currentUser?.uid
 
@@ -205,7 +193,6 @@ class UsuarioViewModel @Inject constructor(
                             "email" to _uiState.value.email
                         )
 
-                        // Only add password if it's not blank
                         if (_uiState.value.contrasena.isNotBlank()) {
                             userUpdates["contrasena"] = _uiState.value.contrasena
                         }
@@ -216,7 +203,6 @@ class UsuarioViewModel @Inject constructor(
                     }
                 }
 
-                // Update local database
                 usuarioRepository.updateUsuario(_uiState.value.toEntity())
 
                 _uiState.update {
@@ -276,7 +262,6 @@ class UsuarioViewModel @Inject constructor(
     fun deleteUsuario() {
         viewModelScope.launch {
             try {
-                // If user is authenticated with Firebase, delete from Firebase first
                 _uiState.value.firebaseUser?.let { user ->
                     try {
                         user.delete().await()
@@ -288,7 +273,6 @@ class UsuarioViewModel @Inject constructor(
                     }
                 }
 
-                // Then delete from local database
                 usuarioRepository.deleteUsuario(_uiState.value.toEntity())
 
                 _uiState.update {
@@ -313,17 +297,14 @@ class UsuarioViewModel @Inject constructor(
             try {
                 _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-                // Sign in with Firebase
                 val authResult = firebaseAuth.signInWithEmailAndPassword(email, contrasena).await()
                 val firebaseUser = authResult.user
 
                 if (firebaseUser != null) {
-                    // Check if user exists in local DB
                     val localUser = usuarioRepository.getAllUsuarios()
                         .find { it.email == email }
 
                     if (localUser != null) {
-                        // Update the state with both Firebase and local user info
                         _uiState.update {
                             it.copy(
                                 usuarioActual = localUser,
@@ -334,7 +315,6 @@ class UsuarioViewModel @Inject constructor(
                             )
                         }
                     } else {
-                        // User exists in Firebase but not in local DB, create it
                         val newUser = UsuarioEntity(
                             usuarioId = null,
                             nombre = firebaseUser.displayName?.split(" ")?.firstOrNull() ?: "",
@@ -387,7 +367,6 @@ class UsuarioViewModel @Inject constructor(
             )
         }
 
-        // Navigate to login screen
         _navController?.navigate(Screen.LoginScreen) {
             popUpTo(0) {
                 inclusive = true
@@ -485,21 +464,17 @@ class UsuarioViewModel @Inject constructor(
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 val account = task.getResult(ApiException::class.java)
 
-                // Authenticate with Firebase using the Google account
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                 val authResult = firebaseAuth.signInWithCredential(credential).await()
                 val firebaseUser = authResult.user
 
                 if (firebaseUser != null) {
-                    // Add logging for debugging
                     Log.d("GoogleSignIn", "Firebase user authenticated: ${firebaseUser.email}")
 
-                    // Check if user exists in local DB
                     val localUser = usuarioRepository.getAllUsuarios()
                         .find { it.email == firebaseUser.email }
 
                     if (localUser != null) {
-                        // Log existing user found
                         Log.d("GoogleSignIn", "Found existing user in local DB")
 
                         _uiState.update {
@@ -512,10 +487,8 @@ class UsuarioViewModel @Inject constructor(
                             )
                         }
                     } else {
-                        // Log new user creation
                         Log.d("GoogleSignIn", "Creating new user in local DB")
 
-                        // Extract name parts properly
                         val displayName = firebaseUser.displayName ?: ""
                         val nameParts = displayName.split(" ")
                         val firstName = if (nameParts.isNotEmpty()) nameParts[0] else ""
@@ -531,10 +504,8 @@ class UsuarioViewModel @Inject constructor(
                         )
 
                         try {
-                            // Insert the new user
                             usuarioRepository.insertUsuario(newUser)
 
-                            // Verify the user was inserted by querying again
                             val insertedUser = usuarioRepository.getAllUsuarios()
                                 .find { it.email == firebaseUser.email }
 
@@ -580,13 +551,10 @@ class UsuarioViewModel @Inject constructor(
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Sign in success
                     val user = FirebaseAuth.getInstance().currentUser
 
-                    // Check if user exists in Firestore
                     checkIfUserExistsInFirestore(user?.uid, account)
                 } else {
-                    // If sign in fails
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -615,7 +583,6 @@ class UsuarioViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    // User doesn't exist, create a new user document
                     createNewUserFromGoogleAccount(userId, account)
                 }
             }
@@ -632,7 +599,6 @@ class UsuarioViewModel @Inject constructor(
     private fun createNewUserFromGoogleAccount(userId: String, account: GoogleSignInAccount) {
         val db = FirebaseFirestore.getInstance()
 
-        // Create user object from Google account info
         val userMap = hashMapOf(
             "uid" to userId,
             "nombre" to (account.givenName ?: ""),

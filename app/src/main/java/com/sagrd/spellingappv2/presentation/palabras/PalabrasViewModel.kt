@@ -114,7 +114,6 @@ class PalabrasViewModel @Inject constructor(
 
     fun filterPalabras(query: String) {
         viewModelScope.launch {
-            // Get all palabras first
             palabrasRepository.getPalabras().collectLatest { result ->
                 when (result) {
                     is Resource.Loading -> {

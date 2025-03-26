@@ -273,17 +273,15 @@ fun PerfilBody(
 }
 
 fun formatPhoneNumber(phoneNumber: String?): String {
-    // Remove any non-digit characters
     val digitsOnly = phoneNumber?.replace("\\D".toRegex(), "") ?: return ""
 
-    // Check if the number has at least 10 digits
     return if (digitsOnly.length >= 10) {
         val areaCode = digitsOnly.substring(0, 3)
         val middleThree = digitsOnly.substring(3, 6)
         val lastFour = digitsOnly.substring(6, 10)
         "($areaCode) $middleThree-$lastFour"
     } else {
-        digitsOnly // Return original if not enough digits
+        digitsOnly
     }
 }
 @Preview

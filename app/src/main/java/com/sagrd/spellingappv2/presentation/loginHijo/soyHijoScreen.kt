@@ -154,7 +154,6 @@ fun LoginPinBodyScreen(
                 }
             )
 
-            // Show error message if exists
             if (uiState.errorMessage != null) {
                 Text(
                     text = uiState.errorMessage,
@@ -174,7 +173,6 @@ fun LoginPinBodyScreen(
                 Text(text = "Ingresar", color = Color.White)
             }
 
-            // Loading indicator
             if (uiState.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
