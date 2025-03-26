@@ -13,6 +13,9 @@ sealed class Screen {
     data object Dashboard: Screen()
 
     @Serializable
+    data object DashboardHijo: Screen()
+
+    @Serializable
     data class PinScreen(val pinId: Int): Screen()
 
     @Serializable
@@ -47,6 +50,15 @@ sealed class Screen {
 
     @Serializable
     data object LoginPinScreen: Screen()
+
+    @Serializable
+    data object AprenderScreen: Screen()
+
+    @Serializable
+    data object ProgresoScreen: Screen()
+
+    @Serializable
+    data object SplashScreen : Screen()
 
 
 }

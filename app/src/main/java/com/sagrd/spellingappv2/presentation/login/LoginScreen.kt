@@ -224,33 +224,6 @@ fun LoginBodyScreen(
                 Text(text = "Ingresar", color = Color.White)
             }
 
-            // Loading indicator
-            if (uiState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Divider(
-                    modifier = Modifier.weight(1f),
-                    color = Color.Gray
-                )
-                Text(
-                    text = " O ",
-                    color = Color.Gray,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-                Divider(
-                    modifier = Modifier.weight(1f),
-                    color = Color.Gray
-                )
-            }
 
             Button(
                 onClick = goToLoginPinHijo,

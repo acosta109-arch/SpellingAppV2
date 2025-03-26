@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import com.sagrd.spellingappv2.presentation.component.NavDrawer
+import com.sagrd.spellingappv2.presentation.dashboard.DashboardHijoScreen
 import com.sagrd.spellingappv2.presentation.dashboard.DashboardScreen
 import com.sagrd.spellingappv2.presentation.examTest.TestScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijoDelete
@@ -21,6 +22,7 @@ import com.sagrd.spellingappv2.presentation.login.EditarPerfil
 import com.sagrd.spellingappv2.presentation.login.LoginScreen
 import com.sagrd.spellingappv2.presentation.login.Perfil
 import com.sagrd.spellingappv2.presentation.login.RegistrarScreen
+import com.sagrd.spellingappv2.presentation.login.SplashScreen
 import com.sagrd.spellingappv2.presentation.loginHijo.LoginPinScreen
 import com.sagrd.spellingappv2.presentation.palabras.PalabrasListScreen
 import com.sagrd.spellingappv2.presentation.pin.PinDelete
@@ -41,7 +43,8 @@ fun nav_spelling_app(
         derivedStateOf {
             !currentRoute.contains("LoginScreen") &&
                     !currentRoute.contains("RegistrarScreen") &&
-                    !currentRoute.contains("LoginPinScreen")
+                    !currentRoute.contains("LoginPinScreen")&&
+                    !currentRoute.contains("DashboardHijoScreen")
         }
     }
 
@@ -88,8 +91,18 @@ private fun NavContent(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Screen.LoginScreen
+        startDestination = Screen.SplashScreen
     ) {
+
+        composable<Screen.SplashScreen> {
+            SplashScreen(
+                onNavigateToLogin = {
+                    navHostController.navigate(Screen.LoginScreen) {
+                        popUpTo(Screen.SplashScreen) { inclusive = true }
+                    }
+                }
+            )
+        }
         composable<Screen.LoginScreen> {
             LoginScreen(
                 goToDashboard = {
@@ -111,6 +124,12 @@ private fun NavContent(
         composable<Screen.Dashboard> {
             DashboardScreen(
                 onMenuClick = onMenuClick
+            )
+        }
+
+        composable<Screen.DashboardHijo> {
+            DashboardHijoScreen(
+                navHostController = navHostController
             )
         }
 
@@ -237,7 +256,7 @@ private fun NavContent(
                     navHostController.navigateUp()
                 },
                 goToDashboard = {
-                    navHostController.navigate(Screen.Dashboard)
+                    navHostController.navigate(Screen.DashboardHijo)
                 },
                 goToRegistrar = {
                     navHostController.navigate(Screen.RegistrarScreen)
