@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.sagrd.spellingappv2.presentation.login.AuthManager.logout
 import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel.UiState
 import com.sagrd.spellingappv2.presentation.navigation.Screen
 import kotlinx.coroutines.launch
@@ -142,12 +143,6 @@ fun PerfilBody(
                         .background(Color.White.copy(alpha = 0.3f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Image(
-                    //     painter = painterResource(id = R.drawable.profile_image),
-                    //     contentDescription = "Foto de perfil",
-                    //     modifier = Modifier.fillMaxSize(),
-                    //     contentScale = ContentScale.Crop
-                    // )
 
                     Icon(
                         imageVector = Icons.Default.Person,
@@ -253,7 +248,7 @@ fun PerfilBody(
                                 inclusive = true
                             }
                         }
-                        AuthManager.logout()
+                        logout()
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(
                         red = 183,

@@ -37,58 +37,7 @@ class UsuarioViewModel @Inject constructor(
 
     init {
         getUsuarios()
-        checkCurrentUser()
     }
-
-    private fun checkCurrentUser() {
-        val firebaseUser = firebaseAuth.currentUser
-        firebaseUser?.let { user ->
-            viewModelScope.launch {
-
-                val localUser = usuarioRepository.getAllUsuarios()
-                    .find { it.email == user.email }
-
-                if (localUser != null) {
-                    _uiState.update {
-                        it.copy(
-                            usuarioActual = localUser,
-                            firebaseUser = user
-                        )
-                    }
-                } else {
-
-                    val newUser = UsuarioEntity(
-                        usuarioId = null,
-                        nombre = user.displayName?.split(" ")?.firstOrNull() ?: "",
-                        apellido = user.displayName?.split(" ")?.lastOrNull() ?: "",
-                        telefono = user.phoneNumber ?: "",
-                        email = user.email ?: "",
-                        contrasena = "" // Firebase handles auth, no need for local password
-                    )
-                    try {
-                        usuarioRepository.insertUsuario(newUser)
-                        val insertedUser = usuarioRepository.getAllUsuarios()
-                            .find { it.email == user.email }
-
-                        _uiState.update {
-                            it.copy(
-                                usuarioActual = insertedUser,
-                                firebaseUser = user
-                            )
-                        }
-                    } catch (e: Exception) {
-                        _uiState.update {
-                            it.copy(
-                                errorMessage = "Error al guardar usuario de Firebase: ${e.message}",
-                                firebaseUser = user
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
 
     private suspend fun isPhoneNumberUnique(phoneNumber: String, currentUserId: Int? = null): Boolean {
         return usuarioRepository.getAllUsuarios()
@@ -321,7 +270,7 @@ class UsuarioViewModel @Inject constructor(
                             apellido = firebaseUser.displayName?.split(" ")?.lastOrNull() ?: "",
                             telefono = firebaseUser.phoneNumber ?: "",
                             email = firebaseUser.email ?: "",
-                            contrasena = "" // Firebase handles auth, no need for local password
+                            contrasena = ""
                         )
 
                         usuarioRepository.insertUsuario(newUser)
@@ -351,15 +300,9 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
-    fun setNavController(navController: NavHostController) {
-        _navController = navController
-    }
-
     fun logout() {
-        // Sign out from Firebase
         firebaseAuth.signOut()
 
-        // Update local state
         _uiState.update { currentState ->
             currentState.copy(
                 usuarioActual = null,
@@ -421,12 +364,6 @@ class UsuarioViewModel @Inject constructor(
     fun onFotoUrlChange(fotoUrl: String) {
         _uiState.update {
             it.copy(fotoUrl = fotoUrl)
-        }
-    }
-
-    fun clearMessages() {
-        _uiState.update {
-            it.copy(errorMessage = null, successMessage = null)
         }
     }
 
@@ -575,7 +512,7 @@ class UsuarioViewModel @Inject constructor(
         db.collection("usuarios").document(userId).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    // User exists, just update login state
+
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -605,7 +542,7 @@ class UsuarioViewModel @Inject constructor(
             "apellido" to (account.familyName ?: ""),
             "email" to (account.email ?: ""),
             "fotoUrl" to (account.photoUrl?.toString() ?: ""),
-            "telefono" to "",  // Google doesn't provide phone number
+            "telefono" to "",
             "authProvider" to "google"
         )
 

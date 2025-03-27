@@ -357,7 +357,7 @@ class PhoneVisualTrans : VisualTransformation {
         } else {
             buildString {
                 append("(")
-                append(digits.take(3)) // Código de área
+                append(digits.take(3))
                 if (digits.length > 3) append(") ")
                 if (digits.length in 4..6) append(digits.substring(3))
                 if (digits.length > 6) append(digits.substring(3, minOf(6, digits.length)) + "-")

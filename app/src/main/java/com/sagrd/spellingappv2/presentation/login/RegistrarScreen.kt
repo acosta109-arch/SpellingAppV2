@@ -193,7 +193,7 @@ fun RegistrarBodyScreen(
                 label = { Text(text = "Número De Teléfono", color = Color.Black) },
                 leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                value = uiState.telefono, // Mantenemos solo los números
+                value = uiState.telefono,
                 onValueChange = { newValue ->
                     val digits = newValue.filter { it.isDigit() }.take(10)
                     onTelefonoChange(digits)

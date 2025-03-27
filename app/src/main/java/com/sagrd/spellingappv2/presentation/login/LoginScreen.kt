@@ -80,7 +80,7 @@ fun LoginScreen(
             viewModel.login(email, contrasena)
         },
         goToRegistrar = goToRegistrar,
-        goToLoginPinHijo = goToLoginPinHijo, // Pass the navigation callback
+        goToLoginPinHijo = goToLoginPinHijo,
         onGoogleSignInClick = {
             val signInIntent = googleSignInClient.signInIntent
             googleSignInLauncher.launch(signInIntent)
@@ -96,7 +96,7 @@ fun LoginBodyScreen(
     onContrasenaChange: (String) -> Unit,
     login: (String, String) -> Unit,
     goToRegistrar: () -> Unit,
-    goToLoginPinHijo: () -> Unit, // New parameter
+    goToLoginPinHijo: () -> Unit,
     onGoogleSignInClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
@@ -251,7 +251,7 @@ private fun LoginPreview() {
         onContrasenaChange = {},
         login = { _, _ -> },
         goToRegistrar = {},
-        goToLoginPinHijo = {}, // Add this to the preview
+        goToLoginPinHijo = {},
         onGoogleSignInClick = {}
     )
 }
