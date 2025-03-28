@@ -86,6 +86,7 @@ private fun TestBody(
     val isDarkMode = isSystemInDarkTheme()
     var showStartDialog by remember { mutableStateOf(true) }
     var showExitDialog by remember { mutableStateOf(false) }
+    var showCompletionDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val gradientColors = if (isDarkMode) {
@@ -116,6 +117,52 @@ private fun TestBody(
         Color.White.copy(alpha = 0.7f)
 
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
+
+    // Completion Dialog
+    if (showCompletionDialog || (uiState.palabras.isNotEmpty() && uiState.palabraActual == uiState.totalPalabras - 1)) {
+        AlertDialog(
+            onDismissRequest = { showCompletionDialog = false },
+            title = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.abeja),
+                        contentDescription = "Abeja",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(bottom = 16.dp)
+                    )
+                    Text(
+                        "Test Completado",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            },
+            text = {
+                Text(
+                    "Has completado el test para tu hijo. ¡Felicidades!",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = onBack,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = primaryButtonColor
+                    )
+                ) {
+                    Text("Salir del Test")
+                }
+            },
+            containerColor = cardColor,
+            titleContentColor = textColor,
+            textContentColor = textColor
+        )
+    }
 
     if (showStartDialog) {
         AlertDialog(
@@ -305,7 +352,13 @@ private fun TestBody(
                         }
 
                         Button(
-                            onClick = onNext,
+                            onClick = {
+                                if (uiState.palabraActual == uiState.totalPalabras - 1) {
+                                    showCompletionDialog = true
+                                } else {
+                                    onNext()
+                                }
+                            },
                             enabled = uiState.palabraActual < uiState.totalPalabras - 1,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = primaryButtonColor,
@@ -314,7 +367,7 @@ private fun TestBody(
                                 disabledContentColor = Color.White.copy(alpha = 0.7f)
                             )
                         ) {
-                            Text("Siguiente")
+                            Text(if (uiState.palabraActual == uiState.totalPalabras - 1) "Terminar" else "Siguiente")
                             Icon(
                                 imageVector = Icons.Default.ArrowForward,
                                 contentDescription = "Siguiente"

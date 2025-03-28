@@ -14,6 +14,7 @@ import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import android.util.Log
+import com.sagrd.spellingappv2.data.remote.logros.LogrosManagerApi
 import com.sagrd.spellingappv2.data.remote.pines.PinesManagerApi
 
 @InstallIn(SingletonComponent::class)
@@ -46,6 +47,16 @@ object ApiModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(PinesManagerApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesLogrosManagerApi(moshi: Moshi): LogrosManagerApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL_APP)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(LogrosManagerApi::class.java)
     }
 
 
