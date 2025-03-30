@@ -75,8 +75,7 @@ fun DashboardHijoScreen(
         onItemClick = { itemTitle ->
             when (itemTitle) {
                 "Inicio" -> navHostController.navigate(Screen.DashboardHijo)
-                "Aprender" -> navHostController.navigate(Screen.DashboardHijo)
-                "Mi Progreso" -> navHostController.navigate(Screen.DashboardHijo)
+                "Aprender" -> navHostController.navigate(Screen.AprenderScreen)
             }
             isDrawerVisible = false
         },

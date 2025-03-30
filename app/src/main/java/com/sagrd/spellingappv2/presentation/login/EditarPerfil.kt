@@ -398,20 +398,3 @@ class PhoneOffsetMap(private val original: String, private val transformed: Stri
     }
 }
 
-@Preview
-@Composable
-private fun EditPreview() {
-    EditarPerfilBody(
-        uiState = UiState(),
-        goBack = {},
-        onDelete = {},
-        onMenuClick = {},
-        onEdit = {},
-        onNombreChange = {},
-        onApellidoChange = {},
-        onTelefonoChange = {},
-        onContrasenaChange = {},
-        onConfirmarContrasenaChange = {},
-        onFotoUrlChange = {}
-    )
-}

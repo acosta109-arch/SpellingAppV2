@@ -36,4 +36,8 @@ class HijoRepository @Inject constructor(
     suspend fun deleteHijosByUsuarioId(usuarioId: Int) {
         hijoDao.deleteHijosByUsuarioId(usuarioId)
     }
+
+    suspend fun getHijosCount(): Int {
+        return hijoDao.getHijosCount()
+    }
 }

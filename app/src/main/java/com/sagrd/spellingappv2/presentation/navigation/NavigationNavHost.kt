@@ -28,6 +28,10 @@ import com.sagrd.spellingappv2.presentation.palabras.PalabrasListScreen
 import com.sagrd.spellingappv2.presentation.pin.PinDelete
 import com.sagrd.spellingappv2.presentation.pin.PinScreen
 import edu.ucne.registrotecnicos.presentation.pin.PinListScreen
+import com.sagrd.spellingappv2.presentation.aprender.AprenderScreen
+import com.sagrd.spellingappv2.presentation.logros.LogrosScreen
+import com.sagrd.spellingappv2.presentation.estadisticas.EstadisticaListScreen
+import com.sagrd.spellingappv2.presentation.logros.ProgresoScreen
 
 @Composable
 fun nav_spelling_app(
@@ -70,7 +74,7 @@ fun nav_spelling_app(
                     "Pines" -> navHostController.navigate(Screen.PinListScreen)
                     "Test" -> navHostController.navigate(Screen.TestScreen)
                     "Palabras" -> navHostController.navigate(Screen.PalabrasListScreen)
-                    "Estadisticas" -> navHostController.navigate(Screen.Dashboard)
+                    "Estadisticas" -> navHostController.navigate(Screen.EstadisticaListScreen)
                 }
                 closeDrawer()
             },
@@ -259,6 +263,45 @@ private fun NavContent(
                     navHostController.navigate(Screen.RegistrarScreen)
                 },
                 onLoginSuccess = onLoginSuccess
+            )
+        }
+
+        composable<Screen.AprenderScreen>{
+            AprenderScreen(
+                onBack = {
+                    navHostController.navigateUp()
+                },
+                onNavigateToLogros = {
+                    navHostController.navigate(Screen.LogrosScreen) {
+                        popUpTo(Screen.Dashboard)
+                    }
+                }
+            )
+        }
+
+        composable<Screen.LogrosScreen> {
+            LogrosScreen(
+                goBack = {
+                    navHostController.navigateUp()
+                },
+                onMenuClick = onMenuClick
+            )
+        }
+
+        composable<Screen.EstadisticaListScreen> {
+            EstadisticaListScreen(
+                goBack = { navHostController.navigateUp() },
+                onMenuClick = onMenuClick,
+                onNavigateToProgreso = {
+                    navHostController.navigate(Screen.ProgresoScreen)
+                }
+            )
+        }
+
+        composable<Screen.ProgresoScreen> {
+            ProgresoScreen(
+                onBack = { navHostController.navigateUp() },
+                onMenuClick = onMenuClick
             )
         }
     }

@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import javax.inject.Inject
 import android.util.Log
+import com.sagrd.spellingappv2.data.remote.palabras.PalabrasManagerApi
 
 class PalabraRepository @Inject constructor(
     private val dataSource: PalabrasDataSource,
-    private val palabraDao: PalabraDao
+    private val palabraDao: PalabraDao,
+    private val palabrasManagerApi: PalabrasManagerApi
 ) {
     fun getPalabras(): Flow<Resource<List<PalabraEntity>>> = flow {
         emit(Resource.Loading())
@@ -57,6 +59,15 @@ class PalabraRepository @Inject constructor(
                     fotoUrl = palabraDto.fotoUrl
                 )
             }
+    }
+
+    suspend fun getPalabrasCount(): Int {
+        return try {
+            val palabras = palabrasManagerApi.getPalabras()
+            palabras.size
+        } catch (e: Exception) {
+            0
+        }
     }
 
     suspend fun save(palabraDto: PalabrasDto) = dataSource.savePalabra(palabraDto)

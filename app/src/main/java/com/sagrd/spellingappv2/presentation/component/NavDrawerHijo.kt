@@ -76,8 +76,7 @@ fun NavDrawerHijo(
 
     val items = listOf(
         DrawerItemHijo("Inicio", painterResource(R.drawable.home), Screen.DashboardHijo),
-        DrawerItemHijo("Aprender", painterResource(R.drawable.palabras), Screen.DashboardHijo),
-        DrawerItemHijo("Mi Progreso", painterResource(R.drawable.progreso), Screen.DashboardHijo)
+        DrawerItemHijo("Aprender", painterResource(R.drawable.palabras), Screen.AprenderScreen)
     )
 
     ModalNavigationDrawer(

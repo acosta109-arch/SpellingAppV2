@@ -6,6 +6,7 @@ import com.sagrd.spellingappv2.data.remote.pines.PinesDataSource
 import com.sagrd.spellingappv2.data.remote.Resource
 import com.sagrd.spellingappv2.data.remote.dto.PalabrasDto
 import com.sagrd.spellingappv2.data.remote.dto.PinesDto
+import com.sagrd.spellingappv2.data.remote.pines.PinesManagerApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 class PinRepository @Inject constructor(
     private val dataSource: PinesDataSource,
-    private val pinDao: PinDao
+    private val pinDao: PinDao,
+    private val pinesManagerApi: PinesManagerApi
 ) {
     fun getPines(): Flow<Resource<List<PinEntity>>> = flow {
         emit(Resource.Loading())
@@ -53,6 +55,15 @@ class PinRepository @Inject constructor(
                     pin = pineDto.pin
                 )
             }
+    }
+
+    suspend fun getPinesCount(): Int {
+        return try {
+            val pines = pinesManagerApi.getPines()
+            pines.size
+        } catch (e: Exception) {
+            0
+        }
     }
 
     suspend fun save(pineDto: PinesDto) = dataSource.savePine(pineDto)

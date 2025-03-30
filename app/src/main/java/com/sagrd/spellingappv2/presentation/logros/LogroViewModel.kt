@@ -33,6 +33,12 @@ class LogrosViewModel @Inject constructor(
         viewModelScope.launch {
             if (isValid()) {
                 logrosRepository.save(_uiState.value.toEntity())
+            } else {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Todos los campos son obligatorios"
+                    )
+                }
             }
         }
     }

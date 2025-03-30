@@ -60,5 +60,10 @@ sealed class Screen {
     @Serializable
     data object SplashScreen : Screen()
 
+    @Serializable
+    data object LogrosScreen: Screen()
+
+    @Serializable
+    data object EstadisticaListScreen: Screen()
 
 }

@@ -33,4 +33,7 @@ interface HijoDao {
 
     @Query("DELETE FROM Hijos WHERE usuarioId = :usuarioId")
     suspend fun deleteHijosByUsuarioId(usuarioId: Int)
+
+    @Query("SELECT COUNT(*) FROM hijos")
+    suspend fun getHijosCount(): Int
 }

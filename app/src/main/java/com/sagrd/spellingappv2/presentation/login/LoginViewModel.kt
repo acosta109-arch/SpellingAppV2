@@ -201,7 +201,8 @@ class UsuarioViewModel @Inject constructor(
                         apellido = usuario?.apellido ?: "",
                         telefono = usuario?.telefono ?: "",
                         email = usuario?.email ?: "",
-                        contrasena = usuario?.contrasena ?: ""
+                        contrasena = usuario?.contrasena ?: "",
+                        usuarioActual = usuario
                     )
                 }
             }

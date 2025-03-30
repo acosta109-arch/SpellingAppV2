@@ -279,19 +279,3 @@ fun formatPhoneNumber(phoneNumber: String?): String {
         digitsOnly
     }
 }
-@Preview
-@Composable
-private fun PerfilPreview() {
-    PerfilBody(
-        uiState = UiState(
-            nombre = "Juan",
-            apellido = "Perez",
-            telefono = "8291234567"
-        ),
-        goBack = {},
-        onDelete = {},
-        onMenuClick = {},
-        goEdit = {},
-        navHostController = rememberNavController()
-    )
-}

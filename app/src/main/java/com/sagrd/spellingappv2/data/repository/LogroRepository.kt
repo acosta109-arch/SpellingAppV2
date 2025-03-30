@@ -8,9 +8,11 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import retrofit2.HttpException
 import android.util.Log
+import com.sagrd.spellingappv2.data.remote.logros.LogrosManagerApi
 
 class LogroRepository @Inject constructor(
-    private val dataSource: LogrosDataSource
+    private val dataSource: LogrosDataSource,
+    private val logrosManagerApi: LogrosManagerApi
 ){
     fun getLogros(): Flow<Resource<List<LogrosDto>>> = flow {
         try{
@@ -36,4 +38,14 @@ class LogroRepository @Inject constructor(
     suspend fun save(logrosDto: LogrosDto) = dataSource.saveLogro(logrosDto)
 
     suspend fun delete(id: Int) = dataSource.deleteLogro(id)
+
+    suspend fun getLogrosCount(): Int {
+        return try {
+            val logros = logrosManagerApi.getLogros()
+            logros.size
+        } catch (e: Exception) {
+            0
+        }
+    }
+
 }
