@@ -76,7 +76,7 @@ fun NavDrawer(
 
     val items = listOf(
         DrawerItem("Inicio", painterResource(R.drawable.home), Screen.Dashboard),
-        DrawerItem("Perfil", painterResource(R.drawable.perfil3d), Screen.Dashboard),
+        DrawerItem("Perfil", painterResource(R.drawable.perfil3d), Screen.Perfil(0)),
         DrawerItem("Hijos", painterResource(R.drawable.hijos), Screen.HijoListScreen),
         DrawerItem("Pines", painterResource(R.drawable.codigos), Screen.PinListScreen),
         DrawerItem("Test", painterResource(R.drawable.probar), Screen.Dashboard),
@@ -181,7 +181,6 @@ data class DrawerItem(
 @Composable
 private fun previewNavDrawer() {
     val navHostController = rememberNavController()
-    val onLoginSuccess = {}
     NavDrawer(
         navHostController = navHostController,
         isVisible = true,

@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
@@ -35,49 +37,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.sagrd.spellingappv2.presentation.login.AuthManager.logout
 import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel.UiState
 import com.sagrd.spellingappv2.presentation.navigation.Screen
-import kotlinx.coroutines.launch
 
 @Composable
-fun Perfil (
+fun Perfil(
+    usuarioId: Int,
     navHostController: NavHostController,
     viewModel: UsuarioViewModel = hiltViewModel(),
     goBack: () -> Unit,
     onMenuClick: () -> Unit,
-    usuarioId: Int,
     goEdit: (Int) -> Unit,
-){
-    LaunchedEffect(usuarioId) {
-        viewModel.selectUsuario(usuarioId)
-    }
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(usuarioId) {
+            viewModel.selectUsuario(usuarioId = usuarioId)
+    }
+
     PerfilBody(
         navHostController = navHostController,
         uiState = uiState,
         goBack = goBack,
-        onDelete = viewModel::deleteUsuario,
         onMenuClick = onMenuClick,
         goEdit = goEdit
     )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PerfilBody(
     navHostController: NavHostController,
     uiState: UiState,
     goBack: () -> Unit,
-    onDelete: () -> Unit,
     onMenuClick: () -> Unit,
     goEdit: (Int) -> Unit,
 ){
@@ -179,7 +175,7 @@ fun PerfilBody(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "${uiState.usuarioActual?.nombre}",
+                            text = uiState.usuarioActual?.nombre ?: "no encontrado",
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(start = 12.dp, top = 2.dp, bottom = 12.dp,end = 12.dp),
                             textAlign = TextAlign.Center
@@ -206,7 +202,7 @@ fun PerfilBody(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "${uiState.usuarioActual?.apellido}",
+                            text = uiState.usuarioActual?.apellido?: "no encontrado",
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(start = 12.dp, top = 2.dp, bottom = 12.dp,end = 12.dp),
                             textAlign = TextAlign.Center
@@ -233,7 +229,7 @@ fun PerfilBody(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = formatPhoneNumber(uiState.usuarioActual?.telefono),
+                            text = formatPhoneNumber(uiState.telefono),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(start = 12.dp, top = 2.dp, bottom = 12.dp,end = 12.dp),
                             textAlign = TextAlign.Center

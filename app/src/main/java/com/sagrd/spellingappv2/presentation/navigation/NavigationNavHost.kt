@@ -5,6 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,14 +34,18 @@ import edu.ucne.registrotecnicos.presentation.pin.PinListScreen
 import com.sagrd.spellingappv2.presentation.aprender.AprenderScreen
 import com.sagrd.spellingappv2.presentation.logros.LogrosScreen
 import com.sagrd.spellingappv2.presentation.estadisticas.EstadisticaListScreen
+import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel
 import com.sagrd.spellingappv2.presentation.logros.ProgresoScreen
 
 @Composable
 fun nav_spelling_app(
     navHostController: NavHostController,
     onLoginSuccess: () -> Unit,
+    viewModel: UsuarioViewModel = hiltViewModel(),
 ) {
     val isDrawerVisible = remember { mutableStateOf(false) }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: ""
@@ -69,7 +76,7 @@ fun nav_spelling_app(
             onItemClick = { itemTitle ->
                 when (itemTitle) {
                     "Inicio" -> navHostController.navigate(Screen.Dashboard)
-                    "Perfil" -> navHostController.navigate(Screen.Perfil(0))
+                    "Perfil" -> navHostController.navigate(Screen.Perfil(uiState.usuarioActual?.usuarioId ?: 0))
                     "Hijos" -> navHostController.navigate(Screen.HijoListScreen)
                     "Pines" -> navHostController.navigate(Screen.PinListScreen)
                     "Test" -> navHostController.navigate(Screen.TestScreen)
@@ -220,7 +227,7 @@ private fun NavContent(
                 goBack = {navHostController.navigateUp()},
                 onMenuClick = onMenuClick,
                 goEdit = { navHostController.navigate(Screen.EditPerfil(it)) },
-                navHostController = navHostController
+                navHostController = navHostController,
             )
         }
 
@@ -300,7 +307,6 @@ private fun NavContent(
 
         composable<Screen.ProgresoScreen> {
             ProgresoScreen(
-                onBack = { navHostController.navigateUp() },
                 onMenuClick = onMenuClick
             )
         }
