@@ -192,7 +192,7 @@ fun HijosRow(
 
     val pinHijo = pines.find { pin ->
         pin.pinId == hijos.pinId.toIntOrNull()
-    }?.pin ?: "Sin Tecnico"
+    }?.pin ?: "Pin no encontrado"
 
     Card(
         modifier = Modifier

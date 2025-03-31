@@ -1,5 +1,6 @@
 package com.sagrd.spellingappv2.presentation.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -24,19 +26,26 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -44,6 +53,7 @@ import androidx.navigation.NavHostController
 import com.sagrd.spellingappv2.presentation.login.AuthManager.logout
 import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel.UiState
 import com.sagrd.spellingappv2.presentation.navigation.Screen
+import edu.ucne.spellingapp.R
 
 @Composable
 fun Perfil(
@@ -75,9 +85,7 @@ fun PerfilBody(
     goEdit: (Int) -> Unit,
 ){
     val isDarkMode = isSystemInDarkTheme()
-
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
-
     val gradientColors = if (isDarkMode) {
         listOf(
             Color(0xFF283653),
@@ -91,6 +99,9 @@ fun PerfilBody(
             Color(0xFFAED6F1)
         )
     }
+
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
 
     Scaffold(
         topBar = {
@@ -233,15 +244,67 @@ fun PerfilBody(
                         )
                     }
                 }
+                if (showConfirmationDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            showConfirmationDialog = false
+                            pendingAction = null
+                        },
+                        title = {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.abeja),
+                                    contentDescription = "Abeja",
+                                    modifier = Modifier
+                                        .size(80.dp)
+                                        .padding(bottom = 16.dp)
+                                )
+                                Text(
+                                    "Cerrar Sesión",
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        },
+                        text = { Text("¿Estás seguro que deseas cerrar sesión?") },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    pendingAction?.invoke()
+                                    showConfirmationDialog = false
+                                    pendingAction = null
+                                }
+                            ) {
+                                Text("Confirmar")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    showConfirmationDialog = false
+                                    pendingAction = null
+                                }
+                            ) {
+                                Text("Cancelar")
+                            }
+                        }
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = {
-                        navHostController.navigate(Screen.LoginScreen) {
-                            popUpTo(0) {
-                                inclusive = true
+                        pendingAction = {
+                            navHostController.navigate(Screen.LoginScreen) {
+                                popUpTo(0) {
+                                    inclusive = true
+                                }
                             }
+                            logout()
                         }
-                        logout()
+                        showConfirmationDialog = true
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(
                         red = 183,
@@ -271,4 +334,15 @@ fun formatPhoneNumber(phoneNumber: String?): String {
     } else {
         digitsOnly
     }
+}
+
+@Preview
+@Composable
+private fun pelfilpreview() {
+    PerfilBody(
+        navHostController = NavHostController(LocalContext.current),
+        uiState = UiState(),
+        onMenuClick = {},
+        goEdit = {},
+    )
 }

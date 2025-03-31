@@ -34,7 +34,6 @@ class hijosViewModel @Inject constructor(
         viewModelScope.launch {
             val validationError = validate()
             if (validationError != null) {
-                // Set error message and prevent navigation
                 _uiState.update {
                     it.copy(
                         errorMessage = validationError,
@@ -50,7 +49,6 @@ class hijosViewModel @Inject constructor(
                 }
 
                 if (duplicateChild != null) {
-                    // Set duplicate error and prevent navigation
                     _uiState.update {
                         it.copy(
                             errorMessage = "Ya existe un hijo con este nombre y pin.",
@@ -59,7 +57,6 @@ class hijosViewModel @Inject constructor(
                     }
                     shouldPreventSave = true
                 } else {
-                    // Successful save
                     repository.saveHijo(_uiState.value.toEntity())
                     _uiState.update {
                         it.copy(

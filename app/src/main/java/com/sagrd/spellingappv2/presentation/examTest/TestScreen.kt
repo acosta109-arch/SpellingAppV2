@@ -87,7 +87,6 @@ private fun TestBody(
     var showStartDialog by remember { mutableStateOf(true) }
     var showExitDialog by remember { mutableStateOf(false) }
     var showCompletionDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     val gradientColors = if (isDarkMode) {
         listOf(

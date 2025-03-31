@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -110,79 +111,129 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
-    fun updateUsuario() {
+    fun updateUsuario(currentPassword: String? = null) {
         viewModelScope.launch {
+            // 1. Validaciones básicas
             if (_uiState.value.nombre.isBlank()) {
-                _uiState.update {
-                    it.copy(errorMessage = "Nombre no puede estar vacio.", successMessage = null)
-                }
+                _uiState.update { it.copy(errorMessage = "Nombre no puede estar vacío.") }
                 return@launch
             }
 
-            if (_uiState.value.firebaseUser == null && _uiState.value.contrasena.isBlank()) {
-                _uiState.update {
-                    it.copy(errorMessage = "La contraseña es obligatoria.", successMessage = null)
-                }
-                return@launch
-            }
+            val localUser = usuarioRepository.getUsuarioById(_uiState.value.usuarioId ?: 0)
+            val currentLocalPassword = localUser?.contrasena ?: ""
+            val isChangingPassword = _uiState.value.contrasena.isNotBlank()
+            val firebaseUser = firebaseAuth.currentUser
 
-            if (_uiState.value.firebaseUser == null && _uiState.value.contrasena != _uiState.value.confirmarContrasena) {
-                _uiState.update {
-                    it.copy(errorMessage = "Las contraseñas no coinciden.", successMessage = null)
+            // 2. Validaciones de contraseña
+            if (isChangingPassword) {
+                when {
+                    currentPassword.isNullOrBlank() -> {
+                        _uiState.update { it.copy(errorMessage = "Debe ingresar su contraseña actual") }
+                        return@launch
+                    }
+                    _uiState.value.contrasena != _uiState.value.confirmarContrasena -> {
+                        _uiState.update { it.copy(errorMessage = "Las nuevas contraseñas no coinciden") }
+                        return@launch
+                    }
+                    _uiState.value.contrasena.length < 8 -> {
+                        _uiState.update { it.copy(errorMessage = "La contraseña debe tener mínimo 8 caracteres") }
+                        return@launch
+                    }
+                    _uiState.value.contrasena == currentLocalPassword -> {
+                        _uiState.update { it.copy(errorMessage = "La nueva contraseña no puede ser igual a la actual") }
+                        return@launch
+                    }
                 }
-                return@launch
-            }
-
-            if (!isPhoneNumberUnique(_uiState.value.telefono, _uiState.value.usuarioId)) {
-                _uiState.update {
-                    it.copy(
-                        errorMessage = "Este número de teléfono ya está registrado por otro usuario.",
-                        successMessage = null
-                    )
-                }
-                return@launch
             }
 
             try {
-                if (_uiState.value.firebaseUser != null && _uiState.value.contrasena.isNotBlank()) {
-                    firebaseAuth.currentUser?.updatePassword(_uiState.value.contrasena)?.await()
-
-                    val db = FirebaseFirestore.getInstance()
-                    val userId = firebaseAuth.currentUser?.uid
-
-                    if (userId != null) {
-                        val userUpdates = hashMapOf<String, Any>(
-                            "nombre" to _uiState.value.nombre,
-                            "apellido" to _uiState.value.apellido,
+                // 3. Reautenticación y cambio de contraseña en Firebase
+                if (isChangingPassword && firebaseUser != null) {
+                    try {
+                        // Paso crucial: Reautenticación sin cerrar sesión
+                        val credential = EmailAuthProvider.getCredential(
+                            firebaseUser.email ?: "",
+                            currentPassword ?: ""
                         )
-
-                        if (_uiState.value.contrasena.isNotBlank()) {
-                            userUpdates["contrasena"] = _uiState.value.contrasena
+                        firebaseUser.reauthenticate(credential).await()
+                        firebaseUser.updatePassword(_uiState.value.contrasena).await()
+                    } catch (e: Exception) {
+                        _uiState.update {
+                            it.copy(errorMessage = "Contraseña actual incorrecta: ${e.message}")
                         }
-
-                        db.collection("usuarios").document(userId)
-                            .update(userUpdates)
-                            .await()
+                        return@launch
                     }
                 }
 
-                usuarioRepository.updateUsuario(_uiState.value.toEntity())
+                // 4. Actualización en base de datos local
+                val updatedEntity = _uiState.value.toEntity().copy(
+                    contrasena = if (isChangingPassword) _uiState.value.contrasena else currentLocalPassword
+                )
+                usuarioRepository.updateUsuario(updatedEntity)
 
+                // 5. Actualizar estado
                 _uiState.update {
                     it.copy(
-                        successMessage = "Usuario actualizado correctamente.",
+                        successMessage = "Perfil actualizado correctamente",
+                        usuarioActual = updatedEntity,
                         errorMessage = null
                     )
                 }
-                nuevoUsuario()
+
             } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Error: ${e.message}") }
+            }
+        }
+    }
+    fun updateUsuarioFirebase(currentPassword: String? = null) {
+        viewModelScope.launch {
+            try {
+                // 1. Validaciones básicas (nombre, etc.)
+                if (_uiState.value.nombre.isBlank()) {
+                    _uiState.update { it.copy(errorMessage = "Nombre no puede estar vacío") }
+                    return@launch
+                }
+
+                val user = firebaseAuth.currentUser
+                val isPasswordChanging = _uiState.value.contrasena.isNotBlank()
+
+                // 2. Si está cambiando la contraseña, reautenticar
+                if (isPasswordChanging && user != null) {
+                    try {
+                        // Reautenticación solo si es necesario
+                        val credential = EmailAuthProvider.getCredential(
+                            user.email ?: "",
+                            currentPassword ?: throw Exception("Se necesita la contraseña actual")
+                        )
+                        user.reauthenticate(credential).await()
+
+                        // Actualizar contraseña
+                        user.updatePassword(_uiState.value.contrasena).await()
+                    } catch (e: Exception) {
+                        _uiState.update { it.copy(errorMessage = "Error de autenticación: ${e.message}") }
+                        return@launch
+                    }
+                }
+
+                // 3. Actualizar otros datos en tu base de datos local
+                val updatedEntity = _uiState.value.toEntity().copy(
+                    contrasena = if (isPasswordChanging) _uiState.value.contrasena
+                    else usuarioRepository.getUsuarioById(_uiState.value.usuarioId ?: 0)?.contrasena ?: ""
+                )
+
+                usuarioRepository.updateUsuario(updatedEntity)
+
+                // 4. Actualizar estado
                 _uiState.update {
                     it.copy(
-                        errorMessage = "Error al actualizar el usuario: ${e.message}",
-                        successMessage = null
+                        successMessage = "Perfil actualizado correctamente",
+                        usuarioActual = updatedEntity,
+                        errorMessage = null
                     )
                 }
-                Log.e("UpdateUsuario", "Error updating user: ${e.message}", e)
+
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Error: ${e.message}") }
             }
         }
     }
@@ -216,7 +267,6 @@ class UsuarioViewModel @Inject constructor(
                             apellido = usuario?.apellido ?: "",
                             telefono = usuario?.telefono ?: "",
                             email = usuario?.email ?: "",
-                            contrasena = usuario?.contrasena ?: "",
                             usuarioActual = usuario
                         )
                     }

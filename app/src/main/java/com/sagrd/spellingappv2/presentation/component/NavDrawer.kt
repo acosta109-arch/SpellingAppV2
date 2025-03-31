@@ -26,7 +26,9 @@ import edu.ucne.spellingapp.R
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.text.font.FontWeight
 import com.sagrd.spellingappv2.presentation.login.AuthManager
+import com.sagrd.spellingappv2.presentation.login.AuthManager.logout
 
 @Composable
 fun NavDrawer(
@@ -41,24 +43,22 @@ fun NavDrawer(
     )
     val scope = rememberCoroutineScope()
     val selectedItem = remember { mutableStateOf(0) }
-
     val darkGradientColors = listOf(
         Color(0xFF0D47A1),
         Color(0xFF0277BD),
         Color(0xFF006064)
     )
-
     val lightGradientColors = listOf(
         Color(0xFF81D4FA),
         Color(0xFF4FC3F7),
         Color(0xFF80DEEA)
     )
-
     val isDarkTheme = MaterialTheme.colorScheme.background.luminance() < 0.5f
-
     val gradientColors = if (isDarkTheme) darkGradientColors else lightGradientColors
-
     val selectedTextColor = if (isDarkTheme) Color.White else Color.Black
+
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
 
     LaunchedEffect(isVisible) {
         if (isVisible) {
@@ -142,23 +142,80 @@ fun NavDrawer(
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
-                Button(
-
-                    onClick = {
-                        navHostController.navigate(Screen.LoginScreen) {
-                            popUpTo(0) {
-                                inclusive = true
+                if (showConfirmationDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            showConfirmationDialog = false
+                            pendingAction = null
+                        },
+                        title = {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.abeja),
+                                    contentDescription = "Abeja",
+                                    modifier = Modifier
+                                        .size(80.dp)
+                                        .padding(bottom = 16.dp)
+                                )
+                                Text(
+                                    "Cerrar Sesión",
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        },
+                        text = { Text("¿Estás seguro que deseas cerrar sesión?") },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    pendingAction?.invoke()
+                                    showConfirmationDialog = false
+                                    pendingAction = null
+                                }
+                            ) {
+                                Text("Confirmar")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    showConfirmationDialog = false
+                                    pendingAction = null
+                                }
+                            ) {
+                                Text("Cancelar")
                             }
                         }
-                        scope.launch { drawerState.close() }
-                        AuthManager.logout()
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Button(
+                    onClick = {
+                        pendingAction = {
+                            navHostController.navigate(Screen.LoginScreen) {
+                                popUpTo(0) {
+                                    inclusive = true
+                                }
+                            }
+                            logout()
+                        }
+                        showConfirmationDialog = true
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB71C1C)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(
+                        red = 183,
+                        green = 28,
+                        blue = 28,
+                        alpha = 255
+                    )
+                    ),
                     modifier = Modifier
                         .padding(16.dp)
                         .align(Alignment.CenterHorizontally)
-                ) {
-                    Text("Cerrar sesión", color = Color.White)
+                ){
+                    Text("Cerrar Sesión")
                 }
             }
         },

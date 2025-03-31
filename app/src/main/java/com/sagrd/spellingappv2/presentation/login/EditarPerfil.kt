@@ -7,6 +7,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +35,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -55,6 +59,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
@@ -66,7 +71,6 @@ import edu.ucne.spellingapp.R
 @Composable
 fun EditarPerfil(
     viewModel: UsuarioViewModel = hiltViewModel(),
-    goBack: () -> Unit,
     onMenuClick: () -> Unit,
     usuarioId: Int,
 ) {
@@ -77,16 +81,15 @@ fun EditarPerfil(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     EditarPerfilBody(
         uiState = uiState,
-        goBack = goBack,
-        onDelete = viewModel::deleteUsuario,
         onMenuClick = onMenuClick,
-        onEdit = viewModel::updateUsuario,
+        onEdit = { currentPassword ->
+            viewModel.updateUsuario(currentPassword)
+        },
         onNombreChange = viewModel::onNombreChange,
         onApellidoChange = viewModel::onApellidoChange,
         onTelefonoChange = viewModel::onTelefonoChange,
         onContrasenaChange = viewModel::onContrasenaChange,
-        onConfirmarContrasenaChange = viewModel::onConfirmarContrasenaChange,
-        onFotoUrlChange = viewModel::onFotoUrlChange,
+        onConfirmarContrasenaChange = viewModel::onConfirmarContrasenaChange
     )
 }
 
@@ -94,24 +97,32 @@ fun EditarPerfil(
 @Composable
 fun EditarPerfilBody(
     uiState: UiState,
-    goBack: () -> Unit,
-    onDelete: () -> Unit,
     onMenuClick: () -> Unit,
-    onEdit: () -> Unit,
+    onEdit: (String?) -> Unit,
     onNombreChange: (String) -> Unit,
     onApellidoChange: (String) -> Unit,
     onTelefonoChange: (String) -> Unit,
     onContrasenaChange: (String) -> Unit,
     onConfirmarContrasenaChange: (String) -> Unit,
-    onFotoUrlChange: (String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
-    var showImageDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     var isImageValid by remember { mutableStateOf(false) }
     var contrasenaVisible by remember { mutableStateOf(false) }
     var confirmarContrasenaVisible by remember { mutableStateOf(false) }
+    var contrasenaActualVisible by remember { mutableStateOf(false) }
+    var contrasenaActual by remember { mutableStateOf("") }
+    var showCurrentPasswordField by remember { mutableStateOf(false) }
+
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+    
+    LaunchedEffect(uiState.contrasena) {
+        if (uiState.contrasena.isNotBlank()) {
+            showCurrentPasswordField = true
+        }
+    }
 
     val imagePainter = rememberAsyncImagePainter(
         ImageRequest.Builder(context)
@@ -138,8 +149,6 @@ fun EditarPerfilBody(
             Color(0xFFAED6F1)
         )
     }
-
-    val copiaContraseña = uiState.contrasena
 
     Scaffold(
         topBar = {
@@ -174,7 +183,7 @@ fun EditarPerfilBody(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(24.dp)
+                    .padding(16.dp)
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -250,62 +259,102 @@ fun EditarPerfilBody(
                     ),
                     shape = RoundedCornerShape(4.dp)
                 )
+                Row(
+                    modifier = Modifier.align(Alignment.Start),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Checkbox(
+                        checked = showCurrentPasswordField,
+                        onCheckedChange = { showCurrentPasswordField = it }
 
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = { Text(text = "Contraseña", color = Color.White) },
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
-                    value = uiState.contrasena,
-                    onValueChange = onContrasenaChange,
-                    visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.White.copy(alpha = 0.2f),
-                        focusedBorderColor = Color.White,
-                        unfocusedBorderColor = Color.White,
-                        cursorColor = Color.White,
-                        focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(4.dp),
-                    trailingIcon = {
-                        IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
-                            Image(
-                                painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
-                                contentDescription = "Mostrar/Ocultar Contraseña"
-                            )
+                    )
+                    Text(text = "Cambiar contraseña")
+                }
+                if (showCurrentPasswordField) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        label = { Text(text = "Contraseña Actual", color = Color.White) },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
+                        value = contrasenaActual,
+                        onValueChange = { contrasenaActual = it },
+                        visualTransformation = if (contrasenaActualVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            containerColor = Color.White.copy(alpha = 0.2f),
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White,
+                            cursorColor = Color.White,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(4.dp),
+                        trailingIcon = {
+                            IconButton(onClick = { contrasenaActualVisible = !contrasenaActualVisible }) {
+                                Image(
+                                    painter = painterResource(id = if (contrasenaActualVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
+                                    contentDescription = "Mostrar/Ocultar Contraseña Actual"
+                                )
+                            }
                         }
-                    }
-                )
+                    )
 
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = { Text(text = "Confirmar Contraseña", color = Color.White) },
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
-                    value = copiaContraseña,
-                    onValueChange = onConfirmarContrasenaChange,
-                    visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.White.copy(alpha = 0.2f),
-                        focusedBorderColor = Color.White,
-                        unfocusedBorderColor = Color.White,
-                        cursorColor = Color.White,
-                        focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(4.dp),
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            confirmarContrasenaVisible = !confirmarContrasenaVisible
-                        }) {
-                            Image(
-                                painter = painterResource(id = if (confirmarContrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
-                                contentDescription = "Mostrar/Ocultar Contraseña"
-                            )
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        label = { Text(text = "Nueva Contraseña", color = Color.White) },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
+                        value = uiState.contrasena,
+                        onValueChange = onContrasenaChange,
+                        visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            containerColor = Color.White.copy(alpha = 0.2f),
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White,
+                            cursorColor = Color.White,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(4.dp),
+                        trailingIcon = {
+                            IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
+                                Image(
+                                    painter = painterResource(id = if (contrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
+                                    contentDescription = "Mostrar/Ocultar Contraseña"
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        label = { Text(text = "Confirmar Nueva Contraseña", color = Color.White) },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
+                        value = uiState.confirmarContrasena,
+                        onValueChange = onConfirmarContrasenaChange,
+                        visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            containerColor = Color.White.copy(alpha = 0.2f),
+                            focusedBorderColor = Color.White,
+                            unfocusedBorderColor = Color.White,
+                            cursorColor = Color.White,
+                            focusedLabelColor = Color.White,
+                            unfocusedLabelColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(4.dp),
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                confirmarContrasenaVisible = !confirmarContrasenaVisible
+                            }) {
+                                Image(
+                                    painter = painterResource(id = if (confirmarContrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
+                                    contentDescription = "Mostrar/Ocultar Contraseña"
+                                )
+                            }
+                        }
+                    )
+
+                }
 
                 uiState.errorMessage?.let { message ->
                     Text(
@@ -327,14 +376,72 @@ fun EditarPerfilBody(
                     )
                 }
 
-                Spacer(modifier = Modifier.padding(16.dp))
+                if (showConfirmationDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            showConfirmationDialog = false
+                            pendingAction = null
+                        },
+                        title = {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.abeja),
+                                    contentDescription = "Abeja",
+                                    modifier = Modifier
+                                        .size(80.dp)
+                                        .padding(bottom = 16.dp)
+                                )
+                                Text(
+                                    "Actualizar",
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        },
+                        text = { Text("¿Estás seguro que deseas actualizar tus datos?") },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    pendingAction?.invoke()
+                                    showConfirmationDialog = false
+                                    pendingAction = null
+                                }
+                            ) {
+                                Text("Confirmar")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    showConfirmationDialog = false
+                                    pendingAction = null
+                                }
+                            ) {
+                                Text("Cancelar")
+                            }
+                        }
+                    )
+                }
+
                 Button(
-                    onClick = { onEdit() },
+                    onClick = {
+                        pendingAction = {
+                            if (showCurrentPasswordField) {
+                                onEdit(contrasenaActual)
+                            } else {
+                                onEdit(null)
+                            }
+                        }
+                        showConfirmationDialog = true
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(red = 190, green = 240, blue = 60, alpha = 255)
                     ),
                     modifier = Modifier
-                        .padding(top = 16.dp)
+                        .padding(top = 8.dp)
                 ) {
                     Text("Actualizar")
                 }
@@ -394,3 +501,24 @@ class PhoneOffsetMap(private val original: String, private val transformed: Stri
     }
 }
 
+@Preview
+@Composable
+private fun editPerfilPreview() {
+    EditarPerfilBody(
+        uiState = UiState(
+            nombre = "John",
+            apellido = "Doe",
+            telefono = "1234567890",
+            contrasena = "password",
+            confirmarContrasena = "password",
+
+        ),
+        onMenuClick = { },
+        onEdit = { },
+        onNombreChange = { },
+        onApellidoChange = { },
+        onTelefonoChange = { },
+        onContrasenaChange = { },
+        onConfirmarContrasenaChange = { }
+    )
+}

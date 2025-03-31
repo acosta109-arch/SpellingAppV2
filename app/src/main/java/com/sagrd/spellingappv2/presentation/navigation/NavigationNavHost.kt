@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -234,9 +233,6 @@ private fun NavContent(
             val args = backStackEntry.toRoute<Screen.EditPerfil>()
             EditarPerfil(
                 usuarioId = args.UsuarioId,
-                goBack = {
-                    navHostController.navigateUp()
-                    },
                 onMenuClick = onMenuClick
             )
         }
