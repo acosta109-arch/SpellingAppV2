@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -41,10 +43,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sagrd.spellingappv2.data.local.entities.PinEntity
 
 @Composable
 fun HijosScreen(
@@ -74,8 +78,8 @@ fun HijosScreen(
     )
 }
 
-@Composable
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun HijoBodyScreen(
     uiState: Uistate,
     goBack: () -> Unit,
@@ -87,36 +91,38 @@ fun HijoBodyScreen(
     onEdadChange: (Int) -> Unit,
     onUsuarioIdChange: (Int) -> Unit,
     onMenuClick: () -> Unit
-){
+) {
     val isDarkMode = isSystemInDarkTheme()
-
     val gradientColors = if (isDarkMode) {
-        listOf(
-            Color(0xFF283653),
-            Color(0xFF003D42),
-            Color(0xFF177882)
-        )
+        listOf(Color(0xFF283653), Color(0xFF003D42), Color(0xFF177882))
     } else {
-        listOf(
-            Color(0xFF7FB3D5),
-            Color(0xFF76D7EA),
-            Color(0xFFAED6F1)
-        )
+        listOf(Color(0xFF7FB3D5), Color(0xFF76D7EA), Color(0xFFAED6F1))
     }
-
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
-
     val textColor = if (isDarkMode) Color.White else Color.Black
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
     val accentColor = Color(0xFF5DADE2)
 
     var expandedPin by remember { mutableStateOf(false) }
     var expandedGenero by remember { mutableStateOf(false) }
+    var showPinInUseDialog by remember { mutableStateOf(false) }
+    var selectedPinForOverride by remember { mutableStateOf<PinEntity?>(null) }
+
+    val availablePins = uiState.pines.filter { pin ->
+        !uiState.usedPins.contains(pin.pinId.toString()) ||
+                pin.pinId.toString() == uiState.pinId
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Agregar Hijo", fontWeight = FontWeight.Bold, color = Color.White) },
+                title = {
+                    Text(
+                        text = if (uiState.hijoId == null) "Agregar Hijo" else "Editar Hijo",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = appBarColor,
                     titleContentColor = Color.White,
@@ -136,50 +142,33 @@ fun HijoBodyScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = gradientColors
-                    )
-                )
+                .background(Brush.verticalGradient(colors = gradientColors))
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(24.dp)
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = uiState.nombre,
                     onValueChange = onNombreChange,
                     label = { Text("Nombre", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedTextColor = textColor,
-                        unfocusedTextColor = textColor,
-                        cursorColor = textColor,
-                        focusedBorderColor = if (isDarkMode) Color.White else accentColor,
-                        unfocusedBorderColor = borderColor,
-                        focusedLabelColor = if (isDarkMode) Color.White else accentColor,
-                        unfocusedLabelColor = textColor
-                    )
+                    colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor)
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 OutlinedTextField(
                     value = uiState.apellido,
                     onValueChange = onApellidoChange,
                     label = { Text("Apellido", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedTextColor = textColor,
-                        unfocusedTextColor = textColor,
-                        cursorColor = textColor,
-                        focusedBorderColor = if (isDarkMode) Color.White else accentColor,
-                        unfocusedBorderColor = borderColor,
-                        focusedLabelColor = if (isDarkMode) Color.White else accentColor,
-                        unfocusedLabelColor = textColor
-                    )
+                    colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor)
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Box(modifier = Modifier.fillMaxWidth()) {
@@ -191,15 +180,7 @@ fun HijoBodyScreen(
                         value = uiState.genero,
                         onValueChange = {},
                         readOnly = true,
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedTextColor = textColor,
-                            unfocusedTextColor = textColor,
-                            cursorColor = textColor,
-                            focusedBorderColor = if (isDarkMode) Color.White else accentColor,
-                            unfocusedBorderColor = borderColor,
-                            focusedLabelColor = if (isDarkMode) Color.White else accentColor,
-                            unfocusedLabelColor = textColor
-                        ),
+                        colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor),
                         trailingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Add,
@@ -226,40 +207,29 @@ fun HijoBodyScreen(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+
                 OutlinedTextField(
                     value = uiState.edad.toString(),
                     onValueChange = { onEdadChange(it.toIntOrNull() ?: 0) },
                     label = { Text("Edad", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedTextColor = textColor,
-                        unfocusedTextColor = textColor,
-                        cursorColor = textColor,
-                        focusedBorderColor = if (isDarkMode) Color.White else accentColor,
-                        unfocusedBorderColor = borderColor,
-                        focusedLabelColor = if (isDarkMode) Color.White else accentColor,
-                        unfocusedLabelColor = textColor
-                    )
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor)
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 Box(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { expandedPin = true },
                         label = { Text("Pin", color = textColor) },
-                        value = uiState.pines.firstOrNull { it.pinId.toString() == uiState.pinId }?.pin ?: "",
+                        value = uiState.pines.firstOrNull { it.pinId.toString() == uiState.pinId }?.pin
+                            ?: "Seleccione un pin",
                         onValueChange = {},
                         readOnly = true,
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedTextColor = textColor,
-                            unfocusedTextColor = textColor,
-                            cursorColor = textColor,
-                            focusedBorderColor = if (isDarkMode) Color.White else accentColor,
-                            unfocusedBorderColor = borderColor,
-                            focusedLabelColor = if (isDarkMode) Color.White else accentColor,
-                            unfocusedLabelColor = textColor
-                        ),
+                        colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor),
                         trailingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Add,
@@ -273,94 +243,161 @@ fun HijoBodyScreen(
                         expanded = expandedPin,
                         onDismissRequest = { expandedPin = false }
                     ) {
-                        uiState.pines.forEach { tecnico ->
+                        if (availablePins.isEmpty()) {
                             DropdownMenuItem(
-                                text = { Text(tecnico.pin) },
-                                onClick = {
-                                    onPinChange(tecnico.pinId.toString())
-                                    expandedPin = false
-                                }
+                                text = { Text("No hay pines disponibles") },
+                                onClick = {}
                             )
+                        } else {
+                            availablePins.forEach { pin ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Text(pin.pin)
+                                            if (uiState.usedPins.contains(pin.pinId.toString())) {
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Text(
+                                                    "(En uso)",
+                                                    color = Color.Gray,
+                                                    style = MaterialTheme.typography.bodySmall
+                                                )
+                                            }
+                                        }
+                                    },
+                                    onClick = {
+                                        if (uiState.usedPins.contains(pin.pinId.toString()) &&
+                                            uiState.hijoId == null) {
+                                            selectedPinForOverride = pin
+                                            showPinInUseDialog = true
+                                        } else {
+                                            onPinChange(pin.pinId.toString())
+                                        }
+                                        expandedPin = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
 
-                // Error message display
-                uiState.errorMessage?.let {
+                uiState.errorMessage?.let { message ->
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = it,
+                        text = message,
                         color = Color.Red,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
 
-                // Success message display
-                uiState.successMessage?.let {
+                uiState.successMessage?.let { message ->
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = it,
+                        text = message,
                         color = Color.Green,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
 
-                Spacer(modifier = Modifier
-                    .height(16.dp)
-                    .weight(1f))
+                Spacer(modifier = Modifier.weight(1f))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .width(140.dp),
                         onClick = goBack,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = accentColor,
-                            contentColor = Color.White
-                        )
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.weight(1f).padding(end = 8.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Volver"
-                            )
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = "Volver")
+                            Text("Volver")
                         }
                     }
 
                     Button(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .width(140.dp),
-                        onClick = onSave,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = accentColor,
-                            contentColor = Color.White
-                        )
+                        onClick = {
+                            if (uiState.usedPins.contains(uiState.pinId) && uiState.hijoId == null) {
+                                selectedPinForOverride = uiState.pines.firstOrNull {
+                                    it.pinId.toString() == uiState.pinId
+                                }
+                                showPinInUseDialog = true
+                            } else {
+                                onSave()
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+                        modifier = Modifier.weight(1f).padding(start = 8.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Crear"
-                            )
+                            Icon(Icons.Default.Add, contentDescription = "Guardar")
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = "Crear")
+                            Text(if (uiState.hijoId == null) "Crear" else "Actualizar")
                         }
                     }
                 }
             }
         }
+
+        if (showPinInUseDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    showPinInUseDialog = false
+                    selectedPinForOverride = null
+                },
+                title = { Text("Pin en Uso") },
+                text = { Text("Este pin ya está asignado a otro hijo. ¿Desea reasignarlo?") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            selectedPinForOverride?.let { pin ->
+                                onPinChange(pin.pinId.toString())
+                                onSave()
+                            }
+                            showPinInUseDialog = false
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                    ) {
+                        Text("Confirmar")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            showPinInUseDialog = false
+                            selectedPinForOverride = null
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun textFieldColors(
+    isDarkMode: Boolean,
+    textColor: Color,
+    accentColor: Color,
+    borderColor: Color
+) = TextFieldDefaults.outlinedTextFieldColors(
+    focusedTextColor = textColor,
+    unfocusedTextColor = textColor,
+    cursorColor = textColor,
+    focusedBorderColor = if (isDarkMode) Color.White else accentColor,
+    unfocusedBorderColor = borderColor,
+    focusedLabelColor = if (isDarkMode) Color.White else accentColor,
+    unfocusedLabelColor = textColor,
+    containerColor = Color.Transparent
+)

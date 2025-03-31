@@ -30,6 +30,10 @@ class hijosViewModel @Inject constructor(
         getPines()
     }
 
+    private suspend fun isPinAlreadyUsed(pinId: String): Boolean {
+        return repository.getAllHijos().first().any { it.pinId == pinId }
+    }
+
     fun saveHijo(onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             val validationError = validate()
@@ -41,33 +45,47 @@ class hijosViewModel @Inject constructor(
                     )
                 }
                 shouldPreventSave = true
-            } else {
-                val duplicateChild = repository.getAllHijos().first().find { hijo ->
-                    hijo.nombre.equals(_uiState.value.nombre, ignoreCase = true) &&
-                            hijo.pinId == _uiState.value.pinId &&
-                            hijo.hijoId != _uiState.value.hijoId
-                }
-
-                if (duplicateChild != null) {
-                    _uiState.update {
-                        it.copy(
-                            errorMessage = "Ya existe un hijo con este nombre y pin.",
-                            successMessage = null
-                        )
-                    }
-                    shouldPreventSave = true
-                } else {
-                    repository.saveHijo(_uiState.value.toEntity())
-                    _uiState.update {
-                        it.copy(
-                            errorMessage = null,
-                            successMessage = "Hijo guardado exitosamente"
-                        )
-                    }
-                    nuevo()
-                    onSuccess()
-                }
+                return@launch
             }
+
+            val isPinUsed = isPinAlreadyUsed(_uiState.value.pinId)
+            if (isPinUsed && _uiState.value.hijoId == null) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Este pin ya está siendo utilizado por otro hijo",
+                        successMessage = null
+                    )
+                }
+                shouldPreventSave = true
+                return@launch
+            }
+
+            val duplicateChild = repository.getAllHijos().first().find { hijo ->
+                hijo.nombre.equals(_uiState.value.nombre, ignoreCase = true) &&
+                        hijo.pinId == _uiState.value.pinId &&
+                        hijo.hijoId != _uiState.value.hijoId
+            }
+
+            if (duplicateChild != null) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Ya existe un hijo con este nombre y pin.",
+                        successMessage = null
+                    )
+                }
+                shouldPreventSave = true
+                return@launch
+            }
+
+            repository.saveHijo(_uiState.value.toEntity())
+            _uiState.update {
+                it.copy(
+                    errorMessage = null,
+                    successMessage = "Hijo guardado exitosamente"
+                )
+            }
+            nuevo()
+            onSuccess()
         }
     }
 
@@ -84,6 +102,8 @@ class hijosViewModel @Inject constructor(
             _uiState.value.genero.isBlank() -> "El género no puede estar vacío."
             _uiState.value.edad == 0 -> "La edad no puede ser cero."
             _uiState.value.pinId.isBlank() -> "Debe asignarle un pin a su hijo."
+            _uiState.value.usedPins.contains(_uiState.value.pinId) &&
+                    _uiState.value.hijoId == null -> "Este pin ya está siendo utilizado."
             else -> null
         }
     }
@@ -103,10 +123,15 @@ class hijosViewModel @Inject constructor(
             pinRepository.getPines().collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
+                        val usedPins = repository.getAllHijos().first()
+                            .map { it.pinId }
+                            .toSet()
+
                         _uiState.update {
                             it.copy(
                                 pines = resource.data ?: emptyList(),
-                                errorMessage = null
+                                errorMessage = null,
+                                usedPins = usedPins
                             )
                         }
                     }
@@ -218,7 +243,8 @@ data class Uistate(
     val errorMessage: String? = null,
     val successMessage: String? = null,
     val hijos: List<HijoEntity> = emptyList(),
-    val pines: List<PinEntity> = emptyList()
+    val pines: List<PinEntity> = emptyList(),
+    val usedPins: Set<String> = emptySet()
 )
 
 fun Uistate.toEntity() = HijoEntity(
