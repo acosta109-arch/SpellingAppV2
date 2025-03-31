@@ -224,7 +224,6 @@ private fun NavContent(
             val args = it.toRoute<Screen.Perfil>()
             Perfil(
                 usuarioId = args.usuarioId,
-                goBack = {navHostController.navigateUp()},
                 onMenuClick = onMenuClick,
                 goEdit = { navHostController.navigate(Screen.EditPerfil(it)) },
                 navHostController = navHostController,

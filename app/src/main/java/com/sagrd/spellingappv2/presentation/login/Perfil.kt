@@ -50,7 +50,6 @@ fun Perfil(
     usuarioId: Int,
     navHostController: NavHostController,
     viewModel: UsuarioViewModel = hiltViewModel(),
-    goBack: () -> Unit,
     onMenuClick: () -> Unit,
     goEdit: (Int) -> Unit,
 ) {
@@ -63,7 +62,6 @@ fun Perfil(
     PerfilBody(
         navHostController = navHostController,
         uiState = uiState,
-        goBack = goBack,
         onMenuClick = onMenuClick,
         goEdit = goEdit
     )
@@ -73,7 +71,6 @@ fun Perfil(
 fun PerfilBody(
     navHostController: NavHostController,
     uiState: UiState,
-    goBack: () -> Unit,
     onMenuClick: () -> Unit,
     goEdit: (Int) -> Unit,
 ){

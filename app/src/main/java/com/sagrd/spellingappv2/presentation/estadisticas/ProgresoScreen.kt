@@ -38,13 +38,11 @@ import edu.ucne.spellingapp.R
 @Composable
 fun ProgresoScreen(
     viewModel: LogrosViewModel = hiltViewModel(),
-    onBack: () -> Unit,
     onMenuClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LogrosBodyListScreen(
         uiState = uiState,
-        onBack = onBack,
         onMenuClick = onMenuClick
     )
 }
@@ -53,7 +51,6 @@ fun ProgresoScreen(
 @Composable
 private fun LogrosBodyListScreen(
     uiState: LogrosUiState,
-    onBack: () -> Unit,
     onMenuClick: () -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
