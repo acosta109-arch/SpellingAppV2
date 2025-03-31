@@ -1,5 +1,6 @@
 package com.sagrd.spellingappv2.presentation.estadisticas
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -15,12 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import edu.ucne.spellingapp.R
 
 @Composable
 fun EstadisticaListScreen(
@@ -128,7 +131,6 @@ fun StatisticsBodyScreen(
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                // Grid layout for stat cards (2x2)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -138,6 +140,7 @@ fun StatisticsBodyScreen(
                         title = "Hijos",
                         count = uiState.hijosCount,
                         gradient = textGradient,
+                        imageResId = R.drawable.hijos,
                         modifier = Modifier.weight(1f)
                     )
 
@@ -146,6 +149,7 @@ fun StatisticsBodyScreen(
                         title = "Pines",
                         count = uiState.pinesCount,
                         gradient = textGradient,
+                        imageResId = R.drawable.codigos,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -159,14 +163,16 @@ fun StatisticsBodyScreen(
                         title = "Palabras",
                         count = uiState.palabrasCount,
                         gradient = textGradient,
+                        imageResId = R.drawable.palabras,
                         modifier = Modifier.weight(1f)
                     )
 
-                    // Logros Card
+                    // Estrellas Card
                     StatCard(
                         title = "Estrellas",
                         count = uiState.logrosCount,
                         gradient = textGradient,
+                        imageResId = R.drawable.star,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -213,6 +219,7 @@ fun StatCard(
     title: String,
     count: Int,
     gradient: Brush,
+    imageResId: Int,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -233,6 +240,15 @@ fun StatCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            // Image above the title
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(bottom = 4.dp)
+            )
+
             Text(
                 text = title,
                 fontSize = 18.sp,

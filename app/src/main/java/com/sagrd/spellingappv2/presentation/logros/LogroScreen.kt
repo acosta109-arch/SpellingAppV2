@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -180,14 +181,6 @@ fun LogrosBodyScreen(
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White
                 ),
-                navigationIcon = {
-                    IconButton(onClick = onMenuClick) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu"
-                        )
-                    }
-                },
                 actions = {
                     if (uiState.logroId != 0) {
                         IconButton(
@@ -320,11 +313,11 @@ fun LogrosBodyScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Guardar"
+                                imageVector = Icons.Default.Email,
+                                contentDescription = "Enviar"
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = if (uiState.logroId == 0) "Guardar" else "Actualizar")
+                            Text(text = if (uiState.logroId == 0) "Enviar" else "Actualizar")
                         }
                     }
                 }
