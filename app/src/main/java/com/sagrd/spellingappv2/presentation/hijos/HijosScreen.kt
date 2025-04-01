@@ -61,13 +61,7 @@ fun HijosScreen(
     HijoBodyScreen(
         uiState = uiState,
         goBack = goBack,
-        onSave = {
-            viewModel.saveHijo {
-                if (viewModel.canSave()) {
-                    goBack()
-                }
-            }
-        },
+        onSave = viewModel::saveHijo,
         onNombreChange = viewModel::onNombreChange,
         onApellidoChange = viewModel::onApellidoChange,
         onGeneroChange = viewModel::onGeneroChange,

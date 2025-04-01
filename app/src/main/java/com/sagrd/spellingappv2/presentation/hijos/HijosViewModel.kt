@@ -7,7 +7,6 @@ import com.sagrd.spellingappv2.data.local.entities.PinEntity
 import com.sagrd.spellingappv2.data.remote.Resource
 import com.sagrd.spellingappv2.data.repository.HijoRepository
 import com.sagrd.spellingappv2.data.repository.PinRepository
-import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,16 +23,10 @@ class hijosViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(Uistate())
     val uiState = _uiState.asStateFlow()
 
-    private var shouldPreventSave = false
-
     init {
         getHijos()
         getPines()
 
-    }
-
-    private suspend fun isPinAlreadyUsed(pinId: String): Boolean {
-        return repository.getAllHijos().first().any { it.pinId == pinId }
     }
 
     fun saveHijo(onSuccess: () -> Unit = {}) {
@@ -46,36 +39,6 @@ class hijosViewModel @Inject constructor(
                         successMessage = null
                     )
                 }
-                shouldPreventSave = true
-                return@launch
-            }
-
-            val isPinUsed = isPinAlreadyUsed(_uiState.value.pinId)
-            if (isPinUsed && _uiState.value.hijoId == null) {
-                _uiState.update {
-                    it.copy(
-                        errorMessage = "Este pin ya está siendo utilizado por otro hijo",
-                        successMessage = null
-                    )
-                }
-                shouldPreventSave = true
-                return@launch
-            }
-
-            val duplicateChild = repository.getAllHijos().first().find { hijo ->
-                hijo.nombre.equals(_uiState.value.nombre, ignoreCase = true) &&
-                        hijo.pinId == _uiState.value.pinId &&
-                        hijo.hijoId != _uiState.value.hijoId
-            }
-
-            if (duplicateChild != null) {
-                _uiState.update {
-                    it.copy(
-                        errorMessage = "Ya existe un hijo con este nombre y pin.",
-                        successMessage = null
-                    )
-                }
-                shouldPreventSave = true
                 return@launch
             }
 
@@ -90,8 +53,6 @@ class hijosViewModel @Inject constructor(
             onSuccess()
         }
     }
-
-    fun canSave(): Boolean = !shouldPreventSave
 
     fun nuevo(){
         _uiState.value = Uistate()
@@ -114,7 +75,9 @@ class hijosViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getAllHijos().collect { hijos ->
                 _uiState.update {
-                    it.copy(hijos = hijos)
+                    it.copy(
+                        hijos = hijos,
+                    )
                 }
             }
         }
@@ -174,23 +137,6 @@ class hijosViewModel @Inject constructor(
         }
     }
 
-    private suspend fun validateSelectedHijo(hijo: HijoEntity?): String? {
-        return when {
-            hijo == null -> "El hijo seleccionado no existe."
-            hijo.nombre.isBlank() -> "El nombre no puede estar vacío."
-            hijo.apellido.isBlank() -> "El apellido no puede estar vacío."
-            hijo.genero.isBlank() -> "El género no puede estar vacío."
-            hijo.edad <= 0 -> "La edad debe ser mayor que cero."
-            hijo.pinId.isBlank() -> "Debe tener un pin asignado."
-            repository.getAllHijos().first().any { existingHijo ->
-                existingHijo.nombre.equals(hijo.nombre, ignoreCase = true) &&
-                        existingHijo.pinId == hijo.pinId &&
-                        existingHijo.hijoId != (hijo.hijoId ?: 0)
-            } -> "Ya existe un hijo con este nombre."
-            else -> null
-        }
-    }
-
     fun onNombreChange(nombre: String) {
         _uiState.update {
             it.copy(nombre = nombre, errorMessage = null)
@@ -246,7 +192,7 @@ data class Uistate(
     val successMessage: String? = null,
     val hijos: List<HijoEntity> = emptyList(),
     val pines: List<PinEntity> = emptyList(),
-    val usedPins: Set<String> = emptySet()
+    val usedPins: Set<String> = emptySet(),
 )
 
 fun Uistate.toEntity() = HijoEntity(

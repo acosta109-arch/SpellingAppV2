@@ -53,7 +53,6 @@ fun PinScreen(
         onSave = viewModel::savePin,
         onMenuClick = onMenuClick,
         onDeletePin = viewModel::deletePin,
-        onResetState = viewModel::resetState
     )
 }
 
@@ -66,7 +65,6 @@ fun PinBodyScreen(
     onSave: () -> Unit,
     onMenuClick: () -> Unit,
     onDeletePin: () -> Unit,
-    onResetState: () -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
 
@@ -185,7 +183,6 @@ fun PinBodyScreen(
                             .padding(horizontal = 8.dp)
                             .width(140.dp),
                         onClick = {
-                            onResetState()
                             goBack()
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -213,7 +210,6 @@ fun PinBodyScreen(
                             .width(140.dp),
                         onClick = {
                             onSave()
-                            onResetState()
                             goBack()
                         },
                         colors = ButtonDefaults.buttonColors(
