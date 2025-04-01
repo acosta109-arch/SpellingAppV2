@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -84,7 +85,6 @@ private fun LogrosBodyListScreen(
         }
     }
 
-    // Calcular el podio (los 3 nombres más repetidos)
     val podiumData = uiState.logros
         .groupBy { it.nombreCompleto }
         .map { (name, logros) -> Pair(name, logros.size) }
@@ -126,7 +126,6 @@ private fun LogrosBodyListScreen(
                     .padding(innerPadding)
                     .padding(16.dp)
             ) {
-                // Filtro por nombre y botón de podio
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -180,7 +179,6 @@ private fun LogrosBodyListScreen(
                             }
                         }
 
-                        // Botón para mostrar/ocultar el podio usando la imagen de star
                         IconButton(
                             onClick = { showPodium = !showPodium },
                             modifier = Modifier
@@ -204,7 +202,6 @@ private fun LogrosBodyListScreen(
                     }
                 }
 
-                // Mostrar el podio si está activo
                 if (showPodium) {
                     PodiumView(
                         podiumData = podiumData,
@@ -213,7 +210,6 @@ private fun LogrosBodyListScreen(
                     )
                 }
 
-                // Lista de logros filtrada
                 if (!showPodium) {
                     if (filteredLogros.isEmpty()) {
                         Box(
@@ -256,8 +252,7 @@ fun PodiumView(
     val goldColor = Color(0xFFFFD700)
     val silverColor = Color(0xFFC0C0C0)
     val bronzeColor = Color(0xFFCD7F32)
-
-    // Lista de colores para cada posición del podio
+    
     val medalColors = listOf(goldColor, silverColor, bronzeColor)
     val positions = listOf("1er Lugar", "2do Lugar", "3er Lugar")
 
