@@ -369,7 +369,7 @@ fun EditarPerfilBody(
                 uiState.successMessage?.let { message ->
                     Text(
                         text = message,
-                        color = Color.Green,
+                        color = Color(red = 189, green = 238, blue = 60, alpha = 255),
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -511,6 +511,7 @@ private fun editPerfilPreview() {
             telefono = "1234567890",
             contrasena = "password",
             confirmarContrasena = "password",
+            successMessage = "Coreectamente editado",
 
         ),
         onMenuClick = { },

@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -111,13 +112,12 @@ private fun TestBody(
     val textColor = if (isDarkMode) Color.White else Color.Black
 
     val cardColor = if (isDarkMode)
-        Color(0xFF1F2937).copy(alpha = 0.7f)
+        Color.White
     else
-        Color.White.copy(alpha = 0.7f)
+        Color.White
 
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
 
-    // Completion Dialog
     if (showCompletionDialog || (uiState.palabras.isNotEmpty() && uiState.palabraActual == uiState.totalPalabras - 1)) {
         AlertDialog(
             onDismissRequest = { showCompletionDialog = false },
@@ -157,7 +157,7 @@ private fun TestBody(
                     Text("Salir del Test")
                 }
             },
-            containerColor = cardColor,
+            containerColor = Color.White,
             titleContentColor = textColor,
             textContentColor = textColor
         )
@@ -214,7 +214,7 @@ private fun TestBody(
                     Text("No")
                 }
             },
-            containerColor = cardColor,
+            containerColor = Color.White,
             titleContentColor = textColor,
             textContentColor = textColor
         )
@@ -452,7 +452,6 @@ fun TestContent(
                         .border(1.dp, borderColor, MaterialTheme.shapes.small)
                 )
             } ?: run {
-                // Imagen por defecto si no hay URL
                 Image(
                     painter = painterResource(id = R.drawable.palabras),
                     contentDescription = "Imagen predeterminada",
@@ -512,4 +511,18 @@ fun TestContent(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun preview() {
+    TestBody(
+        uiState = TestUiState(),
+        onBack = {},
+        onPlayAudio = {},
+        onPlayDescripcion = {},
+        onNext = {},
+        onPrevious = {}
+    )
+
 }
