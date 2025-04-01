@@ -113,7 +113,7 @@ class UsuarioViewModel @Inject constructor(
 
     fun updateUsuario(currentPassword: String? = null) {
         viewModelScope.launch {
-            // 1. Validaciones básicas
+
             if (_uiState.value.nombre.isBlank()) {
                 _uiState.update { it.copy(errorMessage = "Nombre no puede estar vacío.") }
                 return@launch
@@ -124,7 +124,6 @@ class UsuarioViewModel @Inject constructor(
             val isChangingPassword = _uiState.value.contrasena.isNotBlank()
             val firebaseUser = firebaseAuth.currentUser
 
-            // 2. Validaciones de contraseña
             if (isChangingPassword) {
                 when {
                     currentPassword.isNullOrBlank() -> {
@@ -147,10 +146,8 @@ class UsuarioViewModel @Inject constructor(
             }
 
             try {
-                // 3. Reautenticación y cambio de contraseña en Firebase
                 if (isChangingPassword && firebaseUser != null) {
                     try {
-                        // Paso crucial: Reautenticación sin cerrar sesión
                         val credential = EmailAuthProvider.getCredential(
                             firebaseUser.email ?: "",
                             currentPassword ?: ""
@@ -165,13 +162,11 @@ class UsuarioViewModel @Inject constructor(
                     }
                 }
 
-                // 4. Actualización en base de datos local
                 val updatedEntity = _uiState.value.toEntity().copy(
                     contrasena = if (isChangingPassword) _uiState.value.contrasena else currentLocalPassword
                 )
                 usuarioRepository.updateUsuario(updatedEntity)
 
-                // 5. Actualizar estado
                 _uiState.update {
                     it.copy(
                         successMessage = "Perfil actualizado correctamente",
@@ -185,6 +180,11 @@ class UsuarioViewModel @Inject constructor(
             }
         }
     }
+
+    public fun IdUsaurioActual(): Int?{
+        return _uiState.value.usuarioActual?.usuarioId
+    }
+
     fun updateUsuarioFirebase(currentPassword: String? = null) {
         viewModelScope.launch {
             try {
@@ -197,17 +197,14 @@ class UsuarioViewModel @Inject constructor(
                 val user = firebaseAuth.currentUser
                 val isPasswordChanging = _uiState.value.contrasena.isNotBlank()
 
-                // 2. Si está cambiando la contraseña, reautenticar
                 if (isPasswordChanging && user != null) {
                     try {
-                        // Reautenticación solo si es necesario
                         val credential = EmailAuthProvider.getCredential(
                             user.email ?: "",
                             currentPassword ?: throw Exception("Se necesita la contraseña actual")
                         )
                         user.reauthenticate(credential).await()
 
-                        // Actualizar contraseña
                         user.updatePassword(_uiState.value.contrasena).await()
                     } catch (e: Exception) {
                         _uiState.update { it.copy(errorMessage = "Error de autenticación: ${e.message}") }
@@ -215,7 +212,6 @@ class UsuarioViewModel @Inject constructor(
                     }
                 }
 
-                // 3. Actualizar otros datos en tu base de datos local
                 val updatedEntity = _uiState.value.toEntity().copy(
                     contrasena = if (isPasswordChanging) _uiState.value.contrasena
                     else usuarioRepository.getUsuarioById(_uiState.value.usuarioId ?: 0)?.contrasena ?: ""
@@ -223,7 +219,6 @@ class UsuarioViewModel @Inject constructor(
 
                 usuarioRepository.updateUsuario(updatedEntity)
 
-                // 4. Actualizar estado
                 _uiState.update {
                     it.copy(
                         successMessage = "Perfil actualizado correctamente",

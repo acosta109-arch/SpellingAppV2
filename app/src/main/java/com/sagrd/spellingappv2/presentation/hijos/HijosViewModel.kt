@@ -7,6 +7,7 @@ import com.sagrd.spellingappv2.data.local.entities.PinEntity
 import com.sagrd.spellingappv2.data.remote.Resource
 import com.sagrd.spellingappv2.data.repository.HijoRepository
 import com.sagrd.spellingappv2.data.repository.PinRepository
+import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class hijosViewModel @Inject constructor(
     private val repository: HijoRepository,
-    private val pinRepository: PinRepository
+    private val pinRepository: PinRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(Uistate())
     val uiState = _uiState.asStateFlow()
@@ -28,6 +29,7 @@ class hijosViewModel @Inject constructor(
     init {
         getHijos()
         getPines()
+
     }
 
     private suspend fun isPinAlreadyUsed(pinId: String): Boolean {
