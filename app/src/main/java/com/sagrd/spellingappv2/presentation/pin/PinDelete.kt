@@ -17,6 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -27,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -58,7 +61,9 @@ fun PinDelete(
     PinBodyDelete(
         uiState = uiState,
         goBack = goBack,
-        onDelete = viewModel::deletePin,
+        onDelete = viewModel::checkPinUsage,
+        onConfirmDelete = viewModel::deletePin,
+        onDismissDialog = viewModel::hideDeleteDialog,
         onMenuClick = onMenuClick
     )
 }
@@ -69,6 +74,8 @@ fun PinBodyDelete(
     uiState: UiState,
     goBack: () -> Unit,
     onDelete: () -> Unit,
+    onConfirmDelete: () -> Unit,
+    onDismissDialog: () -> Unit,
     onMenuClick: () -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
@@ -93,6 +100,58 @@ fun PinBodyDelete(
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
     val accentColor = Color(0xFF5DADE2)
     val cardBgColor = if (isDarkMode) Color(0xFF1E2B3C) else Color.White
+
+    if (uiState.showDeleteDialog) {
+        if (uiState.canDelete) {
+            AlertDialog(
+                onDismissRequest = onDismissDialog,
+                title = { Text("Confirmar eliminación") },
+                text = { Text("¿Está seguro que desea eliminar este pin?") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            onConfirmDelete()
+                            goBack()
+                        }
+                    ) {
+                        Text("Eliminar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = onDismissDialog) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        } else {
+            AlertDialog(
+                onDismissRequest = onDismissDialog,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = "Advertencia",
+                        tint = Color(0xFFF39C12)
+                    )
+                },
+                title = { Text("No se puede eliminar") },
+                text = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("El pin está siendo utilizado por")
+                        Text("${uiState.hijoUsingPin}", fontWeight = FontWeight.Bold)
+                        Text("Por favor, asigne otro pin a este hijo antes de eliminar.", textAlign = TextAlign.Center)
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = onDismissDialog) {
+                        Text("Aceptar")
+                    }
+                }
+            )
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -197,10 +256,7 @@ fun PinBodyDelete(
 
                     Button(
                         modifier = Modifier.width(150.dp),
-                        onClick = {
-                            onDelete()
-                            goBack()
-                        },
+                        onClick = onDelete,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFE74C3C),
                             contentColor = Color.White

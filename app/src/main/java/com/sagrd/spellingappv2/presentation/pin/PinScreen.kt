@@ -164,7 +164,6 @@ fun PinBodyScreen(
                     )
                 )
 
-                // Error message display
                 uiState.errorMessage?.let {
                     Text(
                         text = it,
@@ -214,6 +213,8 @@ fun PinBodyScreen(
                             .width(140.dp),
                         onClick = {
                             onSave()
+                            onResetState()
+                            goBack()
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = accentColor,

@@ -6,16 +6,19 @@ import com.sagrd.spellingappv2.data.local.entities.PinEntity
 import com.sagrd.spellingappv2.data.remote.Resource
 import com.sagrd.spellingappv2.data.remote.dto.PinesDto
 import com.sagrd.spellingappv2.data.repository.PinRepository
+import com.sagrd.spellingappv2.data.repository.HijoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PinViewModel @Inject constructor(
-    private val repository: PinRepository
+    private val repository: PinRepository,
+    private val hijoRepository: HijoRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
@@ -92,6 +95,53 @@ class PinViewModel @Inject constructor(
         }
     }
 
+    fun checkPinUsage() {
+        viewModelScope.launch {
+            val pinId = uiState.value.pinId
+            if (pinId != null) {
+                try {
+                    val hijos = hijoRepository.getAllHijos().first()
+                    val hijoUsingPin = hijos.find { it.pinId == pinId.toString() }
+
+                    if (hijoUsingPin != null) {
+                        _uiState.update {
+                            it.copy(
+                                showDeleteDialog = true,
+                                canDelete = false,
+                                hijoUsingPin = "${hijoUsingPin.nombre} ${hijoUsingPin.apellido}"
+                            )
+                        }
+                    } else {
+                        _uiState.update {
+                            it.copy(
+                                showDeleteDialog = true,
+                                canDelete = true,
+                                hijoUsingPin = null
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    _uiState.update {
+                        it.copy(
+                            errorMessage = "Error al verificar el uso del pin: ${e.message}",
+                            successMessage = null
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun hideDeleteDialog() {
+        _uiState.update {
+            it.copy(
+                showDeleteDialog = false,
+                canDelete = false,
+                hijoUsingPin = null
+            )
+        }
+    }
+
     fun deletePin() {
         viewModelScope.launch {
             val pinId = uiState.value.pinId
@@ -101,7 +151,8 @@ class PinViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             successMessage = "Pin eliminado correctamente.",
-                            errorMessage = null
+                            errorMessage = null,
+                            showDeleteDialog = false
                         )
                     }
                     loadPines()
@@ -109,7 +160,8 @@ class PinViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             errorMessage = "Error al eliminar el pin: ${e.message}",
-                            successMessage = null
+                            successMessage = null,
+                            showDeleteDialog = false
                         )
                     }
                 }
@@ -159,7 +211,6 @@ class PinViewModel @Inject constructor(
     }
 }
 
-
 data class UiState(
     val pinId: Int? = null,
     val pin: String = "",
@@ -167,5 +218,8 @@ data class UiState(
     val errorMessage: String? = null,
     val successMessage: String? = null,
     val pins: List<PinEntity> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val showDeleteDialog: Boolean = false,
+    val canDelete: Boolean = false,
+    val hijoUsingPin: String? = null
 )
