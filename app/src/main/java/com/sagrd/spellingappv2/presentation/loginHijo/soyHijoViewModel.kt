@@ -106,10 +106,6 @@ class LoginHijoViewModel @Inject constructor(
             else -> null
         }
     }
-
-    fun resetState() {
-        _uiState.value = LoginUiState()
-    }
 }
 
 data class LoginUiState(

@@ -1,5 +1,6 @@
 package com.sagrd.spellingappv2.presentation.hijos
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,7 +82,27 @@ private fun HijosBodyList(
     onEdit: (Int) -> Unit,
     onMenuClick: () -> Unit,
 ) {
+    val context = LocalContext.current
     val isDarkMode = isSystemInDarkTheme()
+
+    val shareHijoInfo = { nombre: String, pin: String ->
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(
+                Intent.EXTRA_TEXT,
+                "Hola, $nombre! 📚✨  \n" +
+                        "\n" +
+                        "Hoy es un gran día para aprender inglés con *SpellingApp*. 🎉 ¡Inicia sesión ahora y diviértete mejorando tu ortografía! 🚀  \n" +
+                        "\n" +
+                        "‼️Tu código para iniciar sesión‼️:️️ \n" +
+                        "\n" +
+                        "*$pin*"
+            )
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(intent, null)
+        context.startActivity(shareIntent)
+    }
 
     val gradientColors = if (isDarkMode) {
         listOf(
@@ -97,16 +119,11 @@ private fun HijosBodyList(
     }
 
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
-
-    val fabColor = Color(red = 190, green = 240, blue = 60, alpha = 255)
-
     val textColor = if (isDarkMode) Color.White else Color.Black
-
     val cardColor = if (isDarkMode)
         Color(0xFF1F2937).copy(alpha = 0.7f)
     else
         Color.White.copy(alpha = 0.7f)
-
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
 
     Scaffold(
@@ -169,7 +186,8 @@ private fun HijosBodyList(
                             pines = uiState.pines,
                             cardColor = cardColor,
                             textColor = textColor,
-                            borderColor = borderColor
+                            borderColor = borderColor,
+                            onShare = shareHijoInfo
                         )
                     }
                 }
@@ -186,7 +204,8 @@ fun HijosRow(
     pines: List<PinEntity>,
     cardColor: Color,
     textColor: Color,
-    borderColor: Color
+    borderColor: Color,
+    onShare: (String, String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -251,6 +270,13 @@ fun HijosRow(
                                 expanded = false
                             }
                         )
+                        DropdownMenuItem(
+                            text = { Text("Compartir") },
+                            onClick = {
+                                onShare(hijos.nombre, pinHijo)
+                                expanded = false
+                            }
+                        )
                     }
                 }
             }
@@ -277,4 +303,3 @@ fun HijosRow(
         }
     }
 }
-
