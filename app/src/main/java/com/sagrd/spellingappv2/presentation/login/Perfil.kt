@@ -237,7 +237,7 @@ fun PerfilBody(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = formatPhoneNumber(uiState.telefono),
+                            text = formatPhoneNumber(uiState.usuarioActual?.telefono),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(start = 12.dp, top = 2.dp, bottom = 12.dp,end = 12.dp),
                             textAlign = TextAlign.Center
