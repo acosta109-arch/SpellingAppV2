@@ -1,5 +1,7 @@
 package com.sagrd.spellingappv2.presentation.navigation
 
+import HomeScreen
+import HomeScreenHijo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,8 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import com.sagrd.spellingappv2.presentation.component.NavDrawer
-import com.sagrd.spellingappv2.presentation.Home.HomeScreenHijo
-import com.sagrd.spellingappv2.presentation.Home.HomeScreen
 import com.sagrd.spellingappv2.presentation.examTest.TestScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijoDelete
 import com.sagrd.spellingappv2.presentation.hijos.HijosEditScreen

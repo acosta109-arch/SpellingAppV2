@@ -1,5 +1,5 @@
-package com.sagrd.spellingappv2.presentation.Home
-
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -19,25 +19,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.sagrd.spellingappv2.presentation.component.NavDrawerHijo
 import com.sagrd.spellingappv2.presentation.navigation.Screen
 import edu.ucne.spellingapp.R
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
 @Composable
 fun HomeScreenHijo(
     navHostController: NavHostController
 ) {
     var isDrawerVisible by remember { mutableStateOf(false) }
+    var showHelpModal by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     val isDarkMode = isSystemInDarkTheme()
 
@@ -66,6 +69,14 @@ fun HomeScreenHijo(
             Color(0xFF45B7D1)
         )
     }
+
+    val textGradient = Brush.horizontalGradient(
+        colors = listOf(
+            Color(0xFF3498DB),
+            Color(0xFF2E86C1),
+            Color(0xFF1A5276)
+        )
+    )
 
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
 
@@ -159,15 +170,85 @@ fun HomeScreenHijo(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Button(
+                    onClick = { showHelpModal = true },
+                    modifier = Modifier
+                        .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 0.dp
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = "¿Necesitas ayuda?",
+                        style = TextStyle(
+                            brush = textGradient,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            }
+
+            if (showHelpModal) {
+                Dialog(onDismissRequest = { showHelpModal = false }) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(24.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.abeja),
+                                contentDescription = "Abeja ayudante",
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .padding(bottom = 16.dp)
+                            )
+
+                            Text(
+                                text = "¿No sabes usar la app?",
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Center
+                                ),
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+
+                            TextButton(
+                                onClick = {
+                                    val intent = Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("https://www.flipsnack.com/CFA9A6BBDC9/gu-a-de-usuario/full-view.html"))
+                                    context.startActivity(intent)
+                                },
+                                colors = ButtonDefaults.textButtonColors(
+                                    contentColor = Color(0xFF5499C7)
+                                )
+                            ) {
+                                Text(
+                                    text = "Ir a guía",
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewDashboardHijoScreen() {
-    val navController = rememberNavController()
-    HomeScreenHijo(navHostController = navController)
 }
