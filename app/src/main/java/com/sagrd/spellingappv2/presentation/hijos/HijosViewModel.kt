@@ -1,5 +1,8 @@
 package com.sagrd.spellingappv2.presentation.hijos
 
+import android.content.Context
+import android.content.Intent
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sagrd.spellingappv2.data.local.entities.HijoEntity
@@ -15,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
+@Suppress("DEPRECATION")
 @HiltViewModel
 class hijosViewModel @Inject constructor(
     private val repository: HijoRepository,
@@ -58,6 +62,15 @@ class hijosViewModel @Inject constructor(
         _uiState.value = Uistate()
     }
 
+    private fun isDuplicateName(): Boolean {
+        val nombre = _uiState.value.nombre.trim().lowercase()
+
+        return _uiState.value.hijos.any { hijo ->
+            val hijoNombre = hijo.nombre.trim().lowercase()
+            hijoNombre == nombre && hijo.hijoId != _uiState.value.hijoId
+        }
+    }
+
     private fun validate(): String? {
         return when {
             _uiState.value.nombre.isBlank() -> "El nombre no puede estar vacío."
@@ -67,6 +80,7 @@ class hijosViewModel @Inject constructor(
             _uiState.value.pinId.isBlank() -> "Debe asignarle un pin a su hijo."
             _uiState.value.usedPins.contains(_uiState.value.pinId) &&
                     _uiState.value.hijoId == null -> "Este pin ya está siendo utilizado."
+            isDuplicateName() -> "Ya existe un hijo con este nombre."
             else -> null
         }
     }
