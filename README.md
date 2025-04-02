@@ -1,71 +1,45 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spelling App - README</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            color: #333;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #ff6600;
-        }
-        .icons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .icons img {
-            width: 50px;
-            height: 50px;
-        }
-        .highlight {
-            color: #ff6600;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>📚 Spelling App - Aprende Inglés Jugando 🎮</h1>
-        <p><span class="highlight">Spelling App</span> es una aplicación educativa de Android diseñada para ayudar a los niños a aprender inglés de manera interactiva y efectiva, mientras los padres tienen control total del proceso de aprendizaje.</p>
-        
-        <h2>✨ Características Principales</h2>
-        <ul>
-            <li>🔐 <strong>Acceso Seguro con PIN:</strong> Cada niño recibe un PIN único para ingresar a sus clases.</li>
-            <li>👨‍👩‍👧‍👦 <strong>Control Parental:</strong> Los padres pueden supervisar y gestionar el aprendizaje de sus hijos.</li>
-            <li>📊 <strong>Estadísticas y Reportes:</strong> Visualización del progreso y rendimiento de los niños.</li>
-            <li>🔠 <strong>Palabras y Lecciones:</strong> Los padres pueden ver qué palabras estudiarán sus hijos.</li>
-            <li>☁️ <strong>Autenticación Segura con Google Firebase:</strong> Seguridad y privacidad garantizadas.</li>
-        </ul>
-        
-        <h2>🛠️ Tecnologías Utilizadas</h2>
-        <div class="icons">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin-logo.svg" alt="Kotlin" title="Kotlin">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png" alt="C#" title="C#">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Sql_data_base_with_logo.png" alt="SQL Server" title="SQL Server">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg" alt="SQLite" title="SQLite">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Firebase_Logo.svg" alt="Firebase" title="Firebase">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" title="Google">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/Microsoft_Azure_Logo.svg" alt="Azure" title="Azure">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/Android_jetpack_logo.svg" alt="Jetpack Compose" title="Jetpack Compose">
-        </div>
-        
-        <h2>📌 ¡Cada palabra cuenta en el camino del aprendizaje! 🚀</h2>
-    </div>
-</body>
-</html>
+<!-- Horizontal Divider (Gradient) -->
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
+
+<!-- Title -->
+<div id="user-content-toc">
+  <ul align="center">
+    <summary><h1 style="display: inline-block">Spelling App 📚✨</h1></summary>
+  </ul>
+</div>
+
+<!-- Description -->
+<p align="center">
+  <strong>Spelling App</strong> es una aplicación educativa para Android diseñada para ayudar a los niños a aprender inglés de manera interactiva. Los padres tienen control total sobre la experiencia de aprendizaje de sus hijos, asignando PINs personalizados para que accedan a sus clases. Además, pueden visualizar estadísticas detalladas, monitorear el progreso de aprendizaje y revisar las palabras que sus hijos han estudiado. 
+</p>
+
+<p align="center">La aplicación utiliza <strong>Firebase Authentication</strong> para el acceso seguro de usuarios y cuenta con integración en la nube a través de <strong>Google y Azure</strong>.</p>
+
+<!-- Features -->
+<h2 align="center">✨ Características Principales ✨</h2>
+<ul>
+  <li>📌 Control parental con asignación de PINs para cada niño.</li>
+  <li>📊 Visualización de estadísticas y progreso de aprendizaje.</li>
+  <li>📝 Monitoreo de palabras estudiadas y repasadas.</li>
+  <li>🔒 Autenticación segura con Firebase.</li>
+  <li>📱 Aplicación desarrollada en Kotlin y Jetpack Compose.</li>
+  <li>💾 Bases de datos SQL Server y SQLite.</li>
+</ul>
+
+<!-- Tech Stack -->
+<h2 align="center">🚀 Tecnologías Utilizadas 🚀</h2>
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=kotlin,csharp,sqlserver,sqlite,firebase,google,azure,androidstudio" />
+</p>
+
+<!-- GitHub Repositories -->
+<h2 align="center">🔗 Repositorios Relacionados 🔗</h2>
+<p align="center">
+  <a href="https://github.com/acosta109-arch"><strong>Jairo Camilo Acosta</strong></a> | 
+  <a href="https://github.com/Vladimir-gs"><strong>Pedro Vladimir Guzmán Salazar</strong></a>
+</p>
+
+<!-- Horizontal Divider (Gradient) -->
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
+
+<p align="center"><strong>"El aprendizaje de los niños es el futuro del mundo." 🌎📖</strong></p>
