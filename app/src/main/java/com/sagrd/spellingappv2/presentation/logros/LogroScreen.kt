@@ -171,7 +171,7 @@ fun LogrosBodyScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = if (uiState.logroId == 0) "¿Qué aprendemos hoy?" else "Editar Logro",
+                        text = if (uiState.logroId == 0) "¿Qué aprendimos hoy?" else "Editar Logro",
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )

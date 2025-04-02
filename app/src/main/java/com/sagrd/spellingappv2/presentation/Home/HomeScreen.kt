@@ -1,4 +1,4 @@
-package com.sagrd.spellingappv2.presentation.dashboard
+package com.sagrd.spellingappv2.presentation.Home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,7 +39,7 @@ import edu.ucne.spellingapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(
+fun HomeScreen(
     onMenuClick: () -> Unit = {}
 ) {
     val isDarkMode = isSystemInDarkTheme()
@@ -76,7 +76,7 @@ fun DashboardScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "Dashboard") },
+                title = { Text(text = "Menú Prinicpal") },
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
                         Icon(

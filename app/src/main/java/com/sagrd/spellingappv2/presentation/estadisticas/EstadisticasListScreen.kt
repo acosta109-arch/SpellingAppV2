@@ -140,7 +140,7 @@ fun StatisticsBodyScreen(
                         title = "Hijos",
                         count = uiState.hijosCount,
                         gradient = textGradient,
-                        imageResId = R.drawable.hijos,
+                        imageResId = R.drawable.hijo,
                         modifier = Modifier.weight(1f)
                     )
 

@@ -340,7 +340,7 @@ fun PodiumView(
                                     color = if (isDarkMode) Color.White else Color.Black
                                 )
                                 Text(
-                                    text = "$count logros",
+                                    text = "$count estrellas",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = if (isDarkMode) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f)
                                 )

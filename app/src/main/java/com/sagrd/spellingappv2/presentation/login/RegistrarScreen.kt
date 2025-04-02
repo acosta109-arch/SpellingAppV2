@@ -178,6 +178,7 @@ fun RegistrarBodyScreen(
                     unfocusedBorderColor = Color.Gray
                 ),
                 shape = RoundedCornerShape(4.dp)
+                ,singleLine = true
             )
 
             OutlinedTextField(
@@ -194,6 +195,7 @@ fun RegistrarBodyScreen(
                     unfocusedBorderColor = Color.Gray
                 ),
                 shape = RoundedCornerShape(4.dp)
+                ,singleLine = true
             )
 
             OutlinedTextField(
@@ -215,6 +217,7 @@ fun RegistrarBodyScreen(
                     unfocusedBorderColor = Color.Gray
                 ),
                 shape = RoundedCornerShape(4.dp)
+                ,singleLine = true
             )
 
 
@@ -232,6 +235,7 @@ fun RegistrarBodyScreen(
                     unfocusedBorderColor = Color.Gray
                 ),
                 shape = RoundedCornerShape(4.dp)
+                ,singleLine = true
             )
 
             OutlinedTextField(
@@ -249,6 +253,7 @@ fun RegistrarBodyScreen(
                     unfocusedBorderColor = Color.Gray
                 ),
                 shape = RoundedCornerShape(4.dp),
+                singleLine = true,
                 trailingIcon = {
                     IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
                         Image(
@@ -257,6 +262,7 @@ fun RegistrarBodyScreen(
                         )
                     }
                 }
+
             )
 
             OutlinedTextField(
@@ -274,6 +280,7 @@ fun RegistrarBodyScreen(
                     unfocusedBorderColor = Color.Gray
                 ),
                 shape = RoundedCornerShape(4.dp),
+                singleLine = true,
                 trailingIcon = {
                     IconButton(onClick = { confirmarContrasenaVisible = !confirmarContrasenaVisible }) {
                         Image(

@@ -202,7 +202,8 @@ fun LoginBodyScreen(
                             contentDescription = "Mostrar/Ocultar Contraseña"
                         )
                     }
-                }
+                },
+                singleLine = true
             )
 
             if (uiState.errorMessage != null) {

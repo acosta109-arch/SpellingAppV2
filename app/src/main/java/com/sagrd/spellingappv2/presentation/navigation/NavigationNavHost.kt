@@ -13,8 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import com.sagrd.spellingappv2.presentation.component.NavDrawer
-import com.sagrd.spellingappv2.presentation.dashboard.DashboardHijoScreen
-import com.sagrd.spellingappv2.presentation.dashboard.DashboardScreen
+import com.sagrd.spellingappv2.presentation.Home.HomeScreenHijo
+import com.sagrd.spellingappv2.presentation.Home.HomeScreen
 import com.sagrd.spellingappv2.presentation.examTest.TestScreen
 import com.sagrd.spellingappv2.presentation.hijos.HijoDelete
 import com.sagrd.spellingappv2.presentation.hijos.HijosEditScreen
@@ -130,20 +130,21 @@ private fun NavContent(
                     navHostController.navigate(Screen.RegistrarScreen)
                 },
                 goToLoginPinHijo = {
-                    navHostController.navigate(Screen.LoginPinScreen)
+                    navHostController.navigate(Screen.LoginPinScreen){
+                    }
                 },
                 onLoginSuccess = onLoginSuccess
             )
         }
 
         composable<Screen.Dashboard> {
-            DashboardScreen(
+            HomeScreen(
                 onMenuClick = onMenuClick
             )
         }
 
         composable<Screen.DashboardHijo> {
-            DashboardHijoScreen(
+            HomeScreenHijo(
                 navHostController = navHostController
             )
         }

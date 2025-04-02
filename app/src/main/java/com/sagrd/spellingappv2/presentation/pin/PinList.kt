@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -152,17 +153,31 @@ private fun PinBodyListScreen(
                     .padding(innerPadding)
                     .padding(16.dp)
             ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(uiState.pins) { pin ->
-                        PinRow(
-                            pin = pin,
-                            onDelete = onDelete,
-                            cardColor = cardColor,
-                            textColor = textColor,
-                            borderColor = borderColor
+                if(uiState.pins.isEmpty()){
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.nodates),
+                            contentDescription = "No dates",
                         )
+                        Text(text = "No se encontraron Pines", color = textColor)
+                    }
+                }else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(uiState.pins) { pin ->
+                            PinRow(
+                                pin = pin,
+                                onDelete = onDelete,
+                                cardColor = cardColor,
+                                textColor = textColor,
+                                borderColor = borderColor
+                            )
+                        }
                     }
                 }
             }

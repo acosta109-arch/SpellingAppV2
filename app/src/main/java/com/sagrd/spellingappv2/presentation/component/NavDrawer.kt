@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
-import com.sagrd.spellingappv2.presentation.login.AuthManager
 import com.sagrd.spellingappv2.presentation.login.AuthManager.logout
 
 @Composable
@@ -77,7 +76,7 @@ fun NavDrawer(
     val items = listOf(
         DrawerItem("Inicio", painterResource(R.drawable.home), Screen.Dashboard),
         DrawerItem("Perfil", painterResource(R.drawable.perfil3d), Screen.Perfil(0)),
-        DrawerItem("Hijos", painterResource(R.drawable.hijos), Screen.HijoListScreen),
+        DrawerItem("Hijos", painterResource(R.drawable.hijo), Screen.HijoListScreen),
         DrawerItem("Pines", painterResource(R.drawable.codigos), Screen.PinListScreen),
         DrawerItem("Test", painterResource(R.drawable.probar), Screen.Dashboard),
         DrawerItem("Palabras", painterResource(R.drawable.palabras), Screen.Dashboard),

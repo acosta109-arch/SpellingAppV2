@@ -219,7 +219,8 @@ fun EditarPerfilBody(
                         focusedLabelColor = Color.White,
                         unfocusedLabelColor = Color.White
                     ),
-                    shape = RoundedCornerShape(4.dp)
+                    shape = RoundedCornerShape(4.dp),
+                    singleLine = true
                 )
 
                 OutlinedTextField(
@@ -237,7 +238,8 @@ fun EditarPerfilBody(
                         focusedLabelColor = Color.White,
                         unfocusedLabelColor = Color.White
                     ),
-                    shape = RoundedCornerShape(4.dp)
+                    shape = RoundedCornerShape(4.dp),
+                    singleLine = true
                 )
 
                 OutlinedTextField(
@@ -257,7 +259,8 @@ fun EditarPerfilBody(
                         focusedLabelColor = Color.White,
                         unfocusedLabelColor = Color.White
                     ),
-                    shape = RoundedCornerShape(4.dp)
+                    shape = RoundedCornerShape(4.dp),
+                    singleLine = true
                 )
                 Row(
                     modifier = Modifier.align(Alignment.Start),
@@ -295,7 +298,8 @@ fun EditarPerfilBody(
                                     contentDescription = "Mostrar/Ocultar Contraseña Actual"
                                 )
                             }
-                        }
+                        },
+                        singleLine = true
                     )
 
                     OutlinedTextField(
@@ -322,7 +326,8 @@ fun EditarPerfilBody(
                                     contentDescription = "Mostrar/Ocultar Contraseña"
                                 )
                             }
-                        }
+                        },
+                        singleLine = true
                     )
 
                     OutlinedTextField(
@@ -351,7 +356,8 @@ fun EditarPerfilBody(
                                     contentDescription = "Mostrar/Ocultar Contraseña"
                                 )
                             }
-                        }
+                        },
+                        singleLine = true
                     )
 
                 }

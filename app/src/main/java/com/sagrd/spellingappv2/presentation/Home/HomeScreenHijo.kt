@@ -1,4 +1,4 @@
-package com.sagrd.spellingappv2.presentation.dashboard
+package com.sagrd.spellingappv2.presentation.Home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -34,7 +34,7 @@ import edu.ucne.spellingapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardHijoScreen(
+fun HomeScreenHijo(
     navHostController: NavHostController
 ) {
     var isDrawerVisible by remember { mutableStateOf(false) }
@@ -169,5 +169,5 @@ fun DashboardHijoScreen(
 @Composable
 fun PreviewDashboardHijoScreen() {
     val navController = rememberNavController()
-    DashboardHijoScreen(navHostController = navController)
+    HomeScreenHijo(navHostController = navController)
 }
