@@ -1,0 +1,167 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "aca040270508856a6b4b97ad308e6d15",
+    "entities": [
+      {
+        "tableName": "Usuarios",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`usuarioId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nombres` TEXT NOT NULL, `edad` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombres",
+            "columnName": "nombres",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "edad",
+            "columnName": "edad",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "usuarioId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Palabras",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`palabraId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `palabra` TEXT NOT NULL, `descripcion` TEXT NOT NULL, `imagenUrl` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "palabraId",
+            "columnName": "palabraId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "palabra",
+            "columnName": "palabra",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descripcion",
+            "columnName": "descripcion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imagenUrl",
+            "columnName": "imagenUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "palabraId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Practicas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`practicaId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `usuarioId` INTEGER NOT NULL, `fecha` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `fraseId` INTEGER NOT NULL, `vecesPracticado` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "practicaId",
+            "columnName": "practicaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "fraseId",
+            "columnName": "fraseId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vecesPracticado",
+            "columnName": "vecesPracticado",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "practicaId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "PracticasDetalle",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`detalleId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `palabraId` INTEGER NOT NULL, `vecesPracticado` INTEGER NOT NULL, `practicaId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "detalleId",
+            "columnName": "detalleId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "palabraId",
+            "columnName": "palabraId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vecesPracticado",
+            "columnName": "vecesPracticado",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "practicaId",
+            "columnName": "practicaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "detalleId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aca040270508856a6b4b97ad308e6d15')"
+    ]
+  }
+}

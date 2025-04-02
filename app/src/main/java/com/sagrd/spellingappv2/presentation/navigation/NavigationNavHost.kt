@@ -54,7 +54,7 @@ fun nav_spelling_app(
             !currentRoute.contains("LoginScreen") &&
                     !currentRoute.contains("RegistrarScreen") &&
                     !currentRoute.contains("LoginPinScreen")&&
-                    !currentRoute.contains("DashboardHijoScreen")
+                    !currentRoute.contains("HomeScreenHijo")
         }
     }
 

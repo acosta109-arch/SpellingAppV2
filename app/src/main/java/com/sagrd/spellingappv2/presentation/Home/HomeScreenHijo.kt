@@ -1,9 +1,11 @@
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -28,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.sagrd.spellingappv2.presentation.component.NavDrawerHijo
 import com.sagrd.spellingappv2.presentation.navigation.Screen
@@ -196,54 +199,73 @@ fun HomeScreenHijo(
             }
 
             if (showHelpModal) {
-                Dialog(onDismissRequest = { showHelpModal = false }) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White)
+                Dialog(
+                    onDismissRequest = { showHelpModal = false },
+                    properties = DialogProperties(
+                        dismissOnBackPress = true,
+                        dismissOnClickOutside = true
+                    )
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(24.dp)
+                        Card(
+                            modifier = Modifier
+                                .widthIn(max = 320.dp)
+                                .padding(16.dp)
+                                .animateContentSize(),
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White)
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.abeja),
-                                contentDescription = "Abeja ayudante",
-                                modifier = Modifier
-                                    .size(120.dp)
-                                    .padding(bottom = 16.dp)
-                            )
-
-                            Text(
-                                text = "¿No sabes usar la app?",
-                                style = TextStyle(
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black,
-                                    textAlign = TextAlign.Center
-                                ),
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-
-                            TextButton(
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW,
-                                        Uri.parse("https://www.flipsnack.com/CFA9A6BBDC9/gu-a-de-usuario/full-view.html"))
-                                    context.startActivity(intent)
-                                },
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = Color(0xFF5499C7)
-                                )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(24.dp)
                             ) {
-                                Text(
-                                    text = "Ir a guía",
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
+                                Image(
+                                    painter = painterResource(id = R.drawable.abeja),
+                                    contentDescription = "Abeja ayudante",
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .padding(bottom = 16.dp)
+                                        .clip(CircleShape)
                                 )
+
+                                Text(
+                                    text = "¿No sabes usar la app?",
+                                    style = MaterialTheme.typography.titleLarge.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Black,
+                                        textAlign = TextAlign.Center
+                                    ),
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+
+                                Button(
+                                    onClick = {
+                                        val intent = Intent(Intent.ACTION_VIEW,
+                                            Uri.parse("https://www.flipsnack.com/CFA9A6BBDC9/gu-a-de-usuario/full-view.html"))
+                                        context.startActivity(intent)
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF5499C7)
+                                    ),
+                                    shape = RoundedCornerShape(8.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp)
+                                ) {
+                                    Text(
+                                        text = "Ir a guía",
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Color.White
+                                        ),
+                                        modifier = Modifier.padding(vertical = 8.dp)
+                                    )
+                                }
                             }
                         }
                     }
