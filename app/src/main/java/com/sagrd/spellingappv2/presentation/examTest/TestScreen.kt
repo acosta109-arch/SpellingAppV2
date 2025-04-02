@@ -118,7 +118,7 @@ private fun TestBody(
 
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
 
-    if (showCompletionDialog || (uiState.palabras.isNotEmpty() && uiState.palabraActual == uiState.totalPalabras - 1)) {
+    if (showCompletionDialog) {
         AlertDialog(
             onDismissRequest = { showCompletionDialog = false },
             title = {
@@ -358,7 +358,8 @@ private fun TestBody(
                                     onNext()
                                 }
                             },
-                            enabled = uiState.palabraActual < uiState.totalPalabras - 1,
+                            // Always enable the button
+                            enabled = true,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = primaryButtonColor,
                                 contentColor = Color.White,
@@ -524,5 +525,4 @@ private fun preview() {
         onNext = {},
         onPrevious = {}
     )
-
 }
