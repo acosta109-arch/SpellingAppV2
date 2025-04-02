@@ -17,12 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edu.ucne.spellingapp.R
 import kotlinx.coroutines.delay
-
 @Composable
 fun SplashScreen(
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    onDashboard: () -> Unit,
 ) {
     val isDarkMode = isSystemInDarkTheme()
+
+    val isUserAuthenticated = AuthManager.isLoggedIn
 
     val gradientColors = if (isDarkMode) {
         listOf(
@@ -42,7 +44,11 @@ fun SplashScreen(
 
     LaunchedEffect(Unit) {
         delay(3000)
-        onNavigateToLogin()
+        if (isUserAuthenticated) {
+            onDashboard()
+        } else {
+            onNavigateToLogin()
+        }
     }
 
     Box(

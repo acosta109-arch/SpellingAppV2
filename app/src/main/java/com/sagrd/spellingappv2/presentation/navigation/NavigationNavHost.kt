@@ -110,13 +110,21 @@ private fun NavContent(
                     navHostController.navigate(Screen.LoginScreen) {
                         popUpTo(Screen.SplashScreen) { inclusive = true }
                     }
+                },
+                onDashboard = {
+                    navHostController.navigate(Screen.Dashboard) {
+                        popUpTo(Screen.SplashScreen) { inclusive = true }
+                    }
                 }
             )
         }
         composable<Screen.LoginScreen> {
             LoginScreen(
                 goToDashboard = {
-                    navHostController.navigate(Screen.Dashboard)
+                    navHostController.navigate(Screen.Dashboard){
+                        popUpTo(Screen.LoginScreen) { inclusive = true }
+                    }
+
                 },
                 goToRegistrar = {
                     navHostController.navigate(Screen.RegistrarScreen)

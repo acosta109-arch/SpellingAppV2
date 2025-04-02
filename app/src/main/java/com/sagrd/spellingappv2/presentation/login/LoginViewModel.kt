@@ -4,6 +4,7 @@ package com.sagrd.spellingappv2.presentation.login
 
 import android.content.Intent
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -14,10 +15,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.sagrd.spellingappv2.MainActivity
 import com.sagrd.spellingappv2.data.local.entities.UsuarioEntity
 import com.sagrd.spellingappv2.data.repository.UsuarioRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -34,9 +37,16 @@ class UsuarioViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState get() = _uiState.asStateFlow()
 
+    private val _isAuthenticated = MutableStateFlow(firebaseAuth.currentUser != null)
+    val isAuthenticated: StateFlow<Boolean> = _isAuthenticated.asStateFlow()
+
     init {
         Log.d("UsuarioVM", "ViewModel inicializado")
         getUsuarios()
+
+        firebaseAuth.addAuthStateListener { auth ->
+            _isAuthenticated.value = auth.currentUser != null
+        }
 
         firebaseAuth.currentUser?.email?.let { email ->
             viewModelScope.launch {
@@ -181,58 +191,6 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
-    public fun IdUsaurioActual(): Int?{
-        return _uiState.value.usuarioActual?.usuarioId
-    }
-
-    fun updateUsuarioFirebase(currentPassword: String? = null) {
-        viewModelScope.launch {
-            try {
-                // 1. Validaciones básicas (nombre, etc.)
-                if (_uiState.value.nombre.isBlank()) {
-                    _uiState.update { it.copy(errorMessage = "Nombre no puede estar vacío") }
-                    return@launch
-                }
-
-                val user = firebaseAuth.currentUser
-                val isPasswordChanging = _uiState.value.contrasena.isNotBlank()
-
-                if (isPasswordChanging && user != null) {
-                    try {
-                        val credential = EmailAuthProvider.getCredential(
-                            user.email ?: "",
-                            currentPassword ?: throw Exception("Se necesita la contraseña actual")
-                        )
-                        user.reauthenticate(credential).await()
-
-                        user.updatePassword(_uiState.value.contrasena).await()
-                    } catch (e: Exception) {
-                        _uiState.update { it.copy(errorMessage = "Error de autenticación: ${e.message}") }
-                        return@launch
-                    }
-                }
-
-                val updatedEntity = _uiState.value.toEntity().copy(
-                    contrasena = if (isPasswordChanging) _uiState.value.contrasena
-                    else usuarioRepository.getUsuarioById(_uiState.value.usuarioId ?: 0)?.contrasena ?: ""
-                )
-
-                usuarioRepository.updateUsuario(updatedEntity)
-
-                _uiState.update {
-                    it.copy(
-                        successMessage = "Perfil actualizado correctamente",
-                        usuarioActual = updatedEntity,
-                        errorMessage = null
-                    )
-                }
-
-            } catch (e: Exception) {
-                _uiState.update { it.copy(errorMessage = "Error: ${e.message}") }
-            }
-        }
-    }
-
     fun nuevoUsuario() {
         _uiState.update {
             it.copy(
@@ -323,7 +281,6 @@ class UsuarioViewModel @Inject constructor(
                 if (firebaseUser != null) {
                     val localUser = usuarioRepository.getUsuarioByEmail(email)
 
-                    // Asegúrate de que localUser no sea null
                     require(localUser != null) { "Usuario no encontrado en la base de datos local" }
 
                     _uiState.update {
@@ -354,12 +311,6 @@ class UsuarioViewModel @Inject constructor(
                 }
                 Log.e("Login", "Error en login", e)
             }
-        }
-    }
-
-    fun getUsuarioActual(): UsuarioEntity? {
-        return _uiState.value.usuarioActual?.also {
-            Log.d("UsuarioVM", "Obteniendo usuario actual: $it")
         }
     }
 
