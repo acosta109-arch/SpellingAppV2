@@ -72,9 +72,15 @@ val valores = listOf(
 <!-- GitHub Repositories -->
 <h2 align="center">🔗 Repositorios Relacionados 🔗</h2>
 <p align="center">
-  <a href="https://github.com/acosta109-arch"><strong>Jairo Camilo Acosta</strong></a> | 
-  <a href="https://github.com/Vladimir-gs"><strong>Pedro Vladimir Guzmán Salazar</strong></a>
+  <a href="https://github.com/acosta109-arch" style="font-size: 20px; text-decoration: none; color: #007bff;">
+    <strong>Jairo Camilo Acosta</strong>
+  </a>
+  |
+  <a href="https://github.com/Vladimir-gs" style="font-size: 20px; text-decoration: none; color: #007bff;">
+    <strong>Pedro Vladimir Guzmán Salazar</strong>
+  </a>
 </p>
+
 
 <!-- Images of Vladimir and Jairo -->
 <p align="center">
@@ -91,8 +97,9 @@ val valores = listOf(
 
 <p align="center"><strong>"El aprendizaje de los niños es el futuro del mundo." 🌎📖</strong></p>
 
-<h2 align="center">📺 Nuestro video de youtube 📺</h2>
-<div align="center">
-  [![Spelling App](https://img.youtube.com/vi/PbAYDma6m6g/0.jpg)](https://www.youtube.com/watch?v=PbAYDma6m6g)
-</div>
+
+## 🎥 Nuestro video de youtube 🎥
+[![Spelling App](https://img.youtube.com/vi/PbAYDma6m6g/0.jpg)](https://www.youtube.com/watch?v=PbAYDma6m6g)
+
+
 
