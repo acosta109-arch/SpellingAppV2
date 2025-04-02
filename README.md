@@ -29,7 +29,16 @@
 <!-- Tech Stack -->
 <h2 align="center">🚀 Tecnologías Utilizadas 🚀</h2>
 <p align="center">
-  <img src="https://skillicons.dev/icons?i=kotlin,csharp,sqlserver,sqlite,firebase,google,azure,androidstudio" />
+  <img src="https://img.shields.io/badge/Kotlin-%230095D5?logo=kotlin&logoColor=white&style=flat-square" />
+  <img src="https://img.shields.io/badge/C%23-%23239120?logo=c-sharp&logoColor=white&style=flat-square" />
+  <img src="https://img.shields.io/badge/SQL_Server-%234D6C7C?logo=microsoftsqlserver&logoColor=white&style=flat-square" />
+  <img src="https://img.shields.io/badge/SQLite-%23003B57?logo=sqlite&logoColor=white&style=flat-square" />
+  <img src="https://img.shields.io/badge/Firebase-%23FFCA28?logo=firebase&logoColor=black&style=flat-square" />
+  <img src="https://img.shields.io/badge/Google-%234285F4?logo=google&logoColor=white&style=flat-square" />
+  <img src="https://img.shields.io/badge/Azure-%230072C6?logo=azure&logoColor=white&style=flat-square" />
+  <img src="https://img.shields.io/badge/Android-%233DDC84?logo=android&logoColor=white&style=flat-square" />
+  <img src="https://img.shields.io/badge/Swagger_UI-%2385EA2D?logo=swagger&logoColor=black&style=flat-square" />
+  <img src="https://img.shields.io/badge/Jetpack_Compose-%2300ACC1?logo=jetpackcompose&logoColor=white&style=flat-square" />
 </p>
 
 <!-- GitHub Repositories -->
