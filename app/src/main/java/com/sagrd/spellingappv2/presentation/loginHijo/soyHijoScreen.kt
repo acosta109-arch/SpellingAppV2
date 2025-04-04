@@ -79,7 +79,7 @@ fun LoginPinScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPinBodyScreen(
-    uiState: LoginUiState,
+    uiState: LoginHijoUiState,
     onPinChange: (String) -> Unit,
     login: (String) -> Unit,
     goToRegistrar: () -> Unit,

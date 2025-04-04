@@ -73,7 +73,7 @@ fun HijosListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HijosBodyList(
-    uiState: Uistate,
+    uiState: HijoUistate,
     onCreate: () -> Unit,
     onDelete: (Int) -> Unit,
     onEdit: (Int) -> Unit,

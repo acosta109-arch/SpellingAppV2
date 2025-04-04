@@ -65,7 +65,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel.UiState
+import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel.LoginUiState
 import edu.ucne.spellingapp.R
 
 @Composable
@@ -96,7 +96,7 @@ fun EditarPerfil(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditarPerfilBody(
-    uiState: UiState,
+    uiState: LoginUiState,
     onMenuClick: () -> Unit,
     onEdit: (String?) -> Unit,
     onNombreChange: (String) -> Unit,
@@ -511,7 +511,7 @@ class PhoneOffsetMap(private val original: String, private val transformed: Stri
 @Composable
 private fun editPerfilPreview() {
     EditarPerfilBody(
-        uiState = UiState(
+        uiState = LoginUiState(
             nombre = "John",
             apellido = "Doe",
             telefono = "1234567890",

@@ -17,15 +17,6 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
-data class TestUiState(
-    val palabraActual: Int = 0,
-    val totalPalabras: Int = 0,
-    val porcentajeCompletado: Float = 0f,
-    val palabras: List<PalabraEntity> = emptyList(),
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null
-)
-
 @HiltViewModel
 class TestViewModel @Inject constructor(
     private val palabraRepository: PalabraRepository,

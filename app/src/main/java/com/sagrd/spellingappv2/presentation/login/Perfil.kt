@@ -51,7 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.sagrd.spellingappv2.presentation.login.AuthManager.logout
-import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel.UiState
+import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel.LoginUiState
 import com.sagrd.spellingappv2.presentation.navigation.Screen
 import edu.ucne.spellingapp.R
 
@@ -80,7 +80,7 @@ fun Perfil(
 @Composable
 fun PerfilBody(
     navHostController: NavHostController,
-    uiState: UiState,
+    uiState: LoginUiState,
     onMenuClick: () -> Unit,
     goEdit: (Int) -> Unit,
 ){
@@ -341,7 +341,7 @@ fun formatPhoneNumber(phoneNumber: String?): String {
 private fun pelfilpreview() {
     PerfilBody(
         navHostController = NavHostController(LocalContext.current),
-        uiState = UiState(),
+        uiState = LoginUiState(),
         onMenuClick = {},
         goEdit = {},
     )

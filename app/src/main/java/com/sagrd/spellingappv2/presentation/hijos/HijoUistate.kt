@@ -3,7 +3,7 @@ package com.sagrd.spellingappv2.presentation.hijos
 import com.sagrd.spellingappv2.data.local.entities.HijoEntity
 import com.sagrd.spellingappv2.data.local.entities.PinEntity
 
-data class Uistate(
+data class HijoUistate(
     val hijoId: Int? = null,
     val nombre: String = "",
     val apellido: String = "",
@@ -18,7 +18,7 @@ data class Uistate(
     val usedPins: Set<String> = emptySet(),
 )
 
-fun Uistate.toEntity() = HijoEntity(
+fun HijoUistate.toEntity() = HijoEntity(
     hijoId = hijoId,
     nombre = nombre,
     apellido = apellido,

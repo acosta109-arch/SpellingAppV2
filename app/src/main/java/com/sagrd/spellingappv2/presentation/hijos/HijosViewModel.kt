@@ -18,7 +18,7 @@ class HijosViewModel @Inject constructor(
     private val repository: HijoRepository,
     private val pinRepository: PinRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(Uistate())
+    private val _uiState = MutableStateFlow(HijoUistate())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -81,7 +81,7 @@ class HijosViewModel @Inject constructor(
     }
 
     fun nuevo() {
-        _uiState.value = Uistate()
+        _uiState.value = HijoUistate()
     }
 
     private fun isDuplicateName(): Boolean {

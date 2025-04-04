@@ -78,7 +78,7 @@ fun HijosEditScreen(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun HijoBodyEdit(
-    uiState: Uistate,
+    uiState: HijoUistate,
     goBack: () -> Unit,
     onMenuClick: () -> Unit,
     onEvent: (HijosEvent) -> Unit,

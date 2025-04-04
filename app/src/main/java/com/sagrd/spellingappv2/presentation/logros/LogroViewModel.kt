@@ -135,18 +135,3 @@ class LogrosViewModel @Inject constructor(
                 uiState.value.mensaje.isNotBlank()
     }
 }
-
-fun LogrosUiState.toEntity() = LogrosDto(
-    logroId = logroId,
-    nombreCompleto = nombreCompleto,
-    mensaje = mensaje
-)
-
-data class LogrosUiState(
-    val logroId: Int = 0,
-    val nombreCompleto: String = "",
-    val mensaje: String = "",
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null,
-    val logros: List<LogrosDto> = emptyList()
-)

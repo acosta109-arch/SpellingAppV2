@@ -4,7 +4,6 @@ package com.sagrd.spellingappv2.presentation.login
 
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -15,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import com.sagrd.spellingappv2.MainActivity
 import com.sagrd.spellingappv2.data.local.entities.UsuarioEntity
 import com.sagrd.spellingappv2.data.repository.UsuarioRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +32,7 @@ class UsuarioViewModel @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(LoginUiState())
     val uiState get() = _uiState.asStateFlow()
 
     private val _isAuthenticated = MutableStateFlow(firebaseAuth.currentUser != null)
@@ -529,35 +527,7 @@ class UsuarioViewModel @Inject constructor(
                 }
             }
     }
-
-    data class UiState(
-        val usuarioId: Int? = null,
-        val nombre: String = "",
-        val apellido: String = "",
-        val telefono: String = "",
-        val email: String = "",
-        val contrasena: String = "",
-        var confirmarContrasena: String = "",
-        val fotoUrl: String = "",
-        val errorMessage: String? = null,
-        val successMessage: String? = null,
-        val usuarios: List<UsuarioEntity> = emptyList(),
-        val usuarioActual: UsuarioEntity? = null,
-        val firebaseUser: FirebaseUser? = null,
-        val isLoading: Boolean = false,
-    )
-
-    fun UiState.toEntity() = UsuarioEntity(
-        usuarioId = usuarioId,
-        nombre = nombre,
-        apellido = apellido,
-        telefono = telefono,
-        email = email,
-        contrasena = contrasena
-    )
-
 }
-
 
 object AuthManager {
     private val auth = FirebaseAuth.getInstance()

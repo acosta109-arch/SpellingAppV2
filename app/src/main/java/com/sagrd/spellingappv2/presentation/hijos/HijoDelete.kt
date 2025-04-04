@@ -69,7 +69,7 @@ fun HijoDelete(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HijoBodyDelete(
-    uiState: Uistate,
+    uiState: HijoUistate,
     goBack: () -> Unit,
     pines: List<PinEntity>,
     onMenuClick: () -> Unit,

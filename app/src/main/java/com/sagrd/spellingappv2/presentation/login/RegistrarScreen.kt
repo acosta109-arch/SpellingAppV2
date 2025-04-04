@@ -79,7 +79,7 @@ fun RegistrarScreen(viewModel: UsuarioViewModel = hiltViewModel(), goBack: () ->
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrarBodyScreen(
-    uiState: UsuarioViewModel.UiState,
+    uiState: UsuarioViewModel.LoginUiState,
     onNombreChange: (String) -> Unit,
     onApellidoChange: (String) -> Unit,
     onTelefonoChange: (String) -> Unit,

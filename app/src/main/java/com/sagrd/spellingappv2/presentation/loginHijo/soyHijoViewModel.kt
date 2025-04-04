@@ -17,7 +17,7 @@ import javax.inject.Inject
 class LoginHijoViewModel @Inject constructor(
     private val repository: PinRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(LoginUiState())
+    private val _uiState = MutableStateFlow(LoginHijoUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -108,11 +108,3 @@ class LoginHijoViewModel @Inject constructor(
     }
 }
 
-data class LoginUiState(
-    val pin: String = "",
-    val errorMessage: String? = null,
-    val successMessage: String? = null,
-    val isLoginSuccessful: Boolean = false,
-    val registeredPins: List<PinEntity> = emptyList(),
-    val isLoading: Boolean = false
-)
