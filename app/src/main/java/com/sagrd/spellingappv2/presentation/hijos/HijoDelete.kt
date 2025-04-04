@@ -39,17 +39,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sagrd.spellingappv2.data.local.entities.HijoEntity
 import com.sagrd.spellingappv2.data.local.entities.PinEntity
 
 @Composable
 fun HijoDelete(
-    viewModel: hijosViewModel = hiltViewModel(),
+    viewModel: HijosViewModel = hiltViewModel(),
     goBack: () -> Unit,
     hijoId: Int,
     onMenuClick: () -> Unit
@@ -62,9 +60,9 @@ fun HijoDelete(
     HijoBodyDelete(
         uiState = uiState,
         goBack = goBack,
-        onDelete = viewModel::deleteHijo,
         pines = uiState.pines,
-        onMenuClick = onMenuClick
+        onMenuClick = onMenuClick,
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -73,9 +71,9 @@ fun HijoDelete(
 fun HijoBodyDelete(
     uiState: Uistate,
     goBack: () -> Unit,
-    onDelete: () -> Unit,
     pines: List<PinEntity>,
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
+    onEvent: (HijosEvent) -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
 
@@ -280,7 +278,7 @@ fun HijoBodyDelete(
                     Button(
                         modifier = Modifier.width(150.dp),
                         onClick = {
-                            onDelete()
+                            onEvent(HijosEvent.OnDelete)
                             goBack()
                         },
                         colors = ButtonDefaults.buttonColors(

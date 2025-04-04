@@ -5,9 +5,8 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization")
-
+    id("androidx.room")
     id("com.google.gms.google-services")
-
 }
 
 android {
@@ -17,7 +16,6 @@ android {
     defaultConfig {
         applicationId = "edu.ucne.spellingapp"
         minSdk = 24
-        //noinspection OldTargetApi
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -44,6 +42,10 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {

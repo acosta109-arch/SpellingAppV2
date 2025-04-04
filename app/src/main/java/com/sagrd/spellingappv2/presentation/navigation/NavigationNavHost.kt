@@ -190,7 +190,6 @@ private fun NavContent(
             HijosListScreen(
                 onCreate = { navHostController.navigate(Screen.HijoScreen(0)) },
                 onDelete = { navHostController.navigate(Screen.HijoDelete(it)) },
-                onBack = { navHostController.navigateUp() },
                 onEdit = { navHostController.navigate(Screen.HijoEdit(it)) },
                 onMenuClick = onMenuClick
             )

@@ -44,7 +44,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,23 +51,16 @@ import com.sagrd.spellingappv2.data.local.entities.PinEntity
 
 @Composable
 fun HijosScreen(
-    viewModel: hijosViewModel = hiltViewModel(),
+    viewModel: HijosViewModel = hiltViewModel(),
     goBack: () -> Unit,
-    onMenuClick: () -> Unit
-){
+    onMenuClick: () -> Unit,
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     HijoBodyScreen(
         uiState = uiState,
         goBack = goBack,
-        onSave = viewModel::saveHijo,
-        onNombreChange = viewModel::onNombreChange,
-        onApellidoChange = viewModel::onApellidoChange,
-        onGeneroChange = viewModel::onGeneroChange,
-        onEdadChange = viewModel::onEdadChange,
-        onUsuarioIdChange = viewModel::onUsuarioIdChange,
-        onPinChange = viewModel::onPinIdChange,
-        onMenuClick = onMenuClick
+        onMenuClick = onMenuClick,
+        onEvent = viewModel::onEvent,
     )
 }
 
@@ -77,14 +69,8 @@ fun HijosScreen(
 fun HijoBodyScreen(
     uiState: Uistate,
     goBack: () -> Unit,
-    onPinChange: (String) -> Unit,
-    onSave: () -> Unit,
-    onNombreChange: (String) -> Unit,
-    onApellidoChange: (String) -> Unit,
-    onGeneroChange: (String) -> Unit,
-    onEdadChange: (Int) -> Unit,
-    onUsuarioIdChange: (Int) -> Unit,
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
+    onEvent: (HijosEvent) -> Unit,
 ) {
     val isDarkMode = isSystemInDarkTheme()
     val gradientColors = if (isDarkMode) {
@@ -94,7 +80,8 @@ fun HijoBodyScreen(
     }
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
     val textColor = if (isDarkMode) Color.White else Color.Black
-    val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
+    val borderColor =
+        if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
     val accentColor = Color(0xFF5DADE2)
 
     var expandedPin by remember { mutableStateOf(false) }
@@ -147,7 +134,7 @@ fun HijoBodyScreen(
             ) {
                 OutlinedTextField(
                     value = uiState.nombre,
-                    onValueChange = onNombreChange,
+                    onValueChange = { onEvent(HijosEvent.OnNombreChange(it)) },
                     label = { Text("Nombre", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor)
@@ -157,7 +144,7 @@ fun HijoBodyScreen(
 
                 OutlinedTextField(
                     value = uiState.apellido,
-                    onValueChange = onApellidoChange,
+                    onValueChange = { onEvent(HijosEvent.OnApellidoChange(it)) },
                     label = { Text("Apellido", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor)
@@ -192,7 +179,7 @@ fun HijoBodyScreen(
                             DropdownMenuItem(
                                 text = { Text(genero) },
                                 onClick = {
-                                    onGeneroChange(genero)
+                                    onEvent(HijosEvent.OnGeneroChange(genero))
                                     expandedGenero = false
                                 }
                             )
@@ -204,7 +191,7 @@ fun HijoBodyScreen(
 
                 OutlinedTextField(
                     value = uiState.edad.toString(),
-                    onValueChange = { onEdadChange(it.toIntOrNull() ?: 0) },
+                    onValueChange = { onEvent(HijosEvent.OnEdadChange(it)) },
                     label = { Text("Edad", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -260,11 +247,12 @@ fun HijoBodyScreen(
                                     },
                                     onClick = {
                                         if (uiState.usedPins.contains(pin.pinId.toString()) &&
-                                            uiState.hijoId == null) {
+                                            uiState.hijoId == null
+                                        ) {
                                             selectedPinForOverride = pin
                                             showPinInUseDialog = true
                                         } else {
-                                            onPinChange(pin.pinId.toString())
+                                            onEvent(HijosEvent.OnPinChange(pin.pinId.toString()))
                                         }
                                         expandedPin = false
                                     }
@@ -301,7 +289,9 @@ fun HijoBodyScreen(
                     Button(
                         onClick = goBack,
                         colors = ButtonDefaults.buttonColors(containerColor = accentColor),
-                        modifier = Modifier.weight(1f).padding(end = 8.dp)
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 8.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -321,11 +311,13 @@ fun HijoBodyScreen(
                                 }
                                 showPinInUseDialog = true
                             } else {
-                                onSave()
+                                onEvent(HijosEvent.OnSave)
                             }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = accentColor),
-                        modifier = Modifier.weight(1f).padding(start = 8.dp)
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 8.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -352,8 +344,8 @@ fun HijoBodyScreen(
                     Button(
                         onClick = {
                             selectedPinForOverride?.let { pin ->
-                                onPinChange(pin.pinId.toString())
-                                onSave()
+                                onEvent(HijosEvent.OnPinChange(pin.pinId.toString()))
+                                onEvent(HijosEvent.OnSave)
                             }
                             showPinInUseDialog = false
                         },
@@ -384,7 +376,7 @@ private fun textFieldColors(
     isDarkMode: Boolean,
     textColor: Color,
     accentColor: Color,
-    borderColor: Color
+    borderColor: Color,
 ) = TextFieldDefaults.outlinedTextFieldColors(
     focusedTextColor = textColor,
     unfocusedTextColor = textColor,

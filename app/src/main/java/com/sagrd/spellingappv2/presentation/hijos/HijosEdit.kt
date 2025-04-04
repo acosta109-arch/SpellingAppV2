@@ -43,7 +43,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,39 +50,24 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun HijosEditScreen(
-    viewModel: hijosViewModel = hiltViewModel(),
+    viewModel: HijosViewModel = hiltViewModel(),
     goBack: () -> Unit,
     hijoId: Int,
-    onMenuClick: () -> Unit
-){
+    onMenuClick: () -> Unit,
+) {
     LaunchedEffect(hijoId) {
         viewModel.selectedHijos(hijoId)
     }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    // Add a local state to control navigation
     var canNavigate by remember { mutableStateOf(false) }
 
     HijoBodyEdit(
         uiState = uiState,
         goBack = goBack,
-        onSave = {
-            viewModel.saveHijo(
-                onSuccess = {
-                    canNavigate = true
-                }
-            )
-        },
-        onNombreChange = viewModel::onNombreChange,
-        onApellidoChange = viewModel::onApellidoChange,
-        onGeneroChange = viewModel::onGeneroChange,
-        onEdadChange = viewModel::onEdadChange,
-        onUsuarioIdChange = viewModel::onUsuarioIdChange,
-        onPinChange = viewModel::onPinIdChange,
-        onMenuClick = onMenuClick
+        onMenuClick = onMenuClick,
+        onEvent = viewModel::onEvent,
     )
 
-    // Only navigate back if save was successful
     LaunchedEffect(canNavigate) {
         if (canNavigate) {
             goBack()
@@ -96,17 +80,10 @@ fun HijosEditScreen(
 fun HijoBodyEdit(
     uiState: Uistate,
     goBack: () -> Unit,
-    onPinChange: (String) -> Unit,
-    onSave: () -> Unit,
-    onNombreChange: (String) -> Unit,
-    onApellidoChange: (String) -> Unit,
-    onGeneroChange: (String) -> Unit,
-    onEdadChange: (Int) -> Unit,
-    onUsuarioIdChange: (Int) -> Unit,
-    onMenuClick: () -> Unit
-){
+    onMenuClick: () -> Unit,
+    onEvent: (HijosEvent) -> Unit,
+) {
     val isDarkMode = isSystemInDarkTheme()
-
     val gradientColors = if (isDarkMode) {
         listOf(
             Color(0xFF283653),
@@ -122,11 +99,10 @@ fun HijoBodyEdit(
     }
 
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
-
     val textColor = if (isDarkMode) Color.White else Color.Black
-    val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
+    val borderColor =
+        if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
     val accentColor = Color(0xFF5DADE2)
-
     var expandedPin by remember { mutableStateOf(false) }
     var expandedGenero by remember { mutableStateOf(false) }
 
@@ -168,7 +144,7 @@ fun HijoBodyEdit(
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = uiState.nombre,
-                    onValueChange = onNombreChange,
+                    onValueChange = { onEvent(HijosEvent.OnNombreChange(it)) },
                     label = { Text("Nombre", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -184,7 +160,7 @@ fun HijoBodyEdit(
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = uiState.apellido,
-                    onValueChange = onApellidoChange,
+                    onValueChange = { onEvent(HijosEvent.OnApellidoChange(it)) },
                     label = { Text("Apellido", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -234,7 +210,7 @@ fun HijoBodyEdit(
                             DropdownMenuItem(
                                 text = { Text(genero) },
                                 onClick = {
-                                    onGeneroChange(genero)
+                                    onEvent(HijosEvent.OnGeneroChange(genero))
                                     expandedGenero = false
                                 }
                             )
@@ -245,7 +221,7 @@ fun HijoBodyEdit(
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = uiState.edad.toString(),
-                    onValueChange = { onEdadChange(it.toIntOrNull() ?: 0) },
+                    onValueChange = { onEvent(HijosEvent.OnEdadChange(it)) },
                     label = { Text("Edad", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -265,7 +241,8 @@ fun HijoBodyEdit(
                             .fillMaxWidth()
                             .clickable { expandedPin = true },
                         label = { Text("Pin", color = textColor) },
-                        value = uiState.pines.firstOrNull { it.pinId.toString() == uiState.pinId }?.pin ?: "",
+                        value = uiState.pines.firstOrNull { it.pinId.toString() == uiState.pinId }?.pin
+                            ?: "",
                         onValueChange = {},
                         readOnly = true,
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -294,7 +271,7 @@ fun HijoBodyEdit(
                             DropdownMenuItem(
                                 text = { Text(tecnico.pin) },
                                 onClick = {
-                                    onPinChange(tecnico.pinId.toString())
+                                    onEvent(HijosEvent.OnPinChange(tecnico.pin))
                                     expandedPin = false
                                 }
                             )
@@ -302,7 +279,6 @@ fun HijoBodyEdit(
                     }
                 }
 
-                // Error message display
                 uiState.errorMessage?.let {
                     Text(
                         text = it,
@@ -314,9 +290,11 @@ fun HijoBodyEdit(
                     )
                 }
 
-                Spacer(modifier = Modifier
-                    .height(16.dp)
-                    .weight(1f))
+                Spacer(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .weight(1f)
+                )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -351,7 +329,7 @@ fun HijoBodyEdit(
 
                     Button(
                         modifier = Modifier.width(150.dp),
-                        onClick = onSave,
+                        onClick = { onEvent(HijosEvent.OnSave) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = accentColor,
                             contentColor = Color.White

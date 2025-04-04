@@ -1,5 +1,6 @@
 package com.sagrd.spellingappv2.data.local.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.sagrd.spellingappv2.data.local.dao.HijoDao
@@ -16,8 +17,12 @@ import com.sagrd.spellingappv2.data.local.entities.UsuarioEntity
     PalabraEntity::class,
     PinEntity::class,
     UsuarioEntity::class],
-    version = 3,
-    exportSchema = false
+    version = 5,
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration(from = 3, to = 4),
+        AutoMigration(from = 4, to = 5),
+    ]
 )
 
 abstract class SpellingAppDb: RoomDatabase(){

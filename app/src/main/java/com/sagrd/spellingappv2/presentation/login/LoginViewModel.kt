@@ -279,7 +279,8 @@ class UsuarioViewModel @Inject constructor(
                 val firebaseUser = authResult.user
 
                 if (firebaseUser != null) {
-                    val localUser = usuarioRepository.getUsuarioByEmail(email)
+                    var localUser = usuarioRepository.getUsuarioByEmail(email)
+                    localUser = null
 
                     require(localUser != null) { "Usuario no encontrado en la base de datos local" }
 

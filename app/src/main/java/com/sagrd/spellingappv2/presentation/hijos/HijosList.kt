@@ -43,7 +43,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,10 +53,9 @@ import edu.ucne.spellingapp.R
 
 @Composable
 fun HijosListScreen(
-    viewModel: hijosViewModel = hiltViewModel(),
+    viewModel: HijosViewModel = hiltViewModel(),
     onCreate: () -> Unit,
     onDelete: (Int) -> Unit,
-    onBack: () -> Unit,
     onEdit: (Int) -> Unit,
     onMenuClick: () -> Unit,
 ) {
@@ -67,9 +65,8 @@ fun HijosListScreen(
         uiState = uiState,
         onCreate = onCreate,
         onDelete = onDelete,
-        onBack = onBack,
         onEdit = onEdit,
-        onMenuClick = onMenuClick
+        onMenuClick = onMenuClick,
     )
 }
 
@@ -79,7 +76,6 @@ private fun HijosBodyList(
     uiState: Uistate,
     onCreate: () -> Unit,
     onDelete: (Int) -> Unit,
-    onBack: () -> Unit,
     onEdit: (Int) -> Unit,
     onMenuClick: () -> Unit,
 ) {
