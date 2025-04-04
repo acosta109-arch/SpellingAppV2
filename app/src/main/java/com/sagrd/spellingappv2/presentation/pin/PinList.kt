@@ -46,8 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sagrd.spellingappv2.data.local.entities.PinEntity
+import com.sagrd.spellingappv2.presentation.pin.PinUiState
 import com.sagrd.spellingappv2.presentation.pin.PinViewModel
-import com.sagrd.spellingappv2.presentation.pin.UiState
 import edu.ucne.spellingapp.R
 
 @Composable
@@ -71,7 +71,7 @@ fun PinListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PinBodyListScreen(
-    uiState: UiState,
+    uiState: PinUiState,
     onCreate: () -> Unit,
     onDelete: (Int) -> Unit,
     onBack: () -> Unit,
@@ -94,16 +94,12 @@ private fun PinBodyListScreen(
     }
 
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
-
     val fabColor = Color(0xFF5DADE2)
-
     val textColor = if (isDarkMode) Color.White else Color.Black
-
     val cardColor = if (isDarkMode)
         Color(0xFF1F2937).copy(alpha = 0.7f)
     else
         Color.White.copy(alpha = 0.7f)
-
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
 
     Scaffold(

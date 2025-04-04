@@ -58,7 +58,7 @@ import edu.ucne.spellingapp.R
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
 @Composable
 fun HomeScreen(
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
     val context = LocalContext.current

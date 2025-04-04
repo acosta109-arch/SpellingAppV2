@@ -18,13 +18,33 @@ import javax.inject.Inject
 @HiltViewModel
 class PinViewModel @Inject constructor(
     private val repository: PinRepository,
-    private val hijoRepository: HijoRepository
+    private val hijoRepository: HijoRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(PinUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
         loadPines()
+    }
+
+    fun onEvent(event: PinEvent) {
+        when (event) {
+            is PinEvent.OnPinChange -> {
+                _uiState.update { it.copy(pin = event.dato) }
+            }
+            is PinEvent.OnSave -> {
+                savePin()
+            }
+            is PinEvent.OnHideDialog -> {
+                hideDeleteDialog()
+            }
+            is PinEvent.CheckPinUsage -> {
+                checkPinUsage()
+            }
+            is PinEvent.OnDelete -> {
+                deletePin()
+            }
+        }
     }
 
     fun loadPines() {
@@ -34,6 +54,7 @@ class PinViewModel @Inject constructor(
                     is Resource.Loading -> {
                         _uiState.update { it.copy(isLoading = true) }
                     }
+
                     is Resource.Success -> {
                         _uiState.update {
                             it.copy(
@@ -42,6 +63,7 @@ class PinViewModel @Inject constructor(
                             )
                         }
                     }
+
                     is Resource.Error -> {
                         _uiState.update {
                             it.copy(
@@ -189,12 +211,6 @@ class PinViewModel @Inject constructor(
         }
     }
 
-    fun onPinChange(pin: String) {
-        _uiState.update {
-            it.copy(pin = pin)
-        }
-    }
-
     private fun validate(): String? {
         return when {
             uiState.value.pin.isBlank() -> "El pin no puede estar vacío."
@@ -202,24 +218,8 @@ class PinViewModel @Inject constructor(
                 it.pin == uiState.value.pin &&
                         it.pinId != uiState.value.pinId
             } -> "Este pin ya existe. Por favor, elija otro."
+
             else -> null
         }
     }
-
-    fun resetState() {
-        _uiState.value = UiState()
-    }
 }
-
-data class UiState(
-    val pinId: Int? = null,
-    val pin: String = "",
-    val Utilizado: Boolean = false,
-    val errorMessage: String? = null,
-    val successMessage: String? = null,
-    val pins: List<PinEntity> = emptyList(),
-    val isLoading: Boolean = false,
-    val showDeleteDialog: Boolean = false,
-    val canDelete: Boolean = false,
-    val hijoUsingPin: String? = null
-)

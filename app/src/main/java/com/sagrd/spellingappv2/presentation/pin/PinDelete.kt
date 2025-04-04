@@ -61,22 +61,18 @@ fun PinDelete(
     PinBodyDelete(
         uiState = uiState,
         goBack = goBack,
-        onDelete = viewModel::checkPinUsage,
-        onConfirmDelete = viewModel::deletePin,
-        onDismissDialog = viewModel::hideDeleteDialog,
-        onMenuClick = onMenuClick
+        onMenuClick = onMenuClick,
+        onEvent = viewModel::onEvent
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PinBodyDelete(
-    uiState: UiState,
+    uiState: PinUiState,
     goBack: () -> Unit,
-    onDelete: () -> Unit,
-    onConfirmDelete: () -> Unit,
-    onDismissDialog: () -> Unit,
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
+    onEvent: (PinEvent) -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
 
@@ -104,13 +100,13 @@ fun PinBodyDelete(
     if (uiState.showDeleteDialog) {
         if (uiState.canDelete) {
             AlertDialog(
-                onDismissRequest = onDismissDialog,
+                onDismissRequest = { onEvent(PinEvent.OnHideDialog) },
                 title = { Text("Confirmar eliminación") },
                 text = { Text("¿Está seguro que desea eliminar este pin?") },
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            onConfirmDelete()
+                            onEvent(PinEvent.OnDelete)
                             goBack()
                         }
                     ) {
@@ -118,14 +114,14 @@ fun PinBodyDelete(
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = onDismissDialog) {
+                    TextButton(onClick = { onEvent(PinEvent.OnHideDialog) }) {
                         Text("Cancelar")
                     }
                 }
             )
         } else {
             AlertDialog(
-                onDismissRequest = onDismissDialog,
+                onDismissRequest = { onEvent(PinEvent.OnHideDialog) },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Warning,
@@ -145,7 +141,7 @@ fun PinBodyDelete(
                     }
                 },
                 confirmButton = {
-                    TextButton(onClick = onDismissDialog) {
+                    TextButton(onClick = { onEvent(PinEvent.OnHideDialog) }) {
                         Text("Aceptar")
                     }
                 }
@@ -256,7 +252,7 @@ fun PinBodyDelete(
 
                     Button(
                         modifier = Modifier.width(150.dp),
-                        onClick = onDelete,
+                        onClick = { onEvent(PinEvent.CheckPinUsage) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFE74C3C),
                             contentColor = Color.White

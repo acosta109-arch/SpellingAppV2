@@ -5,5 +5,5 @@ sealed class PinEvent{
     data object OnSave: PinEvent()
     data object OnDelete: PinEvent()
     data object OnHideDialog: PinEvent()
-    data object checkPinUsage: PinEvent()
+    data object CheckPinUsage: PinEvent()
 }

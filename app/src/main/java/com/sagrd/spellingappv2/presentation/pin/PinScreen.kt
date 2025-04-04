@@ -49,22 +49,18 @@ fun PinScreen(
     PinBodyScreen(
         uiState = uiState,
         goBack = goBack,
-        onPinChange = viewModel::onPinChange,
-        onSave = viewModel::savePin,
         onMenuClick = onMenuClick,
-        onDeletePin = viewModel::deletePin,
+        onEvent = viewModel::onEvent
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PinBodyScreen(
-    uiState: UiState,
+    uiState: PinUiState,
     goBack: () -> Unit,
-    onPinChange: (String) -> Unit,
-    onSave: () -> Unit,
     onMenuClick: () -> Unit,
-    onDeletePin: () -> Unit,
+    onEvent: (PinEvent) -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
 
@@ -83,7 +79,6 @@ fun PinBodyScreen(
     }
 
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
-
     val textColor = if (isDarkMode) Color.White else Color.Black
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
     val accentColor = Color(0xFF5DADE2)
@@ -115,7 +110,7 @@ fun PinBodyScreen(
                     if (uiState.pinId != null) {
                         IconButton(
                             onClick = {
-                                onDeletePin()
+                                onEvent(PinEvent.OnDelete)
                                 goBack()
                             }
                         ) {
@@ -148,7 +143,7 @@ fun PinBodyScreen(
 
                 OutlinedTextField(
                     value = uiState.pin,
-                    onValueChange = onPinChange,
+                    onValueChange = { onEvent(PinEvent.OnPinChange(it)) },
                     label = { Text("Pin", color = textColor) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -209,7 +204,7 @@ fun PinBodyScreen(
                             .padding(horizontal = 8.dp)
                             .width(140.dp),
                         onClick = {
-                            onSave()
+                            onEvent(PinEvent.OnSave)
                             goBack()
                         },
                         colors = ButtonDefaults.buttonColors(
