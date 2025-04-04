@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import edu.ucne.spellingapp.R
+import com.sagrd.spellingappv2.presentation.login.LoginUiState
 
 @Composable
 fun LoginScreen(
@@ -91,7 +92,7 @@ fun LoginScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginBodyScreen(
-    uiState: UsuarioViewModel.LoginUiState,
+    uiState: LoginUiState,
     onEmailChange: (String) -> Unit,
     onContrasenaChange: (String) -> Unit,
     login: (String, String) -> Unit,
@@ -247,7 +248,7 @@ fun LoginBodyScreen(
 @Composable
 private fun LoginPreview() {
     LoginBodyScreen(
-        uiState = UsuarioViewModel.LoginUiState(),
+        uiState = LoginUiState(),
         onEmailChange = {},
         onContrasenaChange = {},
         login = { _, _ -> },

@@ -65,7 +65,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel.LoginUiState
+import com.sagrd.spellingappv2.presentation.login.LoginUiState
 import edu.ucne.spellingapp.R
 
 @Composable
