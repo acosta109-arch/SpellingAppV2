@@ -39,10 +39,10 @@ class AprenderViewModel @Inject constructor(
             is AprenderEvent.OnPlayDescripcion -> {
                 playDescripcion(event.description)
             }
-            is AprenderEvent.OnNextPalabra -> {
+            is AprenderEvent.OnNext -> {
                 nextPalabra()
             }
-            is AprenderEvent.OnPreviousPalabra -> {
+            is AprenderEvent.OnPrevious -> {
                 previousPalabra()
             }
         }

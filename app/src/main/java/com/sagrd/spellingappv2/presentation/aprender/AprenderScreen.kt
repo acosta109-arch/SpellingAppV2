@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -59,10 +59,6 @@ fun AprenderScreen(
     AprenderBody(
         uiState = uiState,
         onBack = onBack,
-        onPlayAudio = viewModel::playAudio,
-        onPlayDescripcion = viewModel::playDescripcion,
-        onNext = viewModel::nextPalabra,
-        onPrevious = viewModel::previousPalabra,
         onNavigateToLogros = onNavigateToLogros,
         onEvent = viewModel::onEvent
     )
@@ -73,10 +69,6 @@ fun AprenderScreen(
 private fun AprenderBody(
     uiState: AprenderUiState,
     onBack: () -> Unit,
-    onPlayAudio: (String) -> Unit,
-    onPlayDescripcion: (String) -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
     onNavigateToLogros: () -> Unit,
     onEvent: (AprenderEvent) -> Unit
 ) {
@@ -235,7 +227,7 @@ private fun AprenderBody(
                         onClick = { showExitDialog = true }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Regresar",
                             tint = Color.White
                         )
@@ -269,8 +261,8 @@ private fun AprenderBody(
                         cardColor = cardColor,
                         textColor = textColor,
                         borderColor = borderColor,
-                        onPlayAudio = { onPlayAudio(currentPalabra.nombre) },
-                        onPlayDescripcion = { onPlayDescripcion(currentPalabra.descripcion) }
+                        onPlayAudio = { onEvent(AprenderEvent.OnPlayAudio(currentPalabra.nombre)) },
+                        onPlayDescripcion = { onEvent(AprenderEvent.OnPlayDescripcion(currentPalabra.descripcion)) }
                     )
 
                     Row(
@@ -280,7 +272,7 @@ private fun AprenderBody(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(
-                            onClick = onPrevious,
+                            onClick = {  onEvent(AprenderEvent.OnPrevious) },
                             enabled = uiState.palabraActual > 0,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = primaryButtonColor,
@@ -290,21 +282,18 @@ private fun AprenderBody(
                             )
                         ) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Anterior"
                             )
                             Text("Anterior")
                         }
 
-                        // Modificamos el comportamiento del botón para separar las acciones de Siguiente y Finalizar
                         Button(
                             onClick = {
                                 if (uiState.palabraActual == uiState.totalPalabras - 1) {
-                                    // SOLO navegamos a LogrosScreen cuando se presiona el botón en la última palabra
                                     onNavigateToLogros()
                                 } else {
-                                    // En otro caso, simplemente vamos a la siguiente palabra
-                                    onNext()
+                                    onEvent(AprenderEvent.OnNext)
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -314,7 +303,7 @@ private fun AprenderBody(
                         ) {
                             Text(if (uiState.palabraActual == uiState.totalPalabras - 1) "Finalizar" else "Siguiente")
                             Icon(
-                                imageVector = Icons.Default.ArrowForward,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = "Siguiente"
                             )
                         }
