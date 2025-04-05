@@ -3,7 +3,6 @@ package com.sagrd.spellingappv2.presentation.aprender
 import android.speech.tts.TextToSpeech
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sagrd.spellingappv2.data.local.entities.PalabraEntity
 import com.sagrd.spellingappv2.data.remote.Resource
 import com.sagrd.spellingappv2.data.repository.PalabraRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,14 +15,11 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
-
-
 @HiltViewModel
 class AprenderViewModel @Inject constructor(
     private val palabraRepository: PalabraRepository,
-    private val textToSpeech: TextToSpeech
+    private val textToSpeech: TextToSpeech,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(AprenderUiState())
     val uiState: StateFlow<AprenderUiState> = _uiState.asStateFlow()
 
@@ -35,6 +31,23 @@ class AprenderViewModel @Inject constructor(
         initTextToSpeech()
     }
 
+    fun onEvent(event: AprenderEvent) {
+        when (event) {
+            is AprenderEvent.OnPlayAudio -> {
+                playAudio(event.text)
+            }
+            is AprenderEvent.OnPlayDescripcion -> {
+                playDescripcion(event.description)
+            }
+            is AprenderEvent.OnNextPalabra -> {
+                nextPalabra()
+            }
+            is AprenderEvent.OnPreviousPalabra -> {
+                previousPalabra()
+            }
+        }
+    }
+
     private fun initTextToSpeech() {
         val locEnglish = Locale.US
         if (TextToSpeech.LANG_AVAILABLE == textToSpeech.isLanguageAvailable(locEnglish)) {
@@ -43,7 +56,6 @@ class AprenderViewModel @Inject constructor(
         textToSpeech.setSpeechRate(0.8f)
         textToSpeech.setPitch(1.0f)
     }
-
 
     fun playDescripcion(description: String) {
         textToSpeech?.let { tts ->
@@ -59,6 +71,7 @@ class AprenderViewModel @Inject constructor(
                     is Resource.Loading -> {
                         _uiState.update { it.copy(isLoading = true) }
                     }
+
                     is Resource.Success -> {
                         _uiState.update {
                             it.copy(
@@ -68,6 +81,7 @@ class AprenderViewModel @Inject constructor(
                             )
                         }
                     }
+
                     is Resource.Error -> {
                         _uiState.update {
                             it.copy(
@@ -88,7 +102,8 @@ class AprenderViewModel @Inject constructor(
     fun nextPalabra() {
         viewModelScope.launch {
             _uiState.update { currentState ->
-                val newIndex = (currentState.palabraActual + 1).coerceAtMost(currentState.totalPalabras - 1)
+                val newIndex =
+                    (currentState.palabraActual + 1).coerceAtMost(currentState.totalPalabras - 1)
                 val newPercentage = if (currentState.totalPalabras > 1) {
                     newIndex.toFloat() / (currentState.totalPalabras - 1)
                 } else {
@@ -115,24 +130,6 @@ class AprenderViewModel @Inject constructor(
 
                 currentState.copy(
                     palabraActual = newIndex,
-                    porcentajeCompletado = newPercentage
-                )
-            }
-        }
-    }
-
-    fun setCurrentPalabra(index: Int) {
-        viewModelScope.launch {
-            _uiState.update { currentState ->
-                val validIndex = index.coerceIn(0, currentState.totalPalabras - 1)
-                val newPercentage = if (currentState.totalPalabras > 1) {
-                    validIndex.toFloat() / (currentState.totalPalabras - 1)
-                } else {
-                    if (validIndex > 0) 1f else 0f
-                }
-
-                currentState.copy(
-                    palabraActual = validIndex,
                     porcentajeCompletado = newPercentage
                 )
             }

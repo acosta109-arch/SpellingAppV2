@@ -1,10 +1,8 @@
 package com.sagrd.spellingappv2.presentation.examTest
 
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sagrd.spellingappv2.data.local.entities.PalabraEntity
 import com.sagrd.spellingappv2.data.remote.Resource
 import com.sagrd.spellingappv2.data.repository.PalabraRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +30,23 @@ class TestViewModel @Inject constructor(
     init {
         getPalabras()
         initTextToSpeech()
+    }
+
+    fun onEvent(event: TestEvent) {
+        when (event) {
+            is TestEvent.OnPlayAudio -> {
+                playAudio(event.text)
+            }
+            is TestEvent.OnPlayDescripcion -> {
+                playDescripcion(event.description)
+            }
+            is TestEvent.OnNext -> {
+                nextPalabra()
+            }
+            is TestEvent.OnPrevious -> {
+                previousPalabra()
+            }
+        }
     }
 
     private fun initTextToSpeech() {
@@ -114,24 +129,6 @@ class TestViewModel @Inject constructor(
 
                 currentState.copy(
                     palabraActual = newIndex,
-                    porcentajeCompletado = newPercentage
-                )
-            }
-        }
-    }
-
-    fun setCurrentPalabra(index: Int) {
-        viewModelScope.launch {
-            _uiState.update { currentState ->
-                val validIndex = index.coerceIn(0, currentState.totalPalabras - 1)
-                val newPercentage = if (currentState.totalPalabras > 1) {
-                    validIndex.toFloat() / (currentState.totalPalabras - 1)
-                } else {
-                    if (validIndex > 0) 1f else 0f
-                }
-
-                currentState.copy(
-                    palabraActual = validIndex,
                     porcentajeCompletado = newPercentage
                 )
             }

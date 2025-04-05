@@ -2,13 +2,11 @@ package com.sagrd.spellingappv2.presentation.aprender
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,8 +19,6 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,7 +30,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,19 +39,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.sagrd.spellingappv2.data.local.entities.PalabraEntity
 import com.sagrd.spellingappv2.presentation.examTest.TestContent
-import com.sagrd.spellingappv2.presentation.examTest.TestViewModel
 import edu.ucne.spellingapp.R
 
 @Composable
@@ -74,7 +63,8 @@ fun AprenderScreen(
         onPlayDescripcion = viewModel::playDescripcion,
         onNext = viewModel::nextPalabra,
         onPrevious = viewModel::previousPalabra,
-        onNavigateToLogros = onNavigateToLogros
+        onNavigateToLogros = onNavigateToLogros,
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -87,16 +77,12 @@ private fun AprenderBody(
     onPlayDescripcion: (String) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
-    onNavigateToLogros: () -> Unit
+    onNavigateToLogros: () -> Unit,
+    onEvent: (AprenderEvent) -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
     var showStartDialog by remember { mutableStateOf(true) }
     var showExitDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-
-    // Eliminar el efecto que navega automáticamente
-    // Ya no necesitamos este LaunchedEffect que navegaba automáticamente
-    // LaunchedEffect(isTestCompleted) { ... }
 
     val gradientColors = if (isDarkMode) {
         listOf(
@@ -113,18 +99,14 @@ private fun AprenderBody(
     }
 
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
-
     val primaryButtonColor = if (isDarkMode) Color(0xFF177882) else Color(0xFF5499C7)
     val progressColor = if (isDarkMode) Color(0xFF177882) else Color(0xFF5499C7)
     val progressTrackColor = if (isDarkMode) Color(0xFF283653).copy(alpha = 0.3f) else Color(0xFFAED6F1).copy(alpha = 0.5f)
-
     val textColor = if (isDarkMode) Color.White else Color.Black
-
     val cardColor = if (isDarkMode)
         Color(0xFF1F2937).copy(alpha = 0.7f)
     else
         Color.White.copy(alpha = 0.7f)
-
     val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
 
     if (showStartDialog) {

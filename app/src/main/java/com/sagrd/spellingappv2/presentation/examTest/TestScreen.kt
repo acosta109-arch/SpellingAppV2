@@ -67,10 +67,7 @@ fun TestScreen(
     TestBody(
         uiState = uiState,
         onBack = onBack,
-        onPlayAudio = viewModel::playAudio,
-        onPlayDescripcion = viewModel::playDescripcion,
-        onNext = viewModel::nextPalabra,
-        onPrevious = viewModel::previousPalabra
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -79,10 +76,7 @@ fun TestScreen(
 private fun TestBody(
     uiState: TestUiState,
     onBack: () -> Unit,
-    onPlayAudio: (String) -> Unit,
-    onPlayDescripcion: (String) -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit
+    onEvent: (TestEvent) -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
     var showStartDialog by remember { mutableStateOf(true) }
@@ -323,8 +317,8 @@ private fun TestBody(
                         cardColor = cardColor,
                         textColor = textColor,
                         borderColor = borderColor,
-                        onPlayAudio = { onPlayAudio(currentPalabra.nombre) },
-                        onPlayDescripcion = { onPlayDescripcion(currentPalabra.descripcion) }
+                        onPlayAudio = { onEvent(TestEvent.OnPlayAudio(currentPalabra.nombre)) },
+                        onPlayDescripcion = { onEvent(TestEvent.OnPlayDescripcion(currentPalabra.descripcion)) }
                     )
 
                     Row(
@@ -334,7 +328,7 @@ private fun TestBody(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(
-                            onClick = onPrevious,
+                            onClick = { onEvent(TestEvent.OnPrevious) },
                             enabled = uiState.palabraActual > 0,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = primaryButtonColor,
@@ -355,10 +349,9 @@ private fun TestBody(
                                 if (uiState.palabraActual == uiState.totalPalabras - 1) {
                                     showCompletionDialog = true
                                 } else {
-                                    onNext()
+                                   onEvent(TestEvent.OnNext)
                                 }
                             },
-                            // Always enable the button
                             enabled = true,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = primaryButtonColor,
@@ -520,9 +513,6 @@ private fun preview() {
     TestBody(
         uiState = TestUiState(),
         onBack = {},
-        onPlayAudio = {},
-        onPlayDescripcion = {},
-        onNext = {},
-        onPrevious = {}
+        onEvent = {}
     )
 }
