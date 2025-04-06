@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.sagrd.spellingappv2.presentation.login
 
 import android.content.Intent
@@ -25,7 +23,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-@Suppress("DEPRECATION")
 @HiltViewModel
 class UsuarioViewModel @Inject constructor(
     private val usuarioRepository: UsuarioRepository,
@@ -34,9 +31,7 @@ class UsuarioViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState get() = _uiState.asStateFlow()
-
     private val _isAuthenticated = MutableStateFlow(firebaseAuth.currentUser != null)
-    val isAuthenticated: StateFlow<Boolean> = _isAuthenticated.asStateFlow()
 
     init {
         Log.d("UsuarioVM", "ViewModel inicializado")
@@ -229,45 +224,6 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
-    fun deleteUsuario() {
-        viewModelScope.launch {
-            try {
-                _uiState.value.firebaseUser?.let { user ->
-                    try {
-                        user.delete().await()
-                    } catch (e: Exception) {
-                        _uiState.update {
-                            it.copy(
-                                errorMessage = "Error al eliminar usuario de Firebase: ${e.message}",
-                                successMessage = null
-                            )
-                        }
-                        return@launch
-                    }
-                }
-
-                usuarioRepository.deleteUsuario(_uiState.value.toEntity())
-
-                _uiState.update {
-                    it.copy(
-                        successMessage = "Usuario eliminado correctamente.",
-                        errorMessage = null,
-                        firebaseUser = null,
-                        usuarioActual = null
-                    )
-                }
-                nuevoUsuario()
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        errorMessage = "Error al eliminar el usuario: ${e.message}",
-                        successMessage = null
-                    )
-                }
-            }
-        }
-    }
-
     fun login(email: String, contrasena: String) {
         viewModelScope.launch {
             try {
@@ -278,24 +234,23 @@ class UsuarioViewModel @Inject constructor(
 
                 if (firebaseUser != null) {
                     var localUser = usuarioRepository.getUsuarioByEmail(email)
-                    localUser = null
 
-                    require(localUser != null) { "Usuario no encontrado en la base de datos local" }
-
-                    _uiState.update {
-                        it.copy(
-                            usuarioId = localUser.usuarioId,
-                            nombre = localUser.nombre,
-                            apellido = localUser.apellido,
-                            telefono = localUser.telefono,
-                            email = localUser.email,
-                            contrasena = "",
-                            usuarioActual = localUser,
-                            firebaseUser = firebaseUser,
-                            successMessage = "Inicio de sesión exitoso",
-                            errorMessage = null,
-                            isLoading = false,
-                        )
+                    if (localUser != null) {
+                        _uiState.update {
+                            it.copy(
+                                usuarioId = localUser.usuarioId,
+                                nombre = localUser.nombre,
+                                apellido = localUser.apellido,
+                                telefono = localUser.telefono,
+                                email = localUser.email,
+                                contrasena = "",
+                                usuarioActual = localUser,
+                                firebaseUser = firebaseUser,
+                                successMessage = "Inicio de sesión exitoso",
+                                errorMessage = null,
+                                isLoading = false,
+                            )
+                        }
                     }
 
                     Log.d("Login", "Estado actualizado: ${_uiState.value.usuarioActual}")
@@ -354,12 +309,6 @@ class UsuarioViewModel @Inject constructor(
     fun onConfirmarContrasenaChange(confirmarContrasena: String) {
         _uiState.update {
             it.copy(confirmarContrasena = confirmarContrasena)
-        }
-    }
-
-    fun onFotoUrlChange(fotoUrl: String) {
-        _uiState.update {
-            it.copy(fotoUrl = fotoUrl)
         }
     }
 
@@ -457,75 +406,6 @@ class UsuarioViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun checkIfUserExistsInFirestore(userId: String?, account: GoogleSignInAccount) {
-        if (userId == null) {
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    errorMessage = "Error: ID de usuario no disponible"
-                )
-            }
-            return
-        }
-
-        val db = FirebaseFirestore.getInstance()
-        db.collection("usuarios").document(userId).get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            successMessage = "Inicio de sesión exitoso"
-                        )
-                    }
-                } else {
-                    createNewUserFromGoogleAccount(userId, account)
-                }
-            }
-            .addOnFailureListener { e ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "Error al verificar usuario: ${e.message}"
-                    )
-                }
-            }
-    }
-
-    private fun createNewUserFromGoogleAccount(userId: String, account: GoogleSignInAccount) {
-        val db = FirebaseFirestore.getInstance()
-
-        val userMap = hashMapOf(
-            "uid" to userId,
-            "nombre" to (account.givenName ?: ""),
-            "apellido" to (account.familyName ?: ""),
-            "email" to (account.email ?: ""),
-            "fotoUrl" to (account.photoUrl?.toString() ?: ""),
-            "telefono" to "",
-            "authProvider" to "google"
-        )
-
-        db.collection("usuarios").document(userId)
-            .set(userMap)
-            .addOnSuccessListener {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        successMessage = "Registro e inicio de sesión exitoso"
-                    )
-                }
-            }
-            .addOnFailureListener { e ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "Error al crear usuario: ${e.message}"
-                    )
-                }
-            }
     }
 }
 

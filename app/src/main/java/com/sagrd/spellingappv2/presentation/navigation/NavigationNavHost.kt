@@ -269,9 +269,6 @@ private fun NavContent(
                 goToDashboard = {
                     navHostController.navigate(Screen.DashboardHijo)
                 },
-                goToRegistrar = {
-                    navHostController.navigate(Screen.RegistrarScreen)
-                },
                 onLoginSuccess = onLoginSuccess
             )
         }

@@ -24,6 +24,17 @@ class LoginHijoViewModel @Inject constructor(
         loadPines()
     }
 
+    fun onEvent(event: SoyHijoEvent) {
+        when (event) {
+            is SoyHijoEvent.OnPinChange -> {
+                _uiState.update { it.copy(pin = event.pin) }
+            }
+            is SoyHijoEvent.Login -> {
+                login(event.pin)
+            }
+        }
+    }
+
     private fun loadPines() {
         viewModelScope.launch {
             repository.getPines().collect { resource ->
@@ -54,16 +65,7 @@ class LoginHijoViewModel @Inject constructor(
         }
     }
 
-    fun onPinChange(pin: String) {
-        _uiState.update {
-            it.copy(
-                pin = pin,
-                errorMessage = null
-            )
-        }
-    }
-
-    fun login() {
+    fun login(pin: String) {
         viewModelScope.launch {
             val validationError = validate()
             if (validationError != null) {
@@ -77,7 +79,7 @@ class LoginHijoViewModel @Inject constructor(
             }
 
             val existingPin = uiState.value.registeredPins
-                .firstOrNull { it.pin == uiState.value.pin }
+                .firstOrNull { pin == uiState.value.pin }
 
             if (existingPin != null) {
                 _uiState.update {
