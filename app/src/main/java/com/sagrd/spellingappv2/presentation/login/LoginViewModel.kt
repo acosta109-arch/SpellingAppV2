@@ -50,6 +50,41 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
+    fun onEvent(event: LoginEvent) {
+        when (event) {
+            is LoginEvent.NombreChanged -> {
+                _uiState.update { it.copy(nombre = event.nombre) }
+            }
+            is LoginEvent.ApellidoChanged -> {
+                _uiState.update { it.copy(apellido = event.apellido) }
+            }
+            is LoginEvent.TelefonoChanged -> {
+                _uiState.update { it.copy(telefono = event.telefono) }
+            }
+            is LoginEvent.EmailChanged -> {
+                _uiState.update { it.copy(email = event.email) }
+            }
+            is LoginEvent.ContrasenaChanged -> {
+                _uiState.update { it.copy(contrasena = event.contrasena) }
+            }
+            is LoginEvent.ConfirmarContrasenaChanged -> {
+                _uiState.update { it.copy(confirmarContrasena = event.confirmarContrasena) }
+            }
+            is LoginEvent.SaveUsuario -> {
+                saveUsuario()
+            }
+            is LoginEvent.UpdateUsuario -> {
+                updateUsuario(event.password)
+            }
+            is LoginEvent.Login -> {
+                login(event.email, event.contrasena)
+            }
+            is LoginEvent.GoogleSignIn -> {
+            }
+        }
+
+    }
+
     private suspend fun isPhoneNumberUnique(
         phoneNumber: String,
         currentUserId: Int? = null,

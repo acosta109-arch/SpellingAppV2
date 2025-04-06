@@ -1,25 +1,41 @@
 package com.sagrd.spellingappv2.presentation.login
 
-import android.app.Activity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -29,10 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import edu.ucne.spellingapp.R
-import com.sagrd.spellingappv2.presentation.login.LoginUiState
 
 @Composable
 fun LoginScreen(
@@ -40,29 +53,14 @@ fun LoginScreen(
     goToDashboard: () -> Unit,
     goToRegistrar: () -> Unit,
     goToLoginPinHijo: () -> Unit,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         if (AuthManager.isLoggedIn) {
             goToDashboard()
             onLoginSuccess()
-        }
-    }
-
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken("617138256064-jc5tu8he582ta80gj4s2gbvataddr3hb.apps.googleusercontent.com")
-        .requestEmail()
-        .build()
-    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-
-    val googleSignInLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            viewModel.handleGoogleSignInResult(result.data)
         }
     }
 
@@ -75,17 +73,9 @@ fun LoginScreen(
 
     LoginBodyScreen(
         uiState = uiState,
-        onEmailChange = viewModel::onEmailChange,
-        onContrasenaChange = viewModel::onContrasenaChange,
-        login = { email, contrasena ->
-            viewModel.login(email, contrasena)
-        },
         goToRegistrar = goToRegistrar,
         goToLoginPinHijo = goToLoginPinHijo,
-        onGoogleSignInClick = {
-            val signInIntent = googleSignInClient.signInIntent
-            googleSignInLauncher.launch(signInIntent)
-        }
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -93,12 +83,9 @@ fun LoginScreen(
 @Composable
 fun LoginBodyScreen(
     uiState: LoginUiState,
-    onEmailChange: (String) -> Unit,
-    onContrasenaChange: (String) -> Unit,
-    login: (String, String) -> Unit,
     goToRegistrar: () -> Unit,
     goToLoginPinHijo: () -> Unit,
-    onGoogleSignInClick: () -> Unit
+    onEvent: (LoginEvent) -> Unit,
 ) {
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
@@ -121,7 +108,6 @@ fun LoginBodyScreen(
     }
 
     val backgroundColorLogin = Color(0xFF2B3132)
-    val textColor = Color.White
 
     Box(
         modifier = Modifier
@@ -166,12 +152,14 @@ fun LoginBodyScreen(
                 value = email,
                 onValueChange = {
                     email = it
-                    onEmailChange(it)
+                    { onEvent(LoginEvent.EmailChanged(it)) }
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
                     focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
+                    unfocusedBorderColor = Color.Gray,
                 ),
                 shape = RoundedCornerShape(4.dp),
                 singleLine = true
@@ -186,13 +174,15 @@ fun LoginBodyScreen(
                 value = contrasena,
                 onValueChange = {
                     contrasena = it
-                    onContrasenaChange(it)
+                    { onEvent(LoginEvent.ContrasenaChanged(it)) }
                 },
                 visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
                     focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
+                    unfocusedBorderColor = Color.Gray,
                 ),
                 shape = RoundedCornerShape(4.dp),
                 trailingIcon = {
@@ -215,7 +205,7 @@ fun LoginBodyScreen(
             }
 
             Button(
-                onClick = { login(email, contrasena) },
+                onClick = { onEvent(LoginEvent.Login(email, contrasena)) },
                 colors = ButtonDefaults.elevatedButtonColors(containerColor = backgroundColorLogin),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -238,7 +228,11 @@ fun LoginBodyScreen(
             }
 
             TextButton(onClick = goToRegistrar) {
-                Text("¿No tienes cuenta? Regístrate", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text(
+                    "¿No tienes cuenta? Regístrate",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
@@ -249,11 +243,8 @@ fun LoginBodyScreen(
 private fun LoginPreview() {
     LoginBodyScreen(
         uiState = LoginUiState(),
-        onEmailChange = {},
-        onContrasenaChange = {},
-        login = { _, _ -> },
         goToRegistrar = {},
         goToLoginPinHijo = {},
-        onGoogleSignInClick = {}
+        onEvent = {}
     )
 }

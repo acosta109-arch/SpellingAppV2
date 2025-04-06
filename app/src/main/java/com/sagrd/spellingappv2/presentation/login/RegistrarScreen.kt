@@ -60,19 +60,16 @@ import coil.request.ImageRequest
 import edu.ucne.spellingapp.R
 
 @Composable
-fun RegistrarScreen(viewModel: UsuarioViewModel = hiltViewModel(), goBack: () -> Unit) {
+fun RegistrarScreen(
+    viewModel: UsuarioViewModel = hiltViewModel(),
+    goBack: () -> Unit)
+{
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     RegistrarBodyScreen(
         uiState = uiState.value,
-        onNombreChange = viewModel::onNombreChange,
-        onApellidoChange = viewModel::onApellidoChange,
-        onTelefonoChange = viewModel::onTelefonoChange,
-        onEmailChange = viewModel::onEmailChange,
-        onContrasenaChange = viewModel::onContrasenaChange,
-        onConfirmarContrasenaChange = viewModel::onConfirmarContrasenaChange,
-        save = viewModel::saveUsuario,
-        goBack = goBack
+        goBack = goBack,
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -80,14 +77,8 @@ fun RegistrarScreen(viewModel: UsuarioViewModel = hiltViewModel(), goBack: () ->
 @Composable
 fun RegistrarBodyScreen(
     uiState: LoginUiState,
-    onNombreChange: (String) -> Unit,
-    onApellidoChange: (String) -> Unit,
-    onTelefonoChange: (String) -> Unit,
-    onEmailChange: (String) -> Unit,
-    onContrasenaChange: (String) -> Unit,
-    onConfirmarContrasenaChange: (String) -> Unit,
-    save: () -> Unit,
-    goBack: () -> Unit
+    goBack: () -> Unit,
+    onEvent: (LoginEvent) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -171,7 +162,7 @@ fun RegistrarBodyScreen(
                 label = { Text(text = "Nombre", color = Color.Black) },
                 leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                 value = uiState.nombre,
-                onValueChange = onNombreChange,
+                onValueChange = { onEvent(LoginEvent.NombreChanged(it)) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White,
                     focusedBorderColor = Color.Gray,
@@ -188,7 +179,7 @@ fun RegistrarBodyScreen(
                 label = { Text(text = "Apellido", color = Color.Black) },
                 leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                 value = uiState.apellido,
-                onValueChange = onApellidoChange,
+                onValueChange = { onEvent(LoginEvent.ApellidoChanged(it)) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White,
                     focusedBorderColor = Color.Gray,
@@ -208,7 +199,7 @@ fun RegistrarBodyScreen(
                 value = uiState.telefono,
                 onValueChange = { newValue ->
                     val digits = newValue.filter { it.isDigit() }.take(10)
-                    onTelefonoChange(digits)
+                    onEvent(LoginEvent.TelefonoChanged(digits))
                 },
                 visualTransformation = PhoneVisualTransformation(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -220,7 +211,6 @@ fun RegistrarBodyScreen(
                 ,singleLine = true
             )
 
-
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -228,7 +218,7 @@ fun RegistrarBodyScreen(
                 label = { Text(text = "Correo Electrónico", color = Color.Black) },
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
                 value = uiState.email,
-                onValueChange = onEmailChange,
+                onValueChange = { onEvent(LoginEvent.EmailChanged(it)) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White,
                     focusedBorderColor = Color.Gray,
@@ -245,7 +235,7 @@ fun RegistrarBodyScreen(
                 label = { Text(text = "Contraseña", color = Color.Black) },
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                 value = uiState.contrasena,
-                onValueChange = onContrasenaChange,
+                onValueChange = { onEvent(LoginEvent.ContrasenaChanged(it)) },
                 visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White,
@@ -272,7 +262,7 @@ fun RegistrarBodyScreen(
                 label = { Text(text = "Confirmar Contraseña", color = Color.Black) },
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                 value = uiState.confirmarContrasena,
-                onValueChange = onConfirmarContrasenaChange,
+                onValueChange = { onEvent(LoginEvent.ConfirmarContrasenaChanged(it)) },
                 visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White,
@@ -312,7 +302,7 @@ fun RegistrarBodyScreen(
             }
 
             Button(
-                onClick = { save() },
+                onClick = { onEvent(LoginEvent.SaveUsuario) },
                 colors = ButtonDefaults.buttonColors(containerColor = backgroundColorButton),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -349,7 +339,6 @@ class PhoneVisualTransformation : VisualTransformation {
         return TransformedText(AnnotatedString(formatted), PhoneOffsetMapping(digits, formatted))
     }
 }
-
 
 class PhoneOffsetMapping(private val original: String, private val transformed: String) : OffsetMapping {
     override fun originalToTransformed(offset: Int): Int {

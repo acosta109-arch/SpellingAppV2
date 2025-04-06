@@ -82,14 +82,7 @@ fun EditarPerfil(
     EditarPerfilBody(
         uiState = uiState,
         onMenuClick = onMenuClick,
-        onEdit = { currentPassword ->
-            viewModel.updateUsuario(currentPassword)
-        },
-        onNombreChange = viewModel::onNombreChange,
-        onApellidoChange = viewModel::onApellidoChange,
-        onTelefonoChange = viewModel::onTelefonoChange,
-        onContrasenaChange = viewModel::onContrasenaChange,
-        onConfirmarContrasenaChange = viewModel::onConfirmarContrasenaChange
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -98,12 +91,7 @@ fun EditarPerfil(
 fun EditarPerfilBody(
     uiState: LoginUiState,
     onMenuClick: () -> Unit,
-    onEdit: (String?) -> Unit,
-    onNombreChange: (String) -> Unit,
-    onApellidoChange: (String) -> Unit,
-    onTelefonoChange: (String) -> Unit,
-    onContrasenaChange: (String) -> Unit,
-    onConfirmarContrasenaChange: (String) -> Unit,
+    onEvent: (LoginEvent) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -131,11 +119,8 @@ fun EditarPerfilBody(
     )
 
     isImageValid = imagePainter.state is AsyncImagePainter.State.Success
-
     val isDarkMode = isSystemInDarkTheme()
-
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
-
     val gradientColors = if (isDarkMode) {
         listOf(
             Color(0xFF283653),
@@ -210,7 +195,7 @@ fun EditarPerfilBody(
                     label = { Text(text = "Nombre", color = Color.White) },
                     leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = Color.White) },
                     value = uiState.nombre,
-                    onValueChange = onNombreChange,
+                    onValueChange = { onEvent(LoginEvent.NombreChanged(it)) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White.copy(alpha = 0.2f),
                         focusedBorderColor = Color.White,
@@ -229,7 +214,7 @@ fun EditarPerfilBody(
                     label = { Text(text = "Apellido", color = Color.White) },
                     leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = Color.White) },
                     value = uiState.apellido,
-                    onValueChange = onApellidoChange,
+                    onValueChange = { onEvent(LoginEvent.ApellidoChanged(it)) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White.copy(alpha = 0.2f),
                         focusedBorderColor = Color.White,
@@ -248,7 +233,7 @@ fun EditarPerfilBody(
                     label = { Text(text = "Número De Teléfono", color = Color.White) },
                     leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = Color.White) },
                     value = uiState.telefono,
-                    onValueChange = onTelefonoChange,
+                    onValueChange = { onEvent(LoginEvent.TelefonoChanged(it)) },
                     visualTransformation = PhoneVisualTrans(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -308,7 +293,7 @@ fun EditarPerfilBody(
                         label = { Text(text = "Nueva Contraseña", color = Color.White) },
                         leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
                         value = uiState.contrasena,
-                        onValueChange = onContrasenaChange,
+                        onValueChange = { onEvent(LoginEvent.ContrasenaChanged(it)) },
                         visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             containerColor = Color.White.copy(alpha = 0.2f),
@@ -336,7 +321,7 @@ fun EditarPerfilBody(
                         label = { Text(text = "Confirmar Nueva Contraseña", color = Color.White) },
                         leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
                         value = uiState.confirmarContrasena,
-                        onValueChange = onConfirmarContrasenaChange,
+                        onValueChange = { onEvent(LoginEvent.ConfirmarContrasenaChanged(it)) },
                         visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             containerColor = Color.White.copy(alpha = 0.2f),
@@ -436,9 +421,9 @@ fun EditarPerfilBody(
                     onClick = {
                         pendingAction = {
                             if (showCurrentPasswordField) {
-                                onEdit(contrasenaActual)
+                                onEvent(LoginEvent.UpdateUsuario(contrasenaActual))
                             } else {
-                                onEdit(null)
+                                onEvent(LoginEvent.UpdateUsuario(""))
                             }
                         }
                         showConfirmationDialog = true
@@ -509,7 +494,7 @@ class PhoneOffsetMap(private val original: String, private val transformed: Stri
 
 @Preview
 @Composable
-private fun editPerfilPreview() {
+private fun EditPerfilPreview() {
     EditarPerfilBody(
         uiState = LoginUiState(
             nombre = "John",
@@ -518,14 +503,8 @@ private fun editPerfilPreview() {
             contrasena = "password",
             confirmarContrasena = "password",
             successMessage = "Coreectamente editado",
-
         ),
         onMenuClick = { },
-        onEdit = { },
-        onNombreChange = { },
-        onApellidoChange = { },
-        onTelefonoChange = { },
-        onContrasenaChange = { },
-        onConfirmarContrasenaChange = { }
+        onEvent = { }
     )
 }
