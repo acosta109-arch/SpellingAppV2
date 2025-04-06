@@ -1,22 +1,14 @@
 package com.sagrd.spellingappv2.presentation.login
 
-import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.FirebaseFirestore
-import com.sagrd.spellingappv2.data.local.entities.UsuarioEntity
 import com.sagrd.spellingappv2.data.repository.UsuarioRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -311,137 +303,6 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
-    fun onNombreChange(nombre: String) {
-        _uiState.update {
-            it.copy(nombre = nombre)
-        }
-    }
-
-    fun onApellidoChange(apellido: String) {
-        _uiState.update {
-            it.copy(apellido = apellido)
-        }
-    }
-
-    fun onTelefonoChange(telefono: String) {
-        _uiState.update {
-            it.copy(telefono = telefono)
-        }
-    }
-
-    fun onEmailChange(email: String) {
-        _uiState.update {
-            it.copy(email = email)
-        }
-    }
-
-    fun onContrasenaChange(contrasena: String) {
-        _uiState.update {
-            it.copy(contrasena = contrasena)
-        }
-    }
-
-    fun onConfirmarContrasenaChange(confirmarContrasena: String) {
-        _uiState.update {
-            it.copy(confirmarContrasena = confirmarContrasena)
-        }
-    }
-
-    fun handleGoogleSignInResult(data: Intent?) {
-        viewModelScope.launch {
-            try {
-                _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-
-                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                val account = task.getResult(ApiException::class.java)
-
-                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                val authResult = firebaseAuth.signInWithCredential(credential).await()
-                val firebaseUser = authResult.user
-
-                if (firebaseUser != null) {
-                    Log.d("GoogleSignIn", "Firebase user authenticated: ${firebaseUser.email}")
-
-                    val localUser = usuarioRepository.getAllUsuarios()
-                        .find { it.email == firebaseUser.email }
-
-                    if (localUser != null) {
-                        Log.d("GoogleSignIn", "Found existing user in local DB")
-
-                        _uiState.update {
-                            it.copy(
-                                usuarioActual = localUser,
-                                firebaseUser = firebaseUser,
-                                successMessage = "Inicio de sesión con Google exitoso",
-                                errorMessage = null,
-                                isLoading = false
-                            )
-                        }
-
-                        Log.d("GoogleSignIn", "User found in local DB: ${localUser.toString()}")
-                    } else {
-                        Log.d("GoogleSignIn", "Creating new user in local DB")
-
-                        val displayName = firebaseUser.displayName ?: ""
-                        val nameParts = displayName.split(" ")
-                        val firstName = if (nameParts.isNotEmpty()) nameParts[0] else ""
-                        val lastName = if (nameParts.size > 1) nameParts.subList(1, nameParts.size)
-                            .joinToString(" ") else ""
-
-                        val newUser = UsuarioEntity(
-                            usuarioId = null,
-                            nombre = firstName,
-                            apellido = lastName,
-                            telefono = firebaseUser.phoneNumber ?: "",
-                            email = firebaseUser.email ?: "",
-                            contrasena = ""
-                        )
-
-                        try {
-                            usuarioRepository.insertUsuario(newUser)
-
-                            val insertedUser = usuarioRepository.getAllUsuarios()
-                                .find { it.email == firebaseUser.email }
-
-                            if (insertedUser != null) {
-                                Log.d(
-                                    "GoogleSignIn",
-                                    "Successfully created new user with ID: ${insertedUser.usuarioId}"
-                                )
-
-                                _uiState.update {
-                                    it.copy(
-                                        usuarioActual = insertedUser,
-                                        firebaseUser = firebaseUser,
-                                        successMessage = "Registro con Google exitoso",
-                                        errorMessage = null,
-                                        isLoading = false
-                                    )
-                                }
-                            } else {
-                                Log.e("GoogleSignIn", "Failed to retrieve newly created user")
-                                throw Exception("Error al crear usuario en la base de datos local")
-                            }
-                        } catch (e: Exception) {
-                            Log.e("GoogleSignIn", "Error inserting user: ${e.message}", e)
-                            throw e
-                        }
-                    }
-                } else {
-                    throw Exception("No se pudo autenticar con Firebase")
-                }
-            } catch (e: Exception) {
-                Log.e("GoogleSignIn", "Error in Google sign-in process: ${e.message}", e)
-                _uiState.update {
-                    it.copy(
-                        errorMessage = "Error al iniciar sesión con Google: ${e.message}",
-                        successMessage = null,
-                        isLoading = false
-                    )
-                }
-            }
-        }
-    }
 }
 
 object AuthManager {

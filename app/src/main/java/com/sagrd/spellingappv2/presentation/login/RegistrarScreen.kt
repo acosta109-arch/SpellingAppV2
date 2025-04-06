@@ -27,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -62,8 +63,8 @@ import edu.ucne.spellingapp.R
 @Composable
 fun RegistrarScreen(
     viewModel: UsuarioViewModel = hiltViewModel(),
-    goBack: () -> Unit)
-{
+    goBack: () -> Unit,
+) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     RegistrarBodyScreen(
@@ -78,7 +79,7 @@ fun RegistrarScreen(
 fun RegistrarBodyScreen(
     uiState: LoginUiState,
     goBack: () -> Unit,
-    onEvent: (LoginEvent) -> Unit
+    onEvent: (LoginEvent) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -163,13 +164,14 @@ fun RegistrarBodyScreen(
                 leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                 value = uiState.nombre,
                 onValueChange = { onEvent(LoginEvent.NombreChanged(it)) },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
                     focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
+                    unfocusedBorderColor = Color.Gray,
                 ),
-                shape = RoundedCornerShape(4.dp)
-                ,singleLine = true
+                shape = RoundedCornerShape(4.dp), singleLine = true
             )
 
             OutlinedTextField(
@@ -180,13 +182,14 @@ fun RegistrarBodyScreen(
                 leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                 value = uiState.apellido,
                 onValueChange = { onEvent(LoginEvent.ApellidoChanged(it)) },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
                     focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
+                    unfocusedBorderColor = Color.Gray,
                 ),
-                shape = RoundedCornerShape(4.dp)
-                ,singleLine = true
+                shape = RoundedCornerShape(4.dp), singleLine = true
             )
 
             OutlinedTextField(
@@ -202,13 +205,14 @@ fun RegistrarBodyScreen(
                     onEvent(LoginEvent.TelefonoChanged(digits))
                 },
                 visualTransformation = PhoneVisualTransformation(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
                     focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
+                    unfocusedBorderColor = Color.Gray,
                 ),
-                shape = RoundedCornerShape(4.dp)
-                ,singleLine = true
+                shape = RoundedCornerShape(4.dp), singleLine = true
             )
 
             OutlinedTextField(
@@ -219,13 +223,14 @@ fun RegistrarBodyScreen(
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
                 value = uiState.email,
                 onValueChange = { onEvent(LoginEvent.EmailChanged(it)) },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
                     focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
+                    unfocusedBorderColor = Color.Gray,
                 ),
-                shape = RoundedCornerShape(4.dp)
-                ,singleLine = true
+                shape = RoundedCornerShape(4.dp), singleLine = true
             )
 
             OutlinedTextField(
@@ -237,10 +242,12 @@ fun RegistrarBodyScreen(
                 value = uiState.contrasena,
                 onValueChange = { onEvent(LoginEvent.ContrasenaChanged(it)) },
                 visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
                     focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
+                    unfocusedBorderColor = Color.Gray,
                 ),
                 shape = RoundedCornerShape(4.dp),
                 singleLine = true,
@@ -264,15 +271,19 @@ fun RegistrarBodyScreen(
                 value = uiState.confirmarContrasena,
                 onValueChange = { onEvent(LoginEvent.ConfirmarContrasenaChanged(it)) },
                 visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
                     focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
+                    unfocusedBorderColor = Color.Gray,
                 ),
                 shape = RoundedCornerShape(4.dp),
                 singleLine = true,
                 trailingIcon = {
-                    IconButton(onClick = { confirmarContrasenaVisible = !confirmarContrasenaVisible }) {
+                    IconButton(onClick = {
+                        confirmarContrasenaVisible = !confirmarContrasenaVisible
+                    }) {
                         Image(
                             painter = painterResource(id = if (confirmarContrasenaVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
                             contentDescription = "Mostrar/Ocultar Contraseña"
@@ -313,7 +324,11 @@ fun RegistrarBodyScreen(
             }
 
             TextButton(onClick = goBack) {
-                Text("¿Ya tienes cuenta? Iniciar sesión", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text(
+                    "¿Ya tienes cuenta? Iniciar sesión",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
@@ -340,7 +355,8 @@ class PhoneVisualTransformation : VisualTransformation {
     }
 }
 
-class PhoneOffsetMapping(private val original: String, private val transformed: String) : OffsetMapping {
+class PhoneOffsetMapping(private val original: String, private val transformed: String) :
+    OffsetMapping {
     override fun originalToTransformed(offset: Int): Int {
         val digitsOnly = original.take(offset)
         var transformedOffset = 0

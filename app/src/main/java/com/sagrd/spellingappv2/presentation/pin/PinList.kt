@@ -55,7 +55,6 @@ fun PinListScreen(
     viewModel: PinViewModel = hiltViewModel(),
     onCreate: () -> Unit,
     onDelete: (Int) -> Unit,
-    onBack: () -> Unit,
     onMenuClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -63,7 +62,6 @@ fun PinListScreen(
         uiState = uiState,
         onCreate = onCreate,
         onDelete = onDelete,
-        onBack = onBack,
         onMenuClick = onMenuClick
     )
 }
@@ -74,7 +72,6 @@ private fun PinBodyListScreen(
     uiState: PinUiState,
     onCreate: () -> Unit,
     onDelete: (Int) -> Unit,
-    onBack: () -> Unit,
     onMenuClick: () -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
@@ -237,7 +234,7 @@ fun PinRow(
                         DropdownMenuItem(
                             text = { Text("Eliminar") },
                             onClick = {
-                                onDelete(pin.pinId ?: 0)
+                                onDelete(pin.pinId)
                                 expanded = false
                             }
                         )

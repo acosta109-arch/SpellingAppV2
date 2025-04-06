@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
@@ -60,7 +62,7 @@ import edu.ucne.spellingapp.R
 @Composable
 fun TestScreen(
     viewModel: TestViewModel = hiltViewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -76,7 +78,7 @@ fun TestScreen(
 private fun TestBody(
     uiState: TestUiState,
     onBack: () -> Unit,
-    onEvent: (TestEvent) -> Unit
+    onEvent: (TestEvent) -> Unit,
 ) {
     val isDarkMode = isSystemInDarkTheme()
     var showStartDialog by remember { mutableStateOf(true) }
@@ -101,7 +103,8 @@ private fun TestBody(
 
     val primaryButtonColor = if (isDarkMode) Color(0xFF177882) else Color(0xFF5499C7)
     val progressColor = if (isDarkMode) Color(0xFF177882) else Color(0xFF5499C7)
-    val progressTrackColor = if (isDarkMode) Color(0xFF283653).copy(alpha = 0.3f) else Color(0xFFAED6F1).copy(alpha = 0.5f)
+    val progressTrackColor =
+        if (isDarkMode) Color(0xFF283653).copy(alpha = 0.3f) else Color(0xFFAED6F1).copy(alpha = 0.5f)
 
     val textColor = if (isDarkMode) Color.White else Color.Black
 
@@ -110,7 +113,8 @@ private fun TestBody(
     else
         Color.White
 
-    val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
+    val borderColor =
+        if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
 
     if (showCompletionDialog) {
         AlertDialog(
@@ -272,7 +276,13 @@ private fun TestBody(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Test de Palabras", fontWeight = FontWeight.Bold, color = Color.White) },
+                title = {
+                    Text(
+                        "Test de Palabras",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = appBarColor,
                     titleContentColor = Color.White,
@@ -283,7 +293,7 @@ private fun TestBody(
                         onClick = { showExitDialog = true }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Regresar",
                             tint = Color.White
                         )
@@ -338,7 +348,7 @@ private fun TestBody(
                             )
                         ) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Anterior"
                             )
                             Text("Anterior")
@@ -349,7 +359,7 @@ private fun TestBody(
                                 if (uiState.palabraActual == uiState.totalPalabras - 1) {
                                     showCompletionDialog = true
                                 } else {
-                                   onEvent(TestEvent.OnNext)
+                                    onEvent(TestEvent.OnNext)
                                 }
                             },
                             enabled = true,
@@ -362,7 +372,7 @@ private fun TestBody(
                         ) {
                             Text(if (uiState.palabraActual == uiState.totalPalabras - 1) "Terminar" else "Siguiente")
                             Icon(
-                                imageVector = Icons.Default.ArrowForward,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = "Siguiente"
                             )
                         }
@@ -373,13 +383,13 @@ private fun TestBody(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         LinearProgressIndicator(
-                            progress = uiState.porcentajeCompletado,
+                            progress = { uiState.porcentajeCompletado },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(8.dp)
                                 .clip(RoundedCornerShape(4.dp)),
                             color = progressColor,
-                            trackColor = progressTrackColor
+                            trackColor = progressTrackColor,
                         )
 
                         Text(
@@ -412,7 +422,7 @@ fun TestContent(
     textColor: Color,
     borderColor: Color,
     onPlayAudio: () -> Unit,
-    onPlayDescripcion: () -> Unit
+    onPlayDescripcion: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -432,7 +442,7 @@ fun TestContent(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            palabra.fotoUrl?.let { url ->
+            palabra.fotoUrl.let { url ->
                 AsyncImage(
                     model = ImageRequest.Builder(context)
                         .data(url)
@@ -444,14 +454,6 @@ fun TestContent(
                         .fillMaxWidth()
                         .height(200.dp)
                         .border(1.dp, borderColor, MaterialTheme.shapes.small)
-                )
-            } ?: run {
-                Image(
-                    painter = painterResource(id = R.drawable.palabras),
-                    contentDescription = "Imagen predeterminada",
-                    modifier = Modifier
-                        .size(200.dp)
-                        .padding(vertical = 8.dp)
                 )
             }
 
@@ -509,7 +511,7 @@ fun TestContent(
 
 @Preview
 @Composable
-private fun preview() {
+private fun Preview() {
     TestBody(
         uiState = TestUiState(),
         onBack = {},

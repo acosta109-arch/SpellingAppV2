@@ -38,8 +38,8 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -65,7 +65,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.sagrd.spellingappv2.presentation.login.LoginUiState
 import edu.ucne.spellingapp.R
 
 @Composable
@@ -91,7 +90,7 @@ fun EditarPerfil(
 fun EditarPerfilBody(
     uiState: LoginUiState,
     onMenuClick: () -> Unit,
-    onEvent: (LoginEvent) -> Unit
+    onEvent: (LoginEvent) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -105,7 +104,7 @@ fun EditarPerfilBody(
 
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
-    
+
     LaunchedEffect(uiState.contrasena) {
         if (uiState.contrasena.isNotBlank()) {
             showCurrentPasswordField = true
@@ -138,7 +137,13 @@ fun EditarPerfilBody(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Editar Perfil", fontWeight = FontWeight.Bold, color = Color.White) },
+                title = {
+                    Text(
+                        "Editar Perfil",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = appBarColor,
                     titleContentColor = Color.White,
@@ -193,16 +198,21 @@ fun EditarPerfilBody(
                     modifier = Modifier
                         .fillMaxWidth(),
                     label = { Text(text = "Nombre", color = Color.White) },
-                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = Color.White) },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Person,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    },
                     value = uiState.nombre,
                     onValueChange = { onEvent(LoginEvent.NombreChanged(it)) },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.White.copy(alpha = 0.2f),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        cursorColor = Color.White,
                         focusedBorderColor = Color.White,
                         unfocusedBorderColor = Color.White,
-                        cursorColor = Color.White,
                         focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.White
+                        unfocusedLabelColor = Color.White,
                     ),
                     shape = RoundedCornerShape(4.dp),
                     singleLine = true
@@ -212,16 +222,21 @@ fun EditarPerfilBody(
                     modifier = Modifier
                         .fillMaxWidth(),
                     label = { Text(text = "Apellido", color = Color.White) },
-                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = Color.White) },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Person,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    },
                     value = uiState.apellido,
                     onValueChange = { onEvent(LoginEvent.ApellidoChanged(it)) },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.White.copy(alpha = 0.2f),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        cursorColor = Color.White,
                         focusedBorderColor = Color.White,
                         unfocusedBorderColor = Color.White,
-                        cursorColor = Color.White,
                         focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.White
+                        unfocusedLabelColor = Color.White,
                     ),
                     shape = RoundedCornerShape(4.dp),
                     singleLine = true
@@ -231,18 +246,23 @@ fun EditarPerfilBody(
                     modifier = Modifier
                         .fillMaxWidth(),
                     label = { Text(text = "Número De Teléfono", color = Color.White) },
-                    leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = Color.White) },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Phone,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    },
                     value = uiState.telefono,
                     onValueChange = { onEvent(LoginEvent.TelefonoChanged(it)) },
                     visualTransformation = PhoneVisualTrans(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.White.copy(alpha = 0.2f),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        cursorColor = Color.White,
                         focusedBorderColor = Color.White,
                         unfocusedBorderColor = Color.White,
-                        cursorColor = Color.White,
                         focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.White
+                        unfocusedLabelColor = Color.White,
                     ),
                     shape = RoundedCornerShape(4.dp),
                     singleLine = true
@@ -250,7 +270,7 @@ fun EditarPerfilBody(
                 Row(
                     modifier = Modifier.align(Alignment.Start),
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Checkbox(
                         checked = showCurrentPasswordField,
                         onCheckedChange = { showCurrentPasswordField = it }
@@ -263,21 +283,28 @@ fun EditarPerfilBody(
                         modifier = Modifier
                             .fillMaxWidth(),
                         label = { Text(text = "Contraseña Actual", color = Color.White) },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        },
                         value = contrasenaActual,
                         onValueChange = { contrasenaActual = it },
                         visualTransformation = if (contrasenaActualVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            containerColor = Color.White.copy(alpha = 0.2f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            cursorColor = Color.White,
                             focusedBorderColor = Color.White,
                             unfocusedBorderColor = Color.White,
-                            cursorColor = Color.White,
                             focusedLabelColor = Color.White,
-                            unfocusedLabelColor = Color.White
+                            unfocusedLabelColor = Color.White,
                         ),
                         shape = RoundedCornerShape(4.dp),
                         trailingIcon = {
-                            IconButton(onClick = { contrasenaActualVisible = !contrasenaActualVisible }) {
+                            IconButton(onClick = {
+                                contrasenaActualVisible = !contrasenaActualVisible
+                            }) {
                                 Image(
                                     painter = painterResource(id = if (contrasenaActualVisible) R.drawable.ojo_abierto else R.drawable.ojo_cerrado),
                                     contentDescription = "Mostrar/Ocultar Contraseña Actual"
@@ -291,17 +318,22 @@ fun EditarPerfilBody(
                         modifier = Modifier
                             .fillMaxWidth(),
                         label = { Text(text = "Nueva Contraseña", color = Color.White) },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        },
                         value = uiState.contrasena,
                         onValueChange = { onEvent(LoginEvent.ContrasenaChanged(it)) },
                         visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            containerColor = Color.White.copy(alpha = 0.2f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            cursorColor = Color.White,
                             focusedBorderColor = Color.White,
                             unfocusedBorderColor = Color.White,
-                            cursorColor = Color.White,
                             focusedLabelColor = Color.White,
-                            unfocusedLabelColor = Color.White
+                            unfocusedLabelColor = Color.White,
                         ),
                         shape = RoundedCornerShape(4.dp),
                         trailingIcon = {
@@ -315,21 +347,30 @@ fun EditarPerfilBody(
                         singleLine = true
                     )
 
+                    val containerColor = Color.White.copy(alpha = 0.2f)
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(),
                         label = { Text(text = "Confirmar Nueva Contraseña", color = Color.White) },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White) },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        },
                         value = uiState.confirmarContrasena,
                         onValueChange = { onEvent(LoginEvent.ConfirmarContrasenaChanged(it)) },
                         visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            containerColor = Color.White.copy(alpha = 0.2f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = containerColor,
+                            unfocusedContainerColor = containerColor,
+                            disabledContainerColor = containerColor,
+                            cursorColor = Color.White,
                             focusedBorderColor = Color.White,
                             unfocusedBorderColor = Color.White,
-                            cursorColor = Color.White,
                             focusedLabelColor = Color.White,
-                            unfocusedLabelColor = Color.White
+                            unfocusedLabelColor = Color.White,
                         ),
                         shape = RoundedCornerShape(4.dp),
                         trailingIcon = {
@@ -463,7 +504,8 @@ class PhoneVisualTrans : VisualTransformation {
     }
 }
 
-class PhoneOffsetMap(private val original: String, private val transformed: String) : OffsetMapping {
+class PhoneOffsetMap(private val original: String, private val transformed: String) :
+    OffsetMapping {
     override fun originalToTransformed(offset: Int): Int {
         val digitsOnly = original.take(offset)
         var transformedOffset = 0

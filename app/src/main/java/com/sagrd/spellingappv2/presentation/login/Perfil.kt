@@ -338,7 +338,7 @@ fun formatPhoneNumber(phoneNumber: String?): String {
 
 @Preview
 @Composable
-private fun pelfilpreview() {
+private fun Perfilpreview() {
     PerfilBody(
         navHostController = NavHostController(LocalContext.current),
         uiState = LoginUiState(),

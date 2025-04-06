@@ -18,7 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -120,7 +120,7 @@ private fun PalabrasBodyList(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Regresar",
                             tint = Color.White
                         )
@@ -282,7 +282,7 @@ fun PalabraRow(
                     color = textColor
                 )
 
-                palabra.fotoUrl?.let { url ->
+                palabra.fotoUrl.let { url ->
                     AsyncImage(
                         model = ImageRequest.Builder(context)
                             .data(url)

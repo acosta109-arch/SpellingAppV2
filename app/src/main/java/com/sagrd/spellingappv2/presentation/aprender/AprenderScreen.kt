@@ -52,7 +52,7 @@ import edu.ucne.spellingapp.R
 fun AprenderScreen(
     viewModel: AprenderViewModel = hiltViewModel(),
     onBack: () -> Unit,
-    onNavigateToLogros: () -> Unit
+    onNavigateToLogros: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -70,7 +70,7 @@ private fun AprenderBody(
     uiState: AprenderUiState,
     onBack: () -> Unit,
     onNavigateToLogros: () -> Unit,
-    onEvent: (AprenderEvent) -> Unit
+    onEvent: (AprenderEvent) -> Unit,
 ) {
     val isDarkMode = isSystemInDarkTheme()
     var showStartDialog by remember { mutableStateOf(true) }
@@ -93,13 +93,15 @@ private fun AprenderBody(
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
     val primaryButtonColor = if (isDarkMode) Color(0xFF177882) else Color(0xFF5499C7)
     val progressColor = if (isDarkMode) Color(0xFF177882) else Color(0xFF5499C7)
-    val progressTrackColor = if (isDarkMode) Color(0xFF283653).copy(alpha = 0.3f) else Color(0xFFAED6F1).copy(alpha = 0.5f)
+    val progressTrackColor =
+        if (isDarkMode) Color(0xFF283653).copy(alpha = 0.3f) else Color(0xFFAED6F1).copy(alpha = 0.5f)
     val textColor = if (isDarkMode) Color.White else Color.Black
     val cardColor = if (isDarkMode)
         Color(0xFF1F2937).copy(alpha = 0.7f)
     else
         Color.White.copy(alpha = 0.7f)
-    val borderColor = if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
+    val borderColor =
+        if (isDarkMode) Color.White.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.5f)
 
     if (showStartDialog) {
         AlertDialog(
@@ -216,7 +218,13 @@ private fun AprenderBody(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Test de Palabras", fontWeight = FontWeight.Bold, color = Color.White) },
+                title = {
+                    Text(
+                        "Test de Palabras",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = appBarColor,
                     titleContentColor = Color.White,
@@ -272,7 +280,7 @@ private fun AprenderBody(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(
-                            onClick = {  onEvent(AprenderEvent.OnPrevious) },
+                            onClick = { onEvent(AprenderEvent.OnPrevious) },
                             enabled = uiState.palabraActual > 0,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = primaryButtonColor,
@@ -314,13 +322,13 @@ private fun AprenderBody(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         LinearProgressIndicator(
-                            progress = uiState.porcentajeCompletado,
+                            progress = { uiState.porcentajeCompletado },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(8.dp)
                                 .clip(RoundedCornerShape(4.dp)),
                             color = progressColor,
-                            trackColor = progressTrackColor
+                            trackColor = progressTrackColor,
                         )
 
                         Text(

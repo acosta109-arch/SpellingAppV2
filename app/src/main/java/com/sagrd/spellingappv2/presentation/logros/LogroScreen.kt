@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
@@ -55,7 +56,6 @@ import edu.ucne.spellingapp.R
 fun LogrosScreen(
     viewModel: LogrosViewModel = hiltViewModel(),
     goBack: () -> Unit,
-    onMenuClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showCongratulationsDialog by remember { mutableStateOf(false) }
@@ -73,7 +73,6 @@ fun LogrosScreen(
                 viewModel.save()
             }
         },
-        onMenuClick = onMenuClick,
         onDelete = { viewModel.delete(uiState.logroId) },
         onResetState = viewModel::new
     )
@@ -140,7 +139,6 @@ fun LogrosBodyScreen(
     onNombreCompletoChange: (String) -> Unit,
     onMensajeChange: (String) -> Unit,
     onSave: () -> Unit,
-    onMenuClick: () -> Unit,
     onDelete: () -> Unit,
     onResetState: () -> Unit
 ) {
@@ -289,7 +287,7 @@ fun LogrosBodyScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Volver"
                             )
                             Spacer(modifier = Modifier.width(8.dp))

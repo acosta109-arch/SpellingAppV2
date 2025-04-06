@@ -161,7 +161,6 @@ private fun NavContent(
             PinListScreen(
                 onCreate = { navHostController.navigate(Screen.PinScreen(0)) },
                 onDelete = { navHostController.navigate(Screen.PinDelete(it)) },
-                onBack = { navHostController.navigateUp() },
                 onMenuClick = onMenuClick
             )
         }
@@ -291,7 +290,6 @@ private fun NavContent(
                 goBack = {
                     navHostController.navigateUp()
                 },
-                onMenuClick = onMenuClick
             )
         }
 

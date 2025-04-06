@@ -25,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -152,10 +153,12 @@ fun LoginPinBodyScreen(
                     onEvent(SoyHijoEvent.OnPinChange(it))
                 },
                 visualTransformation = if (pinVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White,
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.Gray
+                colors = OutlinedTextFieldDefaults.colors(
+                    cursorColor = Color.White,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White,
+                    focusedLabelColor = Color.White,
+                    unfocusedLabelColor = Color.White,
                 ),
                 shape = RoundedCornerShape(4.dp),
                 trailingIcon = {
