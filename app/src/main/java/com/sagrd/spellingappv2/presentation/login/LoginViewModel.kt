@@ -45,33 +45,53 @@ class UsuarioViewModel @Inject constructor(
     fun onEvent(event: LoginEvent) {
         when (event) {
             is LoginEvent.NombreChanged -> {
-                _uiState.update { it.copy(nombre = event.nombre) }
+                _uiState.update { it.copy(nombre = event.nombre, errorNombre = null) }
             }
+
             is LoginEvent.ApellidoChanged -> {
-                _uiState.update { it.copy(apellido = event.apellido) }
+                _uiState.update { it.copy(apellido = event.apellido, errorApellido = null) }
             }
+
             is LoginEvent.TelefonoChanged -> {
-                _uiState.update { it.copy(telefono = event.telefono) }
+                _uiState.update { it.copy(telefono = event.telefono, errorTelefono = null) }
             }
+
             is LoginEvent.EmailChanged -> {
-                _uiState.update { it.copy(email = event.email) }
+                _uiState.update { it.copy(email = event.email, errorEmail = null) }
             }
+
             is LoginEvent.ContrasenaChanged -> {
-                _uiState.update { it.copy(contrasena = event.contrasena) }
+                _uiState.update { it.copy(contrasena = event.contrasena, errorContrasena = null) }
             }
+
             is LoginEvent.ConfirmarContrasenaChanged -> {
-                _uiState.update { it.copy(confirmarContrasena = event.confirmarContrasena) }
+                _uiState.update {
+                    it.copy(
+                        confirmarContrasena = event.confirmarContrasena,
+                        errorConfirmarContrasena = null
+                    )
+                }
             }
+
             is LoginEvent.SaveUsuario -> {
                 saveUsuario()
             }
+
             is LoginEvent.UpdateUsuario -> {
                 updateUsuario(event.password)
             }
+
             is LoginEvent.Login -> {
+                _uiState.update {
+                    it.copy(
+                        email = event.email,
+                        errorEmail = null,
+                        contrasena = event.contrasena,
+                        errorContrasena = null
+                    )
+                }
                 login(event.email, event.contrasena)
-            }
-            is LoginEvent.GoogleSignIn -> {
+
             }
         }
 
@@ -87,10 +107,60 @@ class UsuarioViewModel @Inject constructor(
 
     fun saveUsuario() {
         viewModelScope.launch {
-            if (_uiState.value.nombre.isBlank() || _uiState.value.email.isBlank() || _uiState.value.contrasena.isBlank()) {
+            if (_uiState.value.nombre.isBlank()) {
                 _uiState.update {
                     it.copy(
-                        errorMessage = "Todos los campos son obligatorios.",
+                        errorNombre = "El nombre no puede estar vacío.",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
+
+            if (_uiState.value.apellido.isBlank()) {
+                _uiState.update {
+                    it.copy(
+                        errorApellido = "el apellido no puede estar vacío.",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
+
+            if (_uiState.value.telefono.isBlank()) {
+                _uiState.update {
+                    it.copy(
+                        errorTelefono = "el teléfono no puede estar vacío.",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
+
+            if (_uiState.value.email.isBlank()) {
+                _uiState.update {
+                    it.copy(
+                        errorEmail = "El email no puede estar vacío.",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
+
+            if (_uiState.value.contrasena.isBlank()) {
+                _uiState.update {
+                    it.copy(
+                        errorContrasena = "La contraseña es obligatoria.",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
+
+            if (_uiState.value.confirmarContrasena.isBlank()) {
+                _uiState.update {
+                    it.copy(
+                        errorConfirmarContrasena = "Debes confirmar la contraseña.",
                         successMessage = null
                     )
                 }
@@ -99,7 +169,11 @@ class UsuarioViewModel @Inject constructor(
 
             if (_uiState.value.contrasena != _uiState.value.confirmarContrasena) {
                 _uiState.update {
-                    it.copy(errorMessage = "Las contraseñas no coinciden.", successMessage = null)
+                    it.copy(
+                        errorContrasena = "Las contraseñas no coinciden.",
+                        errorConfirmarContrasena = "Las contraseñas no coinciden.",
+                        successMessage = null
+                    )
                 }
                 return@launch
             }
@@ -107,7 +181,7 @@ class UsuarioViewModel @Inject constructor(
             if (!isPhoneNumberUnique(_uiState.value.telefono)) {
                 _uiState.update {
                     it.copy(
-                        errorMessage = "Este número de teléfono ya está registrado.",
+                        errorTelefono = "Este número de teléfono ya está registrado.",
                         successMessage = null
                     )
                 }
@@ -126,6 +200,12 @@ class UsuarioViewModel @Inject constructor(
                     it.copy(
                         successMessage = "Usuario registrado correctamente.",
                         errorMessage = null,
+                        errorNombre = null,
+                        errorApellido = null,
+                        errorTelefono = null,
+                        errorEmail = null,
+                        errorContrasena = null,
+                        errorConfirmarContrasena = null,
                         firebaseUser = authResult.user
                     )
                 }
@@ -145,7 +225,7 @@ class UsuarioViewModel @Inject constructor(
         viewModelScope.launch {
 
             if (_uiState.value.nombre.isBlank()) {
-                _uiState.update { it.copy(errorMessage = "Nombre no puede estar vacío.") }
+                _uiState.update { it.copy(errorNombre = "Nombre no puede estar vacío.") }
                 return@launch
             }
 
@@ -157,19 +237,22 @@ class UsuarioViewModel @Inject constructor(
             if (isChangingPassword) {
                 when {
                     currentPassword.isNullOrBlank() -> {
-                        _uiState.update { it.copy(errorMessage = "Debe ingresar su contraseña actual") }
+                        _uiState.update { it.copy(errorContrasena = "Debe ingresar su contraseña actual") }
                         return@launch
                     }
+
                     _uiState.value.contrasena != _uiState.value.confirmarContrasena -> {
-                        _uiState.update { it.copy(errorMessage = "Las nuevas contraseñas no coinciden") }
+                        _uiState.update { it.copy(errorConfirmarContrasena = "Las nuevas contraseñas no coinciden") }
                         return@launch
                     }
+
                     _uiState.value.contrasena.length < 8 -> {
-                        _uiState.update { it.copy(errorMessage = "La contraseña debe tener mínimo 8 caracteres") }
+                        _uiState.update { it.copy(errorContrasena = "La contraseña debe tener mínimo 8 caracteres") }
                         return@launch
                     }
+
                     _uiState.value.contrasena == currentLocalPassword -> {
-                        _uiState.update { it.copy(errorMessage = "La nueva contraseña no puede ser igual a la actual") }
+                        _uiState.update { it.copy(errorContrasena = "La nueva contraseña no puede ser igual a la actual") }
                         return@launch
                     }
                 }
@@ -186,7 +269,7 @@ class UsuarioViewModel @Inject constructor(
                         firebaseUser.updatePassword(_uiState.value.contrasena).await()
                     } catch (e: Exception) {
                         _uiState.update {
-                            it.copy(errorMessage = "Contraseña actual incorrecta: ${e.message}")
+                            it.copy(errorContrasena = "Contraseña actual incorrecta: ${e.message}")
                         }
                         return@launch
                     }
@@ -201,7 +284,13 @@ class UsuarioViewModel @Inject constructor(
                     it.copy(
                         successMessage = "Perfil actualizado correctamente",
                         usuarioActual = updatedEntity,
-                        errorMessage = null
+                        errorMessage = null,
+                        errorNombre = null,
+                        errorApellido = null,
+                        errorTelefono = null,
+                        errorEmail = null,
+                        errorContrasena = null,
+                        errorConfirmarContrasena = null,
                     )
                 }
 
@@ -216,11 +305,17 @@ class UsuarioViewModel @Inject constructor(
             it.copy(
                 usuarioId = null,
                 nombre = "",
+                errorNombre = null,
                 apellido = "",
+                errorApellido = null,
                 telefono = "",
+                errorTelefono = null,
                 email = "",
+                errorEmail = null,
                 contrasena = "",
+                errorContrasena = null,
                 confirmarContrasena = "",
+                errorConfirmarContrasena = null,
                 fotoUrl = "",
                 errorMessage = null,
                 successMessage = null
@@ -253,6 +348,26 @@ class UsuarioViewModel @Inject constructor(
 
     fun login(email: String, contrasena: String) {
         viewModelScope.launch {
+
+            if (_uiState.value.email.isBlank()) {
+                _uiState.update {
+                    it.copy(
+                        errorEmail = "Ingrese su Email",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
+
+            if (_uiState.value.contrasena.isBlank()) {
+                _uiState.update {
+                    it.copy(
+                        errorContrasena = "Ingrese su contraseña.",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
             try {
                 _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
@@ -267,10 +382,17 @@ class UsuarioViewModel @Inject constructor(
                             it.copy(
                                 usuarioId = localUser.usuarioId,
                                 nombre = localUser.nombre,
+                                errorNombre = null,
                                 apellido = localUser.apellido,
+                                errorApellido = null,
                                 telefono = localUser.telefono,
+                                errorTelefono = null,
                                 email = localUser.email,
+                                errorEmail = null,
                                 contrasena = "",
+                                errorContrasena = null,
+                                confirmarContrasena = "",
+                                errorConfirmarContrasena = null,
                                 usuarioActual = localUser,
                                 firebaseUser = firebaseUser,
                                 successMessage = "Inicio de sesión exitoso",
@@ -279,6 +401,7 @@ class UsuarioViewModel @Inject constructor(
                             )
                         }
                     }
+
 
                     Log.d("Login", "Estado actualizado: ${_uiState.value.usuarioActual}")
                 }

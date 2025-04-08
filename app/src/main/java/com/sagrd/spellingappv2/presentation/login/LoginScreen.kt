@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -164,6 +165,15 @@ fun LoginBodyScreen(
                 shape = RoundedCornerShape(4.dp),
                 singleLine = true
             )
+            uiState.errorEmail?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             OutlinedTextField(
                 modifier = Modifier
@@ -195,6 +205,15 @@ fun LoginBodyScreen(
                 },
                 singleLine = true
             )
+            uiState.errorContrasena?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             if (uiState.errorMessage != null) {
                 Text(

@@ -157,7 +157,7 @@ fun PinBodyScreen(
                     )
                 )
 
-                uiState.errorMessage?.let {
+                uiState.errorPin?.let {
                     Text(
                         text = it,
                         color = Color.Red,

@@ -10,5 +10,4 @@ sealed class LoginEvent {
     data class UpdateUsuario(val password: String) : LoginEvent()
     data class Login(val email: String, val contrasena: String) : LoginEvent()
     object SaveUsuario : LoginEvent()
-    object GoogleSignIn : LoginEvent()
 }

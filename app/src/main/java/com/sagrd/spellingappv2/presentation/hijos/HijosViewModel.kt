@@ -29,19 +29,29 @@ class HijosViewModel @Inject constructor(
     fun onEvent(event: HijosEvent) {
         when(event) {
             is HijosEvent.OnNombreChange -> {
-                _uiState.update { it.copy(nombre = event.dato) }
+                _uiState.update { it.copy(nombre = event.dato, errorNombre = null) }
             }
             is HijosEvent.OnApellidoChange -> {
-                _uiState.update { it.copy(apellido = event.dato) }
+                _uiState.update { it.copy(apellido = event.dato, errorApellido = null) }
             }
             is HijosEvent.OnGeneroChange -> {
-                _uiState.update { it.copy(genero = event.dato) }
+                _uiState.update { it.copy(genero = event.dato, errorGenero = null) }
             }
             is HijosEvent.OnEdadChange -> {
-                _uiState.update { it.copy(edad = event.dato.toIntOrNull() ?: 0) }
+                _uiState.update {
+                    it.copy(
+                        edad = event.dato.toIntOrNull() ?: 0,
+                        errorEdad = null
+                    )
+                }
             }
             is HijosEvent.OnPinChange -> {
-                _uiState.update { it.copy(pinId = event.dato) }
+                _uiState.update {
+                    it.copy(
+                        pinId = event.dato,
+                        errorPinId = null
+                    )
+                }
             }
             is HijosEvent.OnUsuarioIdChange -> {
                 _uiState.update { it.copy(usuarioId = event.dato.toIntOrNull() ?: 0) }
@@ -57,14 +67,7 @@ class HijosViewModel @Inject constructor(
 
     fun saveHijo(onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
-            val validationError = validate()
-            if (validationError != null) {
-                _uiState.update {
-                    it.copy(
-                        errorMessage = validationError,
-                        successMessage = null
-                    )
-                }
+            if (!validateInputs()) {
                 return@launch
             }
 
@@ -72,12 +75,60 @@ class HijosViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     errorMessage = null,
+                    errorNombre = null,
+                    errorApellido = null,
+                    errorGenero = null,
+                    errorEdad = null,
+                    errorPinId = null,
                     successMessage = "Hijo guardado exitosamente"
                 )
             }
             nuevo()
             onSuccess()
         }
+    }
+
+    private fun validateInputs(): Boolean {
+        var isValid = true
+
+        if (_uiState.value.nombre.isBlank()) {
+            _uiState.update { it.copy(errorNombre = "El nombre no puede estar vacío.") }
+            isValid = false
+        }
+
+        if (_uiState.value.apellido.isBlank()) {
+            _uiState.update { it.copy(errorApellido = "El apellido no puede estar vacío.")}
+            isValid = false
+        }
+
+        if (_uiState.value.genero.isBlank()) {
+            _uiState.update { it.copy(errorGenero = "El género no puede estar vacío.")}
+            isValid = false
+        }
+
+        if (_uiState.value.edad == 0) {
+            _uiState.update { it.copy(errorEdad = "La edad no puede ser cero.")}
+            isValid = false
+        }
+
+        if (_uiState.value.pinId.isBlank()) {
+            _uiState.update { it.copy(errorPinId = "Debe asignarle un pin a su hijo.")}
+            isValid = false
+        } else if (_uiState.value.usedPins.contains(_uiState.value.pinId) && _uiState.value.hijoId == null) {
+            _uiState.update { it.copy(errorPinId = "Este pin ya está siendo utilizado.")}
+            isValid = false
+        }
+
+        if (isDuplicateName()) {
+            _uiState.update { it.copy(errorNombre = "Ya existe un hijo con este nombre.")}
+            isValid = false
+        }
+
+        if (!isValid) {
+            _uiState.update { it.copy(successMessage = null)}
+        }
+
+        return isValid
     }
 
     fun nuevo() {
@@ -90,21 +141,6 @@ class HijosViewModel @Inject constructor(
         return _uiState.value.hijos.any { hijo ->
             val hijoNombre = hijo.nombre.trim().lowercase()
             hijoNombre == nombre && hijo.hijoId != _uiState.value.hijoId
-        }
-    }
-
-    private fun validate(): String? {
-        return when {
-            _uiState.value.nombre.isBlank() -> "El nombre no puede estar vacío."
-            _uiState.value.apellido.isBlank() -> "El apellido no puede estar vacío."
-            _uiState.value.genero.isBlank() -> "El género no puede estar vacío."
-            _uiState.value.edad == 0 -> "La edad no puede ser cero."
-            _uiState.value.pinId.isBlank() -> "Debe asignarle un pin a su hijo."
-            _uiState.value.usedPins.contains(_uiState.value.pinId) &&
-                    _uiState.value.hijoId == null -> "Este pin ya está siendo utilizado."
-
-            isDuplicateName() -> "Ya existe un hijo con este nombre."
-            else -> null
         }
     }
 

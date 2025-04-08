@@ -30,17 +30,27 @@ class PinViewModel @Inject constructor(
     fun onEvent(event: PinEvent) {
         when (event) {
             is PinEvent.OnPinChange -> {
-                _uiState.update { it.copy(pin = event.dato) }
+                _uiState.update {
+                    it.copy(
+                        pin = event.dato,
+                        errorPin = null,
+                        errorMessage = null
+                    )
+                }
             }
+
             is PinEvent.OnSave -> {
                 savePin()
             }
+
             is PinEvent.OnHideDialog -> {
                 hideDeleteDialog()
             }
+
             is PinEvent.CheckPinUsage -> {
                 checkPinUsage()
             }
+
             is PinEvent.OnDelete -> {
                 deletePin()
             }
@@ -79,33 +89,33 @@ class PinViewModel @Inject constructor(
 
     fun savePin() {
         viewModelScope.launch {
-            val validationError = validate()
-            if (validationError != null) {
-                _uiState.update {
-                    it.copy(errorMessage = validationError, successMessage = null)
-                }
+            if (!validatePin()) {
                 return@launch
             }
 
             try {
                 val pineDto = PinesDto(
-                    pinId = uiState.value.pinId ?: 0,
-                    pin = uiState.value.pin
+                    pinId = _uiState.value.pinId ?: 0,
+                    pin = _uiState.value.pin
                 )
 
-                if (uiState.value.pinId == null) {
+                if (_uiState.value.pinId == null) {
                     repository.save(pineDto)
                 } else {
-                    repository.update(uiState.value.pinId!!, pineDto)
+                    repository.update(_uiState.value.pinId!!, pineDto)
                 }
 
                 _uiState.update {
                     it.copy(
                         successMessage = "Pin guardado correctamente.",
-                        errorMessage = null
+                        errorMessage = null,
+                        errorPin = null
                     )
                 }
                 loadPines()
+                _uiState.update {
+                    it.copy(pin = "", pinId = null)
+                }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
@@ -114,6 +124,34 @@ class PinViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    private fun validatePin(): Boolean {
+        when {
+            _uiState.value.pin.isBlank() -> {
+                _uiState.update {
+                    it.copy(
+                        errorPin = "El pin no puede estar vacío.",
+                        successMessage = null
+                    )
+                }
+                return false
+            }
+
+            _uiState.value.pins.any {
+                it.pin == _uiState.value.pin && it.pinId != _uiState.value.pinId
+            } -> {
+                _uiState.update {
+                    it.copy(
+                        errorPin = "Este pin ya existe. Por favor, elija otro.",
+                        successMessage = null
+                    )
+                }
+                return false
+            }
+
+            else -> return true
         }
     }
 

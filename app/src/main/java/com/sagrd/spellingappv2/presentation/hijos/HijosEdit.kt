@@ -158,6 +158,16 @@ fun HijoBodyEdit(
                         unfocusedLabelColor = textColor
                     )
                 )
+                uiState.errorNombre?.let {
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = uiState.apellido,
@@ -174,6 +184,16 @@ fun HijoBodyEdit(
                         unfocusedLabelColor = textColor
                     )
                 )
+                uiState.errorApellido?.let {
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Box(modifier = Modifier.fillMaxWidth()) {
@@ -218,6 +238,16 @@ fun HijoBodyEdit(
                         }
                     }
                 }
+                uiState.errorGenero?.let {
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
@@ -235,6 +265,16 @@ fun HijoBodyEdit(
                         unfocusedLabelColor = textColor
                     )
                 )
+                uiState.errorEdad?.let {
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Box(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
@@ -278,6 +318,16 @@ fun HijoBodyEdit(
                             )
                         }
                     }
+                }
+                uiState.errorPinId?.let {
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        textAlign = TextAlign.Center
+                    )
                 }
 
                 uiState.errorMessage?.let {

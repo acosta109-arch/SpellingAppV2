@@ -5,6 +5,7 @@ import com.sagrd.spellingappv2.data.local.entities.PinEntity
 data class PinUiState(
     val pinId: Int? = null,
     val pin: String = "",
+    val errorPin: String? = null,
     val utilizado: Boolean = false,
     val errorMessage: String? = null,
     val successMessage: String? = null,

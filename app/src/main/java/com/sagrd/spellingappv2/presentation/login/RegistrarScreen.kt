@@ -173,6 +173,15 @@ fun RegistrarBodyScreen(
                 ),
                 shape = RoundedCornerShape(4.dp), singleLine = true
             )
+            uiState.errorNombre?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             OutlinedTextField(
                 modifier = Modifier
@@ -191,6 +200,15 @@ fun RegistrarBodyScreen(
                 ),
                 shape = RoundedCornerShape(4.dp), singleLine = true
             )
+            uiState.errorApellido?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             OutlinedTextField(
                 modifier = Modifier
@@ -214,6 +232,15 @@ fun RegistrarBodyScreen(
                 ),
                 shape = RoundedCornerShape(4.dp), singleLine = true
             )
+            uiState.errorTelefono?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             OutlinedTextField(
                 modifier = Modifier
@@ -232,6 +259,15 @@ fun RegistrarBodyScreen(
                 ),
                 shape = RoundedCornerShape(4.dp), singleLine = true
             )
+            uiState.errorEmail?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             OutlinedTextField(
                 modifier = Modifier
@@ -261,6 +297,15 @@ fun RegistrarBodyScreen(
                 }
 
             )
+            uiState.errorContrasena?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             OutlinedTextField(
                 modifier = Modifier
@@ -291,6 +336,15 @@ fun RegistrarBodyScreen(
                     }
                 }
             )
+            uiState.errorConfirmarContrasena?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             uiState.errorMessage?.let { message ->
                 Text(

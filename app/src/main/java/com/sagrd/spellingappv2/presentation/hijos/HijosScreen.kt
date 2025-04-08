@@ -140,6 +140,15 @@ fun HijoBodyScreen(
                     colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor)
                 )
 
+                uiState.errorNombre?.let { message ->
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = message,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
@@ -149,6 +158,15 @@ fun HijoBodyScreen(
                     modifier = Modifier.fillMaxWidth(),
                     colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor)
                 )
+
+                uiState.errorApellido?.let { message ->
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = message,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -187,6 +205,14 @@ fun HijoBodyScreen(
                     }
                 }
 
+                uiState.errorGenero?.let { message ->
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = message,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
@@ -198,6 +224,14 @@ fun HijoBodyScreen(
                     colors = textFieldColors(isDarkMode, textColor, accentColor, borderColor)
                 )
 
+                uiState.errorEdad?.let { message ->
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = message,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Box(modifier = Modifier.fillMaxWidth()) {
@@ -262,6 +296,14 @@ fun HijoBodyScreen(
                     }
                 }
 
+                uiState.errorPinId?.let { message ->
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = message,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 uiState.errorMessage?.let { message ->
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
