@@ -177,7 +177,6 @@ fun RegistrarBodyScreen(
                 Text(
                     text = message,
                     color = Color.Red,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -204,7 +203,6 @@ fun RegistrarBodyScreen(
                 Text(
                     text = message,
                     color = Color.Red,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -236,7 +234,6 @@ fun RegistrarBodyScreen(
                 Text(
                     text = message,
                     color = Color.Red,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -263,7 +260,6 @@ fun RegistrarBodyScreen(
                 Text(
                     text = message,
                     color = Color.Red,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -301,7 +297,6 @@ fun RegistrarBodyScreen(
                 Text(
                     text = message,
                     color = Color.Red,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -340,7 +335,6 @@ fun RegistrarBodyScreen(
                 Text(
                     text = message,
                     color = Color.Red,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -350,7 +344,6 @@ fun RegistrarBodyScreen(
                 Text(
                     text = message,
                     color = Color.Red,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -360,7 +353,6 @@ fun RegistrarBodyScreen(
                 Text(
                     text = message,
                     color = Color.Green,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )

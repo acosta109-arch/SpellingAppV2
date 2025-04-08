@@ -169,7 +169,6 @@ fun LoginBodyScreen(
                 Text(
                     text = message,
                     color = Color.Red,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -209,12 +208,10 @@ fun LoginBodyScreen(
                 Text(
                     text = message,
                     color = Color.Red,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-
             if (uiState.errorMessage != null) {
                 Text(
                     text = uiState.errorMessage,

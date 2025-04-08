@@ -248,16 +248,4 @@ class PinViewModel @Inject constructor(
             }
         }
     }
-
-    private fun validate(): String? {
-        return when {
-            uiState.value.pin.isBlank() -> "El pin no puede estar vacío."
-            uiState.value.pins.any {
-                it.pin == uiState.value.pin &&
-                        it.pinId != uiState.value.pinId
-            } -> "Este pin ya existe. Por favor, elija otro."
-
-            else -> null
-        }
-    }
 }
