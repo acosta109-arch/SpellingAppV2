@@ -97,14 +97,6 @@ class UsuarioViewModel @Inject constructor(
 
     }
 
-    private suspend fun isPhoneNumberUnique(
-        phoneNumber: String,
-        currentUserId: Int? = null,
-    ): Boolean {
-        return usuarioRepository.getAllUsuarios()
-            .none { it.telefono == phoneNumber && it.usuarioId != currentUserId }
-    }
-
     fun saveUsuario() {
         viewModelScope.launch {
             if (_uiState.value.nombre.isBlank()) {
@@ -178,7 +170,7 @@ class UsuarioViewModel @Inject constructor(
                 return@launch
             }
 
-            if (!isPhoneNumberUnique(_uiState.value.telefono)) {
+            if (usuarioRepository.isTelefonoRegistrado(_uiState.value.telefono)) {
                 _uiState.update {
                     it.copy(
                         errorTelefono = "Este número de teléfono ya está registrado.",

@@ -32,6 +32,10 @@ class UsuarioRepository @Inject constructor(
         return usuarioDao.getUsuarioByEmail(email)
     }
 
+    suspend fun isTelefonoRegistrado(telefono: String): Boolean {
+        return usuarioDao.getUsuarioByTelefono(telefono) != null
+    }
+
     suspend fun getUsuarioConHijos(usuarioId: Int): UsuarioConHijoEntity? {
         return usuarioDao.getUsuarioConHijos(usuarioId)
     }
