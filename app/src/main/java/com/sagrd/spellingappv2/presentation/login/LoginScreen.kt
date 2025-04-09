@@ -59,7 +59,7 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        if (AuthManager.isLoggedIn) {
+        if (AuthManager1.isLoggedIn) {
             goToDashboard()
             onLoginSuccess()
         }

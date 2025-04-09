@@ -1,5 +1,6 @@
 package com.sagrd.spellingappv2.presentation.login
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -15,16 +16,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import edu.ucne.spellingapp.R
 import kotlinx.coroutines.delay
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SplashScreen(
+    viewModel: UsuarioViewModel = hiltViewModel(),
     onNavigateToLogin: () -> Unit,
     onDashboard: () -> Unit,
 ) {
     val isDarkMode = isSystemInDarkTheme()
 
-    val isUserAuthenticated = AuthManager.isLoggedIn
+    val isUserAuthenticated = viewModel.isAuthenticated.value
 
     val gradientColors = if (isDarkMode) {
         listOf(

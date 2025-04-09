@@ -7,6 +7,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.sagrd.spellingappv2.data.repository.UsuarioRepository
+import com.sagrd.spellingappv2.fireBase.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,11 +20,14 @@ import javax.inject.Inject
 class UsuarioViewModel @Inject constructor(
     private val usuarioRepository: UsuarioRepository,
     private val firebaseAuth: FirebaseAuth,
+    private val authRepository: AuthRepository
+
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState get() = _uiState.asStateFlow()
-    private val _isAuthenticated = MutableStateFlow(firebaseAuth.currentUser != null)
+    private val _isAuthenticated = MutableStateFlow(authRepository.isLoggedIn)
+    val isAuthenticated = _isAuthenticated.asStateFlow()
 
     init {
         Log.d("UsuarioVM", "ViewModel inicializado")
@@ -33,10 +37,9 @@ class UsuarioViewModel @Inject constructor(
             _isAuthenticated.value = auth.currentUser != null
         }
 
-        firebaseAuth.currentUser?.email?.let { email ->
+        authRepository.currentUser?.email?.let { email ->
             viewModelScope.launch {
                 val user = usuarioRepository.getUsuarioByEmail(email)
-                Log.d("UsuarioVM", "Usuario recuperado al init: $user")
                 _uiState.update { it.copy(usuarioActual = user) }
             }
         }
@@ -92,6 +95,10 @@ class UsuarioViewModel @Inject constructor(
                 }
                 login(event.email, event.contrasena)
 
+            }
+
+            is LoginEvent.Logout -> {
+                logout()
             }
         }
 
@@ -418,9 +425,15 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
+    fun logout() {
+        viewModelScope.launch {
+            authRepository.logout()
+        }
+    }
+
 }
 
-object AuthManager {
+object AuthManager1 {
     private val auth = FirebaseAuth.getInstance()
 
     val currentUser: FirebaseUser?
@@ -429,7 +442,7 @@ object AuthManager {
     val isLoggedIn: Boolean
         get() = currentUser != null
 
-    fun logout() {
+    fun logout1() {
         auth.signOut()
     }
 }

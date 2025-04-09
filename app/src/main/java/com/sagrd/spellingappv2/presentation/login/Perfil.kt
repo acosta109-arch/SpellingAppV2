@@ -50,8 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.sagrd.spellingappv2.presentation.login.AuthManager.logout
-import com.sagrd.spellingappv2.presentation.login.LoginUiState
 import com.sagrd.spellingappv2.presentation.navigation.Screen
 import edu.ucne.spellingapp.R
 
@@ -73,7 +71,8 @@ fun Perfil(
         navHostController = navHostController,
         uiState = uiState,
         onMenuClick = onMenuClick,
-        goEdit = goEdit
+        goEdit = goEdit,
+        onEvent = viewModel::onEvent
     )
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +82,7 @@ fun PerfilBody(
     uiState: LoginUiState,
     onMenuClick: () -> Unit,
     goEdit: (Int) -> Unit,
+    onEvent: (LoginEvent) -> Unit
 ){
     val isDarkMode = isSystemInDarkTheme()
     val appBarColor = if (isDarkMode) Color(0xFF283653) else Color(0xFF7FB3D5)
@@ -302,7 +302,7 @@ fun PerfilBody(
                                     inclusive = true
                                 }
                             }
-                            logout()
+                            onEvent(LoginEvent.Logout)
                         }
                         showConfirmationDialog = true
                     },
@@ -344,5 +344,6 @@ private fun Perfilpreview() {
         uiState = LoginUiState(),
         onMenuClick = {},
         goEdit = {},
+        onEvent = {}
     )
 }

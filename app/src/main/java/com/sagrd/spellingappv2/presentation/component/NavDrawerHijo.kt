@@ -26,7 +26,7 @@ import edu.ucne.spellingapp.R
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.luminance
-import com.sagrd.spellingappv2.presentation.login.AuthManager
+import com.sagrd.spellingappv2.presentation.login.AuthManager1
 
 @Composable
 fun NavDrawerHijo(
@@ -145,7 +145,7 @@ fun NavDrawerHijo(
                             }
                         }
                         scope.launch { drawerState.close() }
-                        AuthManager.logout()
+                        AuthManager1.logout1()
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB71C1C)),
                     modifier = Modifier

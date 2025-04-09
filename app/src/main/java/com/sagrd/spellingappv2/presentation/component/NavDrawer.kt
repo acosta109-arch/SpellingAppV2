@@ -27,7 +27,9 @@ import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
-import com.sagrd.spellingappv2.presentation.login.AuthManager.logout
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.sagrd.spellingappv2.presentation.login.AuthManager1.logout1
+import com.sagrd.spellingappv2.presentation.login.UsuarioViewModel
 
 @Composable
 fun NavDrawer(
@@ -35,7 +37,9 @@ fun NavDrawer(
     isVisible: Boolean = false,
     onItemClick: (String) -> Unit,
     onClose: () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+
+
 ) {
     val drawerState = rememberDrawerState(
         initialValue = if (isVisible) DrawerValue.Open else DrawerValue.Closed
@@ -199,7 +203,7 @@ fun NavDrawer(
                                     inclusive = true
                                 }
                             }
-                            logout()
+                            logout1()
                         }
                         showConfirmationDialog = true
                     },
@@ -223,9 +227,6 @@ fun NavDrawer(
         }
     )
 }
-
-
-
 
 data class DrawerItem(
     val title: String,
